@@ -3,12 +3,24 @@
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { X } from "lucide-react"
+import { useCitySwipe } from "../citySwipeContext";
+
 export default function Chat() {
+
+    const { isStarted, setIsStarted } = useCitySwipe();
+    const { isChatting, setIsChatting } = useCitySwipe();
+    const { isMatching, setIsMatching } = useCitySwipe();
+
+    const handleMatching = () => {
+        setIsChatting?.(false);
+        setIsMatching?.(true);
+    }
+
     return (
         <div className="relative flex flex-col place-content-center place-items-center w-full h-full">
             <div className="absolute border-b border-primary/20 top-0 w-full h-[10%] flex justify-between place-items-center px-5">
                 <h2 className="select-none">You've matched with "Insert City Here!"</h2>
-                <Button className="bg-transparent hover:bg-transparent text-primary/70"><X size={20} /></Button>
+                <Button onClick={handleMatching} className="bg-transparent hover:bg-transparent text-primary/70"><X size={20} /></Button>
             </div>
 
             <p>Chat</p>

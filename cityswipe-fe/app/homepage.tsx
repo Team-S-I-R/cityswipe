@@ -98,7 +98,9 @@ export default function Hero() {
   
 
     return (
-        <>        
+        <>
+        
+        
         <div className="flex flex-col w-full place-items-center gap-6">
             {!isStarted ? (
                 <>
@@ -164,6 +166,14 @@ export default function Hero() {
                         <House className="absolute bottom-10 right-10 w-5 h-5" />
                     </button>
 
+                    {isStarted && currentQuestionIndex === questionKeys.length - 1 &&
+                    <>
+                        <Link className="flex place-self-center" href="/explore">
+                            <Button className="bg-gradient-to-t from-cyan-500 to-green-400 select-none w-max">Find Your Match!</Button>
+                        </Link>
+                    </>
+                    }
+                    
                     {/* debugging stuff */}
                     {/* <div className="w-full mt-4">
                         <h2 className="text-xl">Saved Responses:</h2>
@@ -176,15 +186,9 @@ export default function Hero() {
                     {/* debugging stuff end */}
                 </>
             )}
-        </div>
+        </div> 
+ 
 
-        {isStarted && currentQuestionIndex === questionKeys.length - 1 &&
-        <>
-            <Link className="flex place-self-center" href="/explore">
-                <Button className="bg-gradient-to-t from-cyan-500 to-green-400 select-none w-max">Find Your Match!</Button>
-            </Link>
-        </>
-        }
         </>
     );
 }
