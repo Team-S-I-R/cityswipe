@@ -9,13 +9,20 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@ai-sdk/google": "^0.0.30",
+    "@gsap/react": "^2.1.1",
     "@radix-ui/react-navigation-menu": "^1.2.0",
+    "@radix-ui/react-slot": "^1.1.0",
+    "@radix-ui/react-tooltip": "^1.1.2",
+    "ai": "^3.2.37",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "gsap": "^3.12.5",
     "lucide-react": "^0.416.0",
     "next": "14.2.5",
     "react": "^18",
     "react-dom": "^18",
+    "react-resizable-panels": "^2.0.22",
     "tailwind-merge": "^2.4.0",
     "tailwindcss-animate": "^1.0.7"
   },
