@@ -14,10 +14,18 @@ import destination3 from './assets/imgs/destination-img-3.jpg'
 import destination4 from './assets/imgs/destination-img-4.jpg'
 import { Heart } from "lucide-react";
 import Link from "next/link";
-import { streamConversation, Message } from "./actions";
+import { streamConversation, Message, submitFormResponse } from "./actions";
 import { readStreamableValue } from "ai/rsc";
 import { useRouter } from 'next/router';
-
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+  } from "@/components/ui/dialog"
+import { useFormState, useFormStatus } from "react-dom";
 
 
 export default function Hero() {
@@ -133,6 +141,36 @@ export default function Hero() {
         console.log(generatedDestinations)
     };
 
+    const SubmitButton = () => {
+        const status = useFormStatus();
+        
+        if (status.pending != true) {
+          return (
+            <button className="bg-gradient-to-t from-cyan-500 to-green-400 text-white hover:opacity-90 font-bold py-2 px-4 rounded" type="submit">Join The Wait list</button>
+          )
+        }
+    
+        if (status.pending === true) {
+          return (
+            <button className="bg-gradient-to-t from-cyan-500 to-green-400 text-white hover:opacity-50 font-bold py-2 px-4 rounded text-gray-600 animate-pulse" disabled>Submitting..</button>
+          )
+        }
+      }
+
+      type FormState = {
+        message: string;
+      };
+  
+      const formAction = async (prevState: FormState, formData: FormData): Promise<FormState> => {
+        await submitFormResponse(formData, formState);
+        return { message: 'Submission successful!' };
+      };
+  
+      const [formState, action] = useFormState(formAction, {
+        message: '',
+      });
+  
+
 
   
 
@@ -171,11 +209,46 @@ export default function Hero() {
                         <span id="your" onMouseOver={() => hoverAnimationEnter('your')} onMouseLeave={() => hoverAnimationLeave('your')} className="cursor-pointer">your </span>
                         <span id="destination" onMouseOver={() => hoverAnimationEnter('destination')} onMouseLeave={() => hoverAnimationLeave('destination')} className="cursor-pointer">destination</span> 
                     </h1>
-                    <Button className="select-none bg-gradient-to-t from-cyan-500 to-green-400 flex place-items-center gap-2" onClick={() => setIsStarted(true)}>
+
+                    <Dialog>
+                        <DialogTrigger>          
+                    <span className=" text-white py-2 px-4 rounded-md select-none bg-gradient-to-t from-cyan-500 to-green-400 flex place-items-center gap-2">
                         Get Started 
                         {updateHeart == false && <span><Heart className="w-2 h-2  "/></span>}
                         {updateHeart == true && <span><Heart className="w-2 h-2 text-red-300 animate-pulse"/></span>}
-                    </Button>
+                    </span>
+                        </DialogTrigger>
+                        <DialogContent>
+                            <DialogHeader>
+                            <DialogTitle>Join our wait list for early access!</DialogTitle>
+                            <DialogDescription>
+                                
+                                <h1 className="select-none font-bold">cityswipe</h1>
+
+                                <p>When we launch you will receive first access to our full beta!</p>
+
+                                <form className="flex flex-col gap-6 my-5" action={action}>
+                                
+                                <p className="flex place-self-center text-green-500">{formState.message}</p>
+
+                                <Input type="text" name="Name" placeholder="Name" className="w-full" />
+                                <Input type="email" name="Email" placeholder="Email address" className="w-full" />
+                                <SubmitButton />
+                                </form>
+
+                                <p>Thank you for the support!</p>
+                            </DialogDescription>
+                            </DialogHeader>
+                        </DialogContent>
+                    </Dialog>
+          
+
+                    {/* this buton leads to the quiz, the diolog and button above is for getting signups! */}
+                    {/* <Button className="select-none bg-gradient-to-t from-cyan-500 to-green-400 flex place-items-center gap-2" onClick={() => setIsStarted(true)}>
+                        Get Started 
+                        {updateHeart == false && <span><Heart className="w-2 h-2  "/></span>}
+                        {updateHeart == true && <span><Heart className="w-2 h-2 text-red-300 animate-pulse"/></span>}
+                    </Button> */}
                 </>
             ) : (
                 <>

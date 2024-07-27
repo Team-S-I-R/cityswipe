@@ -125,7 +125,7 @@ import { useRouter } from "next/router";
 
                     <p>When we launch you will receive first access to our full beta!</p>
 
-                    <form className="flex flex-col gap-8 my-5" action={action}>
+                    <form className="flex flex-col gap-6 my-5" action={action}>
                       
                       <p className="flex place-self-center text-green-500">{formState.message}</p>
 
