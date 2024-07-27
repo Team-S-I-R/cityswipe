@@ -8,7 +8,7 @@ const quizQuestions = {
   question7: "Do you prefer solo travel or traveling with companions?",
   question8: "Are you a planner or do you prefer spontaneity?",
   question9: "Do you enjoy outdoor activities?",
-  question10: "What is your preferred mode of transportation while traveling?"
+  question10: "What is your preferred mode of transportation while traveling?",
 };
 
 export default quizQuestions;

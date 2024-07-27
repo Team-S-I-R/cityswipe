@@ -3,6 +3,9 @@
 import { google } from "@ai-sdk/google";
 import { streamText } from "ai";
 import { createStreamableValue } from "ai/rsc";
+import prisma from "@/lib/db";
+import { z } from 'zod';
+import { revalidatePath } from 'next/cache';
 
 export interface Message {
   role: "user" | "assistant";
@@ -70,3 +73,55 @@ export async function streamFlirtatiousConversation(city: string, country: strin
 export async function getConversationHistory(city: string) {
   return conversationHistory[city] || [];
 }
+
+const generateRandomId = () => {
+  return Math.random().toString(36).substring(2, 10);
+};
+
+const createFormSchema = z.object({
+  name: z.string().min(1).max(191),
+  email: z.string().email(),
+});
+
+type FormState = {
+  message: string;
+};
+
+export async function submitFormResponse(formData: FormData, formState: FormState) {
+  await new Promise((resolve) => setTimeout(resolve, 250));
+
+  const city_id = generateRandomId();
+  const city_name = formData.get("Name") as string;
+  const city_email = formData.get("Email") as string;
+
+  // Validate and parse the form data
+  const { name, email } = createFormSchema.parse({
+    name: city_name,
+    email: city_email,
+  });
+
+  try {
+    await prisma.user.create({
+      data: {
+        id: city_id,
+        name: city_name,
+        email: city_email,
+      },
+    });
+
+    revalidatePath('/');
+
+    return {
+      message: 'Message created',
+    };
+
+  } catch (error) {
+    // Handle the error
+    return {
+      message: 'Something went wrong',
+    };
+  }
+}
+
+
+

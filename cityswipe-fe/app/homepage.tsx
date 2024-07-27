@@ -101,7 +101,7 @@ export default function Hero() {
         setUpdateHeart(false)
     }
 
-    const handleFinish = async () => {
+    const handleGemini = async () => {
         const prompt = 
         `Based on the following travel preferences, generate a list of exactly 50 travel destinations formatted as 'City, Country, [Compatibility Percentage]'. Make sure the compatibility percentage is a number between 0 and 100. Each entry should be on a new line. Questions are answered in order of listing as follows: traveler type, mountain or beach, history or adventure, local cuisine or not, hotel or rental, budget importance, solo or companions, planning or spontaneity, outdoor or no, preferred transportation. Responses in order: \n\n${responses.join('\n')}`;
         
@@ -127,6 +127,8 @@ export default function Hero() {
         setDestinations(generatedDestinations);
         console.log(generatedDestinations)
     };
+
+
   
 
     return (
@@ -139,7 +141,7 @@ export default function Hero() {
   
                     <div className="z-[-1] top-0 left-0 w-screen h-screen absolute">
                     <div className="absolute top-0 left-0 w-screen h-screen">
-                            <img id="match-img" className="opacity-0  w-full h-full object-cover" src={destination1.src} alt="" />
+                            <img id="match-img" className="opacity-1  w-full h-full object-cover" src={destination1.src} alt="" />
                             <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-white via-white to-transparent pointer-events-none"></div>
                         </div>
                         <div className="absolute top-0 left-0 w-screen h-screen">
@@ -194,15 +196,14 @@ export default function Hero() {
                         </div>
                     </div>
 
-                    <button className=" w-5 h-5 absolute bottom-10 right-10 bg-transparent hover:bg-transparent text-primary hover:opacity-80 z-10" onClick={() => handleHomeFunction()}>
-                        <House className="absolute bottom-10 right-10 w-5 h-5" />
-                    </button>
 
                     {isStarted && currentQuestionIndex === questionKeys.length - 1 &&
                     <>
                         <Link className="flex place-self-center" href="/explore">
-                            <Button onClick={() => handleFinish()} className="bg-gradient-to-t from-cyan-500 to-green-400 select-none w-max">Find Your Match!</Button>
+                            <Button onClick={() => handleGemini()} className="bg-gradient-to-t from-cyan-500 to-green-400 select-none w-max">Find Your Match!</Button>
                         </Link>
+
+
                     </>
                     }
 
@@ -210,12 +211,15 @@ export default function Hero() {
                     {/* <div className="w-full mt-4">
                         <h2 className="text-xl">Saved Responses:</h2>
                         <ul>
-                            {responses.map((response, index) => (
-                                <li key={index}>{`Question ${index + 1}: ${response}`}</li>
+                        {responses.map((response, index) => (
+                            <li key={index}>{`Question ${index + 1}: ${response}`}</li>
                             ))}
-                        </ul>
-                    </div> */}
+                            </ul>
+                            </div> */}
                     {/* debugging stuff end */}
+        <button className=" w-5 h-5 absolute bottom-10 right-10 bg-transparent hover:bg-transparent text-primary hover:opacity-80 z-10" onClick={() => handleHomeFunction()}>
+            <House className="absolute bottom-10 right-10 w-5 h-5" />
+        </button>
                 </>
             )}
         </div> 

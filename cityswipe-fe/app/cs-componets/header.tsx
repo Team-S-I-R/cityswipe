@@ -14,7 +14,19 @@ import {
     NavigationMenuTrigger,
     NavigationMenuViewport,
   } from "@/components/ui/navigation-menu"
- 
+  import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+  } from "@/components/ui/dialog"
+import { submitFormResponse } from "../actions";
+import { Input } from "@/components/ui/input";
+import { useFormStatus } from "react-dom";
+import { useFormState } from "react-dom";
+import { error } from "console";
 
   export default function Header() {
     const { isStarted } = useCitySwipe();
@@ -56,15 +68,73 @@ import {
         },
       ]
 
+  
+    const SubmitButton = () => {
+      const status = useFormStatus();
+      
+      if (status.pending != true) {
+        return (
+          <button className="bg-gradient-to-t from-cyan-500 to-green-400 text-white hover:opacity-90 font-bold py-2 px-4 rounded" type="submit">Join The Wait list</button>
+        )
+      }
+  
+      if (status.pending === true) {
+        return (
+          <button className="bg-gradient-to-t from-cyan-500 to-green-400 text-white hover:opacity-50 font-bold py-2 px-4 rounded text-gray-600 animate-pulse" disabled>Submitting..</button>
+        )
+      }
+    }
+
+    type FormState = {
+      message: string;
+    };
+
+    const formAction = async (prevState: FormState, formData: FormData): Promise<FormState> => {
+      await submitFormResponse(formData, formState);
+      return { message: 'Submission successful!' };
+    };
+
+    const [formState, action] = useFormState(formAction, {
+      message: '',
+    });
+
     return (
         <>    
 
-        <div className="flex absolute z-10 top-10 left-10 w-max gap-6 place-items-center">
+        <div className="flex absolute z-10 top-10 px-8 w-full place-items-center justify-between">
         
           <>
             <Link href="/">
-                <h1>cityswipe</h1>
+                <h1 className="select-none">cityswipe</h1>
             </Link>
+
+            <Dialog>
+              <DialogTrigger><h1 className="select-none font-bold un">Join The Wait list</h1>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Join our wait list for early access!</DialogTitle>
+                  <DialogDescription>
+                    
+                      <h1 className="select-none font-bold">cityswipe</h1>
+
+                    <p>When we launch you will receive first access to our full beta!</p>
+
+                    <form className="flex flex-col gap-8 my-5" action={action}>
+                      
+                      <p className="flex place-self-center text-green-500">{formState.message}</p>
+
+                      <Input type="text" name="Name" placeholder="Name" className="w-full" />
+                      <Input type="email" name="Email" placeholder="Email address" className="w-full" />
+                      <SubmitButton />
+                    </form>
+
+                    <p>Thank you for the support!</p>
+                  </DialogDescription>
+                </DialogHeader>
+              </DialogContent>
+            </Dialog>
+            
               {/* <NavigationMenu>
               <NavigationMenuList>
                   <NavigationMenuItem>
