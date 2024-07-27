@@ -23,7 +23,9 @@ export default function Sidebar() {
     return (
         <div className="w-full h-full" >
             <div className="w-full flex place-content-end h-[10%] bg-gradient-to-t from-cyan-500 to-green-400 p-5">
-                
+                <div className="w-1/2 flex place-content-start place-items-center justify-start h-full gap-5">
+                    <div className="rounded-full p-2 cursor-pointer bg-white w-10 h-10"></div>
+                </div>
                 <div className="w-1/2 flex place-content-start place-items-center justify-end h-full gap-5">
                     <div className="w-max h-max rounded-full p-2 cursor-pointer hover:scale-125">
                         <MessageCircleMore size={15} onClick={() => handleChatting()} className="text-white"/>
