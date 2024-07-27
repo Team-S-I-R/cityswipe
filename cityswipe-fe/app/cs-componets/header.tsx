@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { useQuiz } from '../quizContext';
+import { useCitySwipe } from '../citySwipeContext';
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 import {
@@ -17,7 +17,7 @@ import {
  
 
   export default function Header() {
-    const { isStarted } = useQuiz();
+    const { isStarted } = useCitySwipe();
     const components: { title: string; href: string; description: string }[] = [
         {
           title: "Alert Dialog",
