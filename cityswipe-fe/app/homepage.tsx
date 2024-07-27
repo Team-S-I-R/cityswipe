@@ -8,12 +8,18 @@ import quizQuestions from "./quiz-questions/questions";
 import { House } from "lucide-react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
+import destination1 from './assets/imgs/destination-img-1.jpg'
+import destination2 from './assets/imgs/destination-img-2.jpg'
+import destination3 from './assets/imgs/destination-img-3.jpg'
+import destination4 from './assets/imgs/destination-img-4.jpg'
+import { Heart } from "lucide-react";
 
 export default function Hero() {
     const { isStarted, setIsStarted } = useQuiz();
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [responses, setResponses] = useState<string[]>([]);
     const questionKeys = Object.keys(quizQuestions);
+    const [updateHeart, setUpdateHeart] = useState(false);
 
     const handleKeyDown = (event: KeyboardEvent) => {
         if (event.key === 'ArrowDown') {
@@ -73,6 +79,8 @@ export default function Hero() {
             });
         } 
 
+        setUpdateHeart(true)
+
     }
 
     const hoverAnimationLeave = (imgid : string) => {
@@ -83,6 +91,8 @@ export default function Hero() {
                 duration: 0.5,
             });
         } 
+
+        setUpdateHeart(false)
     }
   
 
@@ -91,19 +101,37 @@ export default function Hero() {
         <div className="flex flex-col w-full place-items-center gap-6">
             {!isStarted ? (
                 <>
+  
                     <div className="z-[-1] top-0 left-0 w-screen h-screen absolute">
-                        <img id="match-img" className="opacity-0 bg-blue-500 w-screen h-screen absolute z-[-1] top-0 left-0" src="" alt="" />
-                        <img id="with-img" className="opacity-0 bg-blue-400 w-screen h-screen absolute z-[-1] top-0 left-0" src="" alt="" />
-                        <img id="your-img" className="opacity-0 bg-blue-300 w-screen h-screen absolute z-[-1] top-0 left-0" src="" alt="" />
-                        <img id="destination-img" className="opacity-0 bg-blue-200 w-screen h-screen absolute z-[-1] top-0 left-0" src="" alt="" />
-                    </div>
-                    <h1 className="text-5xl select-none">
+                    <div className="absolute top-0 left-0 w-screen h-screen">
+                            <img id="match-img" className="opacity-0  w-full h-full object-cover" src={destination1.src} alt="" />
+                            <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-white via-white to-transparent pointer-events-none"></div>
+                        </div>
+                        <div className="absolute top-0 left-0 w-screen h-screen">
+                            <img id="with-img" className="opacity-0  w-full h-full object-cover" src={destination2.src} alt="" />
+                            <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-white via-white to-transparent pointer-events-none"></div>
+                        </div>
+                        <div className="absolute top-0 left-0 w-screen h-screen">
+                            <img id="your-img" className="opacity-0  w-full h-full object-cover" src={destination3.src} alt="" />
+                            <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-white via-white to-transparent pointer-events-none"></div>
+                        </div>
+                        <div className="absolute top-0 left-0 w-screen h-screen">
+                            <img id="destination-img" className="opacity-0  w-full h-full object-cover" src={destination4.src} alt="" />
+                            <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-white via-white to-transparent pointer-events-none"></div>
+                        </div>
+                    </div>                    
+                   
+                    <h1 className="text-5xl select-none relative">
                         <span id="match" onMouseOver={() => hoverAnimationEnter('match')} onMouseLeave={() => hoverAnimationLeave('match')} className="cursor-pointer">Match </span>
                         <span id="with" onMouseOver={() => hoverAnimationEnter('with')} onMouseLeave={() => hoverAnimationLeave('with')} className="cursor-pointer">with </span>
                         <span id="your" onMouseOver={() => hoverAnimationEnter('your')} onMouseLeave={() => hoverAnimationLeave('your')} className="cursor-pointer">your </span>
                         <span id="destination" onMouseOver={() => hoverAnimationEnter('destination')} onMouseLeave={() => hoverAnimationLeave('destination')} className="cursor-pointer">destination</span> 
                     </h1>
-                    <Button className="select-none" onClick={() => setIsStarted(true)}>Get Started</Button>
+                    <Button className="select-none flex place-items-center gap-2" onClick={() => setIsStarted(true)}>
+                        Get Started 
+                        {updateHeart == false && <span><Heart className="w-2 h-2  "/></span>}
+                        {updateHeart == true && <span><Heart className="w-2 h-2 text-red-300 animate-pulse"/></span>}
+                    </Button>
                 </>
             ) : (
                 <>
