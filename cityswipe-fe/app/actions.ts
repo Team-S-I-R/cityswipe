@@ -74,6 +74,12 @@ export async function getConversationHistory(city: string) {
   return conversationHistory[city] || [];
 }
 
+
+
+
+
+// form stuff
+
 const generateRandomId = () => {
   return Math.random().toString(36).substring(2, 10);
 };
