@@ -18,17 +18,18 @@ export default function Chat() {
     return (
         <div className="relative flex flex-col place-content-center place-items-center w-full h-full">
             <div className="absolute border-b border-primary/20 top-0 w-full h-[10%] flex justify-between place-items-center px-5">
-                <h2 className="select-none">You've matched with "Insert City Here!"</h2>
+                <h2 className="select-none">You have matched with [Insert City Here!]</h2>
                 <Button  className="bg-transparent hover:bg-transparent text-primary/70"><X size={20} /></Button>
             </div>
 
             {input.length < 1 && (
                 <>
                     <p>Chat</p>
-                    <p>You've matched with "Insert City Here!"</p>
-                    <p>Ask "Insert City Here" anything you'd like to know</p>
+                    <p>You have matched with Insert City Here!</p>
+                    <p>Ask Insert City Here anything you would like to know</p>
                 </>
             )}
+
 
             {input.length > 0 && (
                 <>
