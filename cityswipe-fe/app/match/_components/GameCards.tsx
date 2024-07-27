@@ -26,7 +26,7 @@ const initialDrivenProps = {
   cardWrapperX: 0,
   buttonScaleBadAnswer: 1,
   buttonScaleGoodAnswer: 1,
-  mainBgColor: "blue", // Change this
+  mainBgColor: "#fafafa",
 };
 
 const GameCards = () => {

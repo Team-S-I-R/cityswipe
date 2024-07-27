@@ -80,9 +80,9 @@ const GameCard = ({
   const outputActionScaleBadAnswer = [3, 1, 0.3];
   const outputActionScaleRightAnswer = [0.3, 1, 3];
   const outputMainBgColor = [
-    "red",
-    "blue",
-    "green",
+    "#fcbab6",
+    "#fafafa",
+    "#D4E0B2",
   ];
 
   let drivenX = useTransform(x, inputX, outputX);
@@ -180,7 +180,7 @@ const GameCard = ({
               WebkitMaskRepeat: "no-repeat",
             }}
           ></div>
-          <Image
+          {/* <Image
             priority
             className={`absolute object-cover object-center ${
               imgLoadingComplete ? "opacity-100" : "opacity-0"
@@ -198,7 +198,7 @@ const GameCard = ({
               WebkitMaskRepeat: "no-repeat",
             }}
             onLoadingComplete={(img) => setImgLoadingComplete(true)}
-          />
+          /> */}
         </div>
         <p id="affirmation" className="mt-2 text-[20px] leading-tight">
           {affirmation}
@@ -217,12 +217,12 @@ const GameCard = ({
         dragTransition={{ bounceStiffness: 1000, bounceDamping: 50 }}
         onDragStart={() => setIsDragging(true)}
         onDrag={(_, info) => {
-          const offset = info.offset.x;
+          const offset = info.offset.x;          
 
           if (offset < 0 && offset < offsetBoundary * -1) {
-            setIsDragOffBoundary("left");
+          setIsDragOffBoundary("left");
           } else if (offset > 0 && offset > offsetBoundary) {
-            setIsDragOffBoundary("right");
+          setIsDragOffBoundary("right");
           } else {
             setIsDragOffBoundary(null);
           }
