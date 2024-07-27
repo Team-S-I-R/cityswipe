@@ -14,6 +14,8 @@ import destination3 from './assets/imgs/destination-img-3.jpg'
 import destination4 from './assets/imgs/destination-img-4.jpg'
 import { Heart } from "lucide-react";
 import Link from "next/link";
+import { streamConversation, Message } from "./actions";
+import { readStreamableValue } from "ai/rsc";
 
 export default function Hero() {
     const { isStarted, setIsStarted } = useCitySwipe();
@@ -21,6 +23,9 @@ export default function Hero() {
     const [responses, setResponses] = useState<string[]>([]);
     const questionKeys = Object.keys(quizQuestions);
     const [updateHeart, setUpdateHeart] = useState(false);
+    const [destinations, setDestinations] = useState<any[]>([]);
+    const [conversation, setConversation] = useState<Message[]>([]);
+    const [input, setInput] = useState<string>("");
 
     const handleKeyDown = (event: KeyboardEvent) => {
         if (event.key === 'ArrowDown') {
@@ -95,6 +100,33 @@ export default function Hero() {
 
         setUpdateHeart(false)
     }
+
+    const handleFinish = async () => {
+        const prompt = 
+        `Based on the following travel preferences, generate a list of exactly 50 travel destinations formatted as 'City, Country, [Compatibility Percentage]'. Make sure the compatibility percentage is a number between 0 and 100. Each entry should be on a new line. Questions are answered in order of listing as follows: traveler type, mountain or beach, history or adventure, local cuisine or not, hotel or rental, budget importance, solo or companions, planning or spontaneity, outdoor or no, preferred transportation. Responses in order: \n\n${responses.join('\n')}`;
+        
+        const conversationHistory: Message[] = [
+            { role: "user" as const, content: prompt },
+        ];
+
+        const { newMessage } = await streamConversation(conversationHistory);
+        let textContent = "";
+
+        for await (const delta of readStreamableValue(newMessage)) {
+            textContent = textContent + delta;
+        }
+
+        const generatedDestinations = textContent.split('\n').map(destination => {
+            const [location, score] = destination.split('[');
+            return {
+                location: location.trim(),
+                compatibilityScore: score ? parseFloat(score.replace(']', '').trim()) : null,
+            };
+        });
+
+        setDestinations(generatedDestinations);
+        console.log(generatedDestinations)
+    };
   
 
     return (
@@ -169,11 +201,11 @@ export default function Hero() {
                     {isStarted && currentQuestionIndex === questionKeys.length - 1 &&
                     <>
                         <Link className="flex place-self-center" href="/explore">
-                            <Button className="bg-gradient-to-t from-cyan-500 to-green-400 select-none w-max">Find Your Match!</Button>
+                            <Button onClick={() => handleFinish()} className="bg-gradient-to-t from-cyan-500 to-green-400 select-none w-max">Find Your Match!</Button>
                         </Link>
                     </>
                     }
-                    
+
                     {/* debugging stuff */}
                     {/* <div className="w-full mt-4">
                         <h2 className="text-xl">Saved Responses:</h2>
