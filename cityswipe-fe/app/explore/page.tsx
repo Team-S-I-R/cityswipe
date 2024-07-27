@@ -32,7 +32,7 @@ export default function Explore() {
             <ResizableHandle />
 
             <ResizablePanel defaultSize={70}>
-                <div className="flex h-[200px] items-center justify-center p-6">
+                <div className="flex h-full items-center justify-center relative">
                     {isChatting && <Chat/>}
                     {!isChatting && <Match/>}
                 </div>

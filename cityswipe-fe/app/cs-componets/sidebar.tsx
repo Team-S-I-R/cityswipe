@@ -22,19 +22,26 @@ export default function Sidebar() {
 
     return (
         <div className="w-full h-full" >
-            <div className="w-full flex place-content-end h-[15%] bg-gradient-to-t from-cyan-500 to-green-400 p-5">
+            <div className="w-full flex place-content-end h-[10%] bg-gradient-to-t from-cyan-500 to-green-400 p-5">
                 
-                <div className="w-1/2 flex place-content-start place-items-center justify-evenly h-full gap-5">
-                    <div className="w-max h-max rounded-full border-2 border-white cursor-pointer hover:scale-105">
-                        <MessageCircleMore size={50} onClick={() => handleChatting()} className="text-white"/>
+                <div className="w-1/2 flex place-content-start place-items-center justify-end h-full gap-5">
+                    <div className="w-max h-max rounded-full p-2 cursor-pointer hover:scale-125">
+                        <MessageCircleMore size={15} onClick={() => handleChatting()} className="text-white"/>
                     </div>
-                    <div className="w-max h-max rounded-full border-2 border-white cursor-pointer hover:scale-105">
-                        <MessageCircleHeart size={50} onClick={() => handleMatching()} className="text-white"/>
+                    <div className="w-max h-max rounded-full p-2 cursor-pointer hover:scale-125">
+                        <MessageCircleHeart size={15} onClick={() => handleMatching()} className="text-white"/>
                     </div>
                 </div>
 
             </div>
-            <p>Sidebar</p>
+
+
+            <p className="p-5">Matches</p>
+
+            <div>
+                {/* matches will go here */}
+            </div>
+
         </div>
     )
 }
