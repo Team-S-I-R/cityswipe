@@ -11,6 +11,8 @@ import {
     TooltipProvider,
     TooltipTrigger,
   } from "@/components/ui/tooltip"
+  import { useRouter } from "next/router";
+
 
 export default function Sidebar() {
 
@@ -28,14 +30,21 @@ export default function Sidebar() {
         setIsMatching?.(true);
     }
 
+    
+    const reload = () => {
+        setTimeout(() => {
+            window.location.reload();
+        }, 300);
+    }
+
     return (
         <div className="w-full h-full" > 
             <div className="w-full flex place-content-end h-[10%] bg-gradient-to-t from-cyan-500 to-green-400 p-5">
                 <div className="w-1/2 flex place-content-start place-items-center justify-start h-full gap-5">
-                    <Link href="/">
+                    <Link onClick={reload} href="/">
                         <div className="rounded-full flex place-items-center place-content-center p-2 cursor-pointer bg-white w-10 h-10">
                         {/* avatar/profile will go here */}
-                            <House className="text-primary/50" size={15} />
+                            <House  className="text-primary/50" size={15} />
                         </div>
                     </Link>
                 </div>

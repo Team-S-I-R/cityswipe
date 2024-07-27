@@ -27,6 +27,7 @@ import { Input } from "@/components/ui/input";
 import { useFormStatus } from "react-dom";
 import { useFormState } from "react-dom";
 import { error } from "console";
+import { useRouter } from "next/router";
 
   export default function Header() {
     const { isStarted } = useCitySwipe();
@@ -98,13 +99,17 @@ import { error } from "console";
       message: '',
     });
 
+    const reload = () => {
+      window.location.reload();
+    }
+
     return (
         <>    
 
         <div className="flex absolute z-10 top-10 px-8 w-full place-items-center justify-between">
         
           <>
-            <Link href="/">
+            <Link onClick={reload} href="/">
                 <h1 className="select-none">cityswipe</h1>
             </Link>
 

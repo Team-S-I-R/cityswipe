@@ -16,6 +16,9 @@ import { Heart } from "lucide-react";
 import Link from "next/link";
 import { streamConversation, Message } from "./actions";
 import { readStreamableValue } from "ai/rsc";
+import { useRouter } from 'next/router';
+
+
 
 export default function Hero() {
     const { isStarted, setIsStarted } = useCitySwipe();
@@ -26,18 +29,24 @@ export default function Hero() {
     const [destinations, setDestinations] = useState<any[]>([]);
     const [conversation, setConversation] = useState<Message[]>([]);
     const [input, setInput] = useState<string>("");
-
+    
     const handleKeyDown = (event: KeyboardEvent) => {
         if (event.key === 'ArrowDown') {
             setCurrentQuestionIndex((prevIndex) => 
                 Math.min(prevIndex + 1, questionKeys.length - 1)
-            );
-        } else if (event.key === 'ArrowUp') {
-            setCurrentQuestionIndex((prevIndex) => 
-                Math.max(prevIndex - 1, 0)
-            );
-        }
-    };
+        );
+    } else if (event.key === 'ArrowUp') {
+        setCurrentQuestionIndex((prevIndex) => 
+            Math.max(prevIndex - 1, 0)
+    );
+}
+};
+
+    const handleHomeFunction = () => {
+        setCurrentQuestionIndex(0);
+        setIsStarted(false);
+        setResponses([]);
+    }
 
     useEffect(() => {
         window.addEventListener('keydown', handleKeyDown);
@@ -65,11 +74,7 @@ export default function Hero() {
         console.log(responses);
     };
 
-    const handleHomeFunction = () => {
-        setCurrentQuestionIndex(0);
-        setIsStarted(false);
-        setResponses([]);
-    }
+
 
 
     // animations    
