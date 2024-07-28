@@ -1,5 +1,5 @@
 const quizQuestions = {
-  question2: "Which country do you live/work in?",
+  question1: "Which country do you live/work in?",
   question2: "Are you looking for luxury, mid-range, or budget destinations?",
   question3: "What language(s) do you speak?",
   question4: "Would you be comfortable in a country primarily speaking a different language?(Yes/No)",
