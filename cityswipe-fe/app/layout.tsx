@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { CitySwipeProvider } from './citySwipeContext';
 import "./globals.css";
 import GameProvider from "./match/_components/gameContext";
 import { getGame } from "./match/_components/games.api";
@@ -23,9 +24,11 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <DestinationProvider destination={destination}>
-          <GameProvider game={game}>{children}</GameProvider>
-        </DestinationProvider>
+        <CitySwipeProvider>
+          <DestinationProvider destination={destination}>
+            <GameProvider game={game}>{children}</GameProvider>
+          </DestinationProvider>
+        </CitySwipeProvider>
       </body>
     </html>
   );
