@@ -8,6 +8,8 @@ export const games: Game[] = [
         id: 1,
         location: "Paris",
         illustration: "car", //change to image link
+        // description: "",
+        rating: .80,
         // add advantages and disadvantages
       },
       {
@@ -15,12 +17,16 @@ export const games: Game[] = [
         location:
           "Japan",
         illustration: "waste",
+        // description: "",
+        rating: .80,
       },
       {
         id: 3,
         location:
           "New York ",
         illustration: "plane",
+        // description: "",
+        rating: .80,
       },
     ],
   },

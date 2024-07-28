@@ -6,6 +6,8 @@ export type Game = {
  export type Card = {
    id?: number;
    location: string;
+  //  description: string;
+   rating: number|null;
   //  answer: "left" | "right";
   //  revised: string;
    illustration: string;

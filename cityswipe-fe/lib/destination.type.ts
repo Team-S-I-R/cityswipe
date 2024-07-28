@@ -1,7 +1,7 @@
 export interface DestinationItem {
   id: number;
   location: string;
-  rating: number;
+  rating: number | null;
 }
 
 export interface Destination {

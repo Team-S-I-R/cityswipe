@@ -14,7 +14,7 @@ import destination3 from './assets/imgs/destination-img-3.jpg'
 import destination4 from './assets/imgs/destination-img-4.jpg'
 import { Heart } from "lucide-react";
 import Link from "next/link";
-import { streamConversation, Message, submitFormResponse } from "./actions";
+import { generateCityBio, streamConversation, Message, submitFormResponse } from "./actions";
 import { readStreamableValue } from "ai/rsc";
 import { useRouter } from 'next/navigation';
 import {
@@ -117,6 +117,7 @@ export default function Hero() {
 
         setUpdateHeart(false)
     }
+
     const handleGemini = async () => {
         // setResponses(['Canada', 'mid', 'english', 'yes', 'any', 'warm', 'beach', 'walking', 'vegan', 'street', 'any', 'no']);
         console.log(`responses`);
@@ -146,10 +147,12 @@ export default function Hero() {
             return {
                 id: count++,
                 location: location ? location.trim() : '',
-                compatibilityScore: score ? parseFloat(score.replace(']', '').trim()) : null,
+                rating: score ? parseFloat(score.replace(']', '').trim()) : null,
                 illustration: "",
             };
         });
+
+        // const cityBio = await generateCityBio(generatedDestinations.location);
     
         setDestinations(generatedDestinations.filter(destination => destination.location));
         
