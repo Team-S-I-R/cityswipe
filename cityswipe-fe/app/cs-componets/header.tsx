@@ -116,12 +116,11 @@ import { useRouter } from "next/router";
             <Dialog>
               <DialogTrigger><h1 className="select-none font-bold un">Join The Wait list</h1>
               </DialogTrigger>
-              <DialogContent>
+              <DialogContent className="scale-[80%] sm:scale-100">
                 <DialogHeader>
                   <DialogTitle>Join our wait list for early access!</DialogTitle>
                   <DialogDescription>
                     
-                      <h1 className="select-none font-bold">cityswipe</h1>
 
                     <p>When we launch you will receive first access to our full beta!</p>
 
@@ -135,6 +134,9 @@ import { useRouter } from "next/router";
                     </form>
 
                     <p>Thank you for the support!</p>
+
+                    <h1 className="select-none font-bold absolute bottom-0 right-0 m-3">cityswipe</h1>
+
                   </DialogDescription>
                 </DialogHeader>
               </DialogContent>

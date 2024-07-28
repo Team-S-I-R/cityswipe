@@ -203,7 +203,7 @@ export default function Hero() {
 
                     <h2>Like Tinder, but for your vacations!</h2>                 
                    
-                    <h1 className="text-5xl select-none relative">
+                    <h1 className="text-5xl w-full flex gap-2 place-content-center select-none relative flex-wrap">
                         <span id="match" onMouseOver={() => hoverAnimationEnter('match')} onMouseLeave={() => hoverAnimationLeave('match')} className="cursor-pointer">Match </span>
                         <span id="with" onMouseOver={() => hoverAnimationEnter('with')} onMouseLeave={() => hoverAnimationLeave('with')} className="cursor-pointer">with </span>
                         <span id="your" onMouseOver={() => hoverAnimationEnter('your')} onMouseLeave={() => hoverAnimationLeave('your')} className="cursor-pointer">your </span>
@@ -218,14 +218,13 @@ export default function Hero() {
                         {updateHeart == true && <span><Heart className="w-2 h-2 text-red-300 animate-pulse"/></span>}
                     </span>
                         </DialogTrigger>
-                        <DialogContent>
+                        <DialogContent className="scale-[80%] sm:scale-100">
                             <DialogHeader>
                             <DialogTitle>Join our wait list for early access!</DialogTitle>
                             <DialogDescription>
                                 
-                                <h1 className="select-none font-bold">cityswipe</h1>
-
                                 <p>When we launch you will receive first access to our full beta!</p>
+
 
                                 <form className="flex flex-col gap-6 my-5" action={action}>
                                 
@@ -237,6 +236,7 @@ export default function Hero() {
                                 </form>
 
                                 <p>Thank you for the support!</p>
+                                <h1 className="select-none font-bold absolute bottom-0 right-0 m-3">cityswipe</h1>
                             </DialogDescription>
                             </DialogHeader>
                         </DialogContent>
