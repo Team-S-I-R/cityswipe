@@ -6,30 +6,30 @@ export const games: Game[] = [
     cards: [
       {
         id: 1,
-        affirmation: "Paris",
-        answer: "right",
-        revised: //not required
-          "It's true, 40% of car journeys are LESS than 3mi, which could be done on foot or by bike.",
+        location: "Paris",
         illustration: "car", //change to image link
+        // description: "",
+        rating: .80,
+        description: ''
         // add advantages and disadvantages
       },
       {
         id: 2,
-        affirmation:
+        location:
           "Japan",
-        answer: "left",
-        revised:
-          "A bit less: a French produces on average 380kg of waste per year, which remains far too much.",
         illustration: "waste",
+        // description: "",
+        rating: .80,
+        description: '',
       },
       {
         id: 3,
-        affirmation:
+        location:
           "New York ",
-        answer: "right",
-        revised:
-          "It's actually higher: a Paris-New York round trip emits approximately 1.75 tonnes of CO2 per passenger, the equivalent of 3 months of heating for a French person.",
         illustration: "plane",
+        // description: "",
+        rating: .80,
+        description: '',
       },
     ],
   },

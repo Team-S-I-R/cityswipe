@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
-import { useState, Dispatch, SetStateAction } from "react";
+import { useState, Dispatch, SetStateAction, useEffect } from "react";
 import Image from "next/image";
 
 // import { Player } from "@lottiefiles/react-lottie-player";
@@ -22,6 +22,8 @@ import { useGameContext } from "./gameContext";
 
 import { type Card } from "@/lib/games.type";
 import { useDestinationContext } from "./destinationContext";
+import { DestinationItem } from "@/lib/destination.type";
+
 // import SvgIconScoreLeaf from "@/components/svg/score-leaf.svg";
 
 type Props = {
@@ -55,12 +57,14 @@ const GameCard = ({
   
 
   const { cards } = game;
-  const cardsAmount = games[game.id].cards.length;
+  
+  // const cardsAmount = games[game.id]?.cards.length; //fix
+  let cardsAmount = 50; //fix
 
   const [imgLoadingComplete, setImgLoadingComplete] = useState(false);
   // const hasScoreIncreased = previousScore !== score;
 
-  const { affirmation, illustration } = data;
+  const { location, illustration } = data;
   const x = useMotionValue(0);
 
   const isMobile = useMediaQuery("(max-width: 768px)");
@@ -203,8 +207,8 @@ const GameCard = ({
             onLoadingComplete={(img) => setImgLoadingComplete(true)}
           /> */}
         </div>
-        <p id="affirmation" className="mt-2 text-[20px] leading-tight">
-          {affirmation}
+        <p id="location" className="mt-2 text-[20px] leading-tight">
+          {location}
         </p>
       </motion.div>
 

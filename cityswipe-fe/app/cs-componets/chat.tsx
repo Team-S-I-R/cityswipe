@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input"
 import { X } from "lucide-react"
 import { useCitySwipe } from "../citySwipeContext";
 import { useState } from "react";
-import { streamConversation, getConversationHistory, Message } from "../actions";
+import { streamConversation, getConversationHistory, Message, streamFlirtatiousConversation } from "../actions";
 import { useEffect } from "react";
 import { readStreamableValue } from "ai/rsc";
 import { ArrowUp } from "lucide-react";
@@ -29,7 +29,8 @@ export default function Chat() {
 
     
     const startChat = async () => {
-        const { messages, newMessage } = await streamConversation([
+        const split = selectedMatch?.split(' ')
+        const { messages, newMessage } = await streamFlirtatiousConversation(split==undefined ? "": split[0], split==undefined ? "": split[1], [
             ...conversation,
             { role: "user", content: input },
         ]);

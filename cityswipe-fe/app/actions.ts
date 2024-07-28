@@ -14,6 +14,38 @@ export interface Message {
 
 const conversationHistory: Record<string, Message[]> = {};
 
+export async function generateCityBio(city: string) {
+  const stream = createStreamableValue();
+  const model = google("models/gemini-1.5-pro-latest");
+
+  const prompt = `Generate a bio for the city ${city}. Include the following details:
+  - Age: The actual or estimated age of the city.
+  - Languages: Languages spoken in the city, with emojis representing the languages.
+  - Food: Traditional food from the city.
+  - Interests: Common interests or sports played in the city each separated by commas.
+  Make sure to add a human touch, be a little flirtatious, and include emojis. Provide the information in a clear and exact manner structurally without any additional text or markdown. Separate each section with a new line.`;
+
+  (async () => {
+    const { textStream } = await streamText({
+      model: model,
+      messages: [{ role: "user", content: prompt }],
+      temperature: 0.8,
+      topP: 0.9,
+      topK: 50,
+    });
+
+    for await (const text of textStream) {
+      stream.update(text);
+    }
+
+    stream.done();
+  })().then(() => {});
+
+  return {
+    description: stream.value,
+  };
+}
+
 export async function streamConversation(history: Message[]) {
   const stream = createStreamableValue();
   const model = google("models/gemini-1.5-pro-latest");

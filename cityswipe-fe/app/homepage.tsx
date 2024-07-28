@@ -14,9 +14,9 @@ import destination3 from './assets/imgs/destination-img-3.jpg'
 import destination4 from './assets/imgs/destination-img-4.jpg'
 import { Heart } from "lucide-react";
 import Link from "next/link";
-import { streamConversation, Message, submitFormResponse } from "./actions";
+import { generateCityBio, streamConversation, Message, submitFormResponse } from "./actions";
 import { readStreamableValue } from "ai/rsc";
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import {
     Dialog,
     DialogContent,
@@ -26,6 +26,9 @@ import {
     DialogTrigger,
   } from "@/components/ui/dialog"
 import { useFormState, useFormStatus } from "react-dom";
+import { useGameContext } from "./match/_components/gameContext";
+import { redirect } from "next/navigation";
+import { Description } from "@radix-ui/react-dialog";
 
 
 export default function Hero() {
@@ -37,6 +40,8 @@ export default function Hero() {
     const [destinations, setDestinations] = useState<any[]>([]);
     const [conversation, setConversation] = useState<Message[]>([]);
     const [input, setInput] = useState<string>("");
+    const [game, setGame] = useGameContext();
+    const router = useRouter();
     
     const handleKeyDown = (event: KeyboardEvent) => {
         if (event.key === 'ArrowDown') {
@@ -113,7 +118,11 @@ export default function Hero() {
 
         setUpdateHeart(false)
     }
+
     const handleGemini = async () => {
+        // setResponses(['Canada', 'mid', 'english', 'yes', 'any', 'warm', 'beach', 'walking', 'vegan', 'street', 'any', 'no']);
+        console.log(`responses`);
+        console.log(responses);
         const prompt = 
         `Based on the following travel preferences, generate a list of exactly 50 travel destinations formatted as 'City, Country, Compatibility Percentage. Exact Example format:
         Tokyo, Japan 85%
@@ -131,18 +140,35 @@ export default function Hero() {
         for await (const delta of readStreamableValue(newMessage)) {
             textContent += delta;
         }
+        let count = 1;
     
         const generatedDestinations = textContent.split('\n').map(destination => {
             const cleanedDestination = destination.replace(/^.*?(?=[A-Za-z]),/, '');
             const [location, score] = cleanedDestination.split('[');
             return {
+                id: count++,
                 location: location ? location.trim() : '',
-                compatibilityScore: score ? parseFloat(score.replace(']', '').trim()) : null,
+                rating: score ? parseFloat(score.replace(']', '').trim()) : null,
+                illustration: "",
+                description: "" // Add this line
             };
         });
+
+        // const cityBio = await generateCityBio(generatedDestinations.location);
     
         setDestinations(generatedDestinations.filter(destination => destination.location));
+        
+
+        await setGame({
+            id: 1,
+            cards: generatedDestinations.reverse(),
+        });
+        
+        console.log(`game: `);
+        console.log(game?.cards);
         console.log(generatedDestinations);
+
+        router.push('/match');
     };
 
     const SubmitButton = () => {
@@ -254,6 +280,12 @@ export default function Hero() {
                     {/* QUIZ BUTTON */}
                 
                     <Button className="select-none bg-gradient-to-t from-cyan-500 to-green-400 flex place-items-center gap-2" onClick={() => setIsStarted(true)}>
+                    {/* <Button className="select-none bg-gradient-to-t from-cyan-500 to-green-400 flex place-items-center gap-2" onClick={() => {
+                        // setResponses(['Canada', 'mid', 'english', 'yes', 'any', 'warm', 'beach', 'walking', 'vegan', 'street', 'any', 'no']);
+                        // setResponses(['Canada', 'mid', 'english', 'yes', 'any', 'warm', 'beach', 'walking', 'vegan', 'street', 'any', 'no']);
+                        // setInterval(handleGemini, 5000);
+                        // handleGemini();
+                        }}> */}
                         Get Started 
                         {updateHeart == false && <span><Heart className="w-2 h-2  "/></span>}
                         {updateHeart == true && <span><Heart className="w-2 h-2 text-red-300 animate-pulse"/></span>}
@@ -288,9 +320,9 @@ export default function Hero() {
 
                     {isStarted && currentQuestionIndex === questionKeys.length - 1 &&
                     <>
-                        <Link className="flex place-self-center" href="/explore">
-                            <Button onClick={() => handleGemini()} className="bg-gradient-to-t from-cyan-500 to-green-400 select-none w-max">Find Your Match!</Button>
-                        </Link>
+                        <div className="flex place-self-center">
+                            <Button onClick={() => {handleGemini()}} className="bg-gradient-to-t from-cyan-500 to-green-400 select-none w-max">Find Your Match!</Button>
+                        </div>
 
 
                     </>
