@@ -113,33 +113,6 @@ export default function Hero() {
 
         setUpdateHeart(false)
     }
-
-    const handleGemini = async () => {
-        const prompt = 
-        `Based on the following travel preferences, generate a list of exactly 50 travel destinations formatted as 'City, Country, [Compatibility Percentage]'. Make sure the compatibility percentage is a number between 0 and 100. Each entry should be on a new line. Questions are answered in order of listing as follows: traveler type, mountain or beach, history or adventure, local cuisine or not, hotel or rental, budget importance, solo or companions, planning or spontaneity, outdoor or no, preferred transportation. Responses in order: \n\n${responses.join('\n')}`;
-        
-        const conversationHistory: Message[] = [
-            { role: "user" as const, content: prompt },
-        ];
-
-        const { newMessage } = await streamConversation(conversationHistory);
-        let textContent = "";
-
-        for await (const delta of readStreamableValue(newMessage)) {
-            textContent = textContent + delta;
-        }
-
-        const generatedDestinations = textContent.split('\n').map(destination => {
-            const [location, score] = destination.split('[');
-            return {
-                location: location.trim(),
-                compatibilityScore: score ? parseFloat(score.replace(']', '').trim()) : null,
-            };
-        });
-
-        setDestinations(generatedDestinations);
-        console.log(generatedDestinations)
-    };
     const handleGemini = async () => {
         const prompt = 
         `Based on the following travel preferences, generate a list of exactly 50 travel destinations formatted as 'City, Country, Compatibility Percentage. Exact Example format:
