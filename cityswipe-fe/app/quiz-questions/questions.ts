@@ -1,14 +1,14 @@
 const quizQuestions = {
-  question1: "What type of traveler are you?",
-  question2: "Do you prefer mountains or beaches?",
-  question3: "Are you more interested in history or adventure?",
-  question4: "Do you enjoy trying local cuisines?",
-  question5: "Would you rather stay in a hotel or a vacation rental?",
-  question6: "How important is budget when planning a trip?",
-  question7: "Do you prefer solo travel or traveling with companions?",
-  question8: "Are you a planner or do you prefer spontaneity?",
-  question9: "Do you enjoy outdoor activities?",
-  question10: "What is your preferred mode of transportation while traveling?",
+  question1: "Are you looking for luxury, mid-range, or budget destinations?",
+  question2: "What language(s) do you speak?",
+  question3: "Would you be comfortable in a country primarily speaking a different language?(Yes/No)",
+  question4: "What season do you want to go in?",
+  question5: "Which do you most prefer: warm, cold, or temperate?",
+  question6: "Beach, mountain, or city?",
+  question7: "List 5 of your favorite activities.",
+  question8: "Do you have any dietary restrictions or preferences?(e.x. Vegan or no alcohol)",
+  question9: "Are you interested in local cuisine, fine dining, or street food?",
+  question10: "Are you looking for destinations with specific activites, health facilities, or services?",
 };
 
 export default quizQuestions;
