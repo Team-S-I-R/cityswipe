@@ -19,4 +19,4 @@
 ## Itwela Ibomu
 - [Portfolio](https://www.itwela.dev/)
 - [Linkedin](linkedin.com/in/itwela/)
-- [Email](https://github.com/itwela)
+- [Github](https://github.com/itwela)
