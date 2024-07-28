@@ -148,7 +148,6 @@ export default function Hero() {
             return {
                 id: count++,
                 location: location ? location.trim() : '',
-                description: "",
                 rating: score ? parseFloat(score.replace(']', '').trim()) : null,
                 illustration: "",
             };
