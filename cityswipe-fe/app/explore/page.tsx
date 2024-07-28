@@ -10,6 +10,7 @@ import Sidebar from "../cs-componets/sidebar"
 import Header from "../cs-componets/header"
 import { useCitySwipe } from "../citySwipeContext"
 import Match from "../cs-componets/match"
+import { destination } from "../match/_components/destination.api"
 
 export default function Explore() {
     
@@ -33,8 +34,7 @@ export default function Explore() {
 
             <ResizablePanel defaultSize={70}>
                 <div className="flex h-full items-center justify-center relative">
-                    {isChatting && <Chat/>}
-                    {!isChatting && <Match/>}
+                    <Chat/>
                 </div>
             </ResizablePanel>
 

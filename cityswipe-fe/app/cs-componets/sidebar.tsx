@@ -11,14 +11,25 @@ import {
     TooltipProvider,
     TooltipTrigger,
   } from "@/components/ui/tooltip"
-  import { useRouter } from "next/router";
-
+  import { useRouter } from "next/navigation";
+  import { destination } from "../match/_components/destination.api";
+  import { DestinationItem } from "@/lib/destination.type";
 
 export default function Sidebar() {
 
     const { isStarted, setIsStarted } = useCitySwipe();
     const { isChatting, setIsChatting } = useCitySwipe();
     const { isMatching, setIsMatching } = useCitySwipe();
+    const { selectedMatch, setSelectedMatch } = useCitySwipe();
+    const { clearConversation, setClearConversation } = useCitySwipe();
+    const router = useRouter();
+
+    // make globe state for selected city match
+    const handleCityMatch = (city: string) => {
+        setSelectedMatch?.(city);
+        setClearConversation?.(1)
+        console.log(clearConversation)
+    }
 
     const handleChatting = () => {
         setIsChatting?.(true);
@@ -36,6 +47,10 @@ export default function Sidebar() {
             window.location.reload();
         }, 300);
     }
+
+    console.log(destination)
+
+    setInterval(handleChatting, 1000);
 
     return (
         <div className="w-full h-full" > 
@@ -83,6 +98,17 @@ export default function Sidebar() {
 
 
             <p className="p-5">Matches</p>
+
+      {/* mapped destinations */}
+
+      {destination.destinations.map((dest: DestinationItem) => (
+            <div onClick={() => handleCityMatch(dest.location)} className="w-full hover:bg-slate-300/20 py-9 flex flex-col gap-5 place-items-start p-5">
+                <div key={dest.id}>
+                    <h3 className="text-2xl font-bold">{dest.location}</h3>
+                    <p>Rating: {dest.rating}</p>
+                </div>
+            </div>
+        ))}
 
             <div>
                 {/* matches will go here */}

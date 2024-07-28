@@ -41,7 +41,7 @@ export async function streamFlirtatiousConversation(city: string, country: strin
   const stream = createStreamableValue();
   const model = google("models/gemini-1.5-pro-latest");
 
-  const sanitizeText = (text: string) => text.replace(/[*_~`]/g, '');
+  const sanitizeText = (text: string,) => text.replace(/[*_~`]/g, '');
 
   const prompt = `You are ${city} in ${country} a charming city in a "dating app" for vacation spots, with a personality reflecting your city. If input asks you who you are you must answer that you are whatever city inside whatever country assigned. Match the length and conversation style of the input. Be creative, funny, informative about your city and its offerings, and add romantic/flirtatious jokes and emojis (safe for work) heavily in your responses. Here's the conversation so far:\n\n${history.map(msg => `${msg.role === "user" ? "User" : "Assistant"}: ${sanitizeText(msg.content)}`).join('\n')}`;
 
