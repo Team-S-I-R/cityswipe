@@ -14,6 +14,7 @@ import {
   import { useRouter } from "next/navigation";
   import { destination } from "../match/_components/destination.api";
   import { DestinationItem } from "@/lib/destination.type";
+import { useEffect } from "react";
 
 export default function Sidebar() {
 
@@ -22,6 +23,7 @@ export default function Sidebar() {
     const { isMatching, setIsMatching } = useCitySwipe();
     const { selectedMatch, setSelectedMatch } = useCitySwipe();
     const { clearConversation, setClearConversation } = useCitySwipe();
+    const { firstMatch, setFirstMatch } = useCitySwipe();
     const router = useRouter();
 
     // make globe state for selected city match
@@ -50,7 +52,6 @@ export default function Sidebar() {
 
     console.log(destination)
 
-    setInterval(handleChatting, 1000);
 
     return (
         <div className="w-full h-full" > 
@@ -101,14 +102,19 @@ export default function Sidebar() {
 
       {/* mapped destinations */}
 
-      {destination.destinations.map((dest: DestinationItem) => (
-            <div onClick={() => handleCityMatch(dest.location)} className="w-full hover:bg-slate-300/20 py-9 flex flex-col gap-5 place-items-start p-5">
-                <div key={dest.id}>
-                    <h3 className="text-2xl font-bold">{dest.location}</h3>
-                    <p>Rating: {dest.rating}</p>
-                </div>
-            </div>
-        ))}
+      {destination.destinations.map((dest: DestinationItem) => {
+
+          return (
+              <>
+              <div onClick={() => handleCityMatch(dest.location)} className="w-full hover:bg-slate-300/20 py-9 flex flex-col gap-5 place-items-start p-5">
+                  <div key={dest.id}>
+                      <h3 className="text-2xl font-bold">{dest.location}</h3>
+                      <p>Rating: {dest.rating}</p>
+                  </div>
+              </div>
+              </>
+          );
+      })}
 
             <div>
                 {/* matches will go here */}

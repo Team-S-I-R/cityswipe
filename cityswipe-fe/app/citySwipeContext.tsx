@@ -7,6 +7,7 @@ interface CitySwipeContextType {
   isStarted: boolean;
   isChatting?: boolean;
   isMatching?: boolean;
+  firstMatch?: string;
   selectedMatch?: string;
   message: Message[];
   clearConversation?: number
@@ -16,6 +17,7 @@ interface CitySwipeContextType {
   setIsChatting?: (value: boolean) => void;
   setIsMatching?: (value: boolean) => void;
   setSelectedMatch?: (value: string) => void;
+  setFirstMatch?: (value: string) => void;
 }
 
 const CitySwipeContext = createContext<CitySwipeContextType | null>(null);
@@ -25,6 +27,7 @@ export const CitySwipeProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [isChatting, setIsChatting] = useState(false);
   const [isMatching, setIsMatching] = useState(false);
   const [selectedMatch, setSelectedMatch] = useState<string>('');
+  const [firstMatch, setFirstMatch] = useState<string>('');
   const [clearConversation, setClearConversation] = useState(0);
   const [message, setMessage] = useState<Array<any>>([]);
 
@@ -35,8 +38,10 @@ export const CitySwipeProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       isChatting,
       isMatching,
       selectedMatch,
+      firstMatch,
       clearConversation,
       setMessage,
+      setFirstMatch,
       setIsStarted,
       setIsChatting,
       setIsMatching,

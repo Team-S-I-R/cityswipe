@@ -9,19 +9,24 @@ import { streamConversation, getConversationHistory, Message } from "../actions"
 import { useEffect } from "react";
 import { readStreamableValue } from "ai/rsc";
 import { ArrowUp } from "lucide-react";
+import { destination } from "../match/_components/destination.api";
+import { DestinationItem } from "@/lib/destination.type";
 export default function Chat() {
 
     const [conversation, setConversation] = useState<Message[]>([]);
     const [input, setInput] = useState<string>("");
     const { selectedMatch, setSelectedMatch } = useCitySwipe();
     const { clearConversation, setClearConversation } = useCitySwipe();
-    
+    const { firstMatch, setFirstMatch } = useCitySwipe();
+
     useEffect(() => {
         if (clearConversation && clearConversation > 0) {
             setConversation([]);
             setClearConversation?.(0);
         }
     });
+
+
     
     const startChat = async () => {
         const { messages, newMessage } = await streamConversation([
@@ -44,12 +49,18 @@ export default function Chat() {
         setInput(""); // Clear the input field after submitting
     }
     
+    console.log(selectedMatch)
+    
     // import saved global state city
 
     return (
         <div className="relative flex flex-col place-content-center place-items-center w-full h-full">
             <div className="absolute border-b border-primary/20 top-0 w-full h-[10%] flex justify-between place-items-center px-5">
-                <h2 className="select-none">You have matched with <strong>{selectedMatch}</strong>!</h2>
+                {selectedMatch !== '' ? (
+                    <h2 className="select-none">You have matched with <strong>{destination.destinations[0]?.location}</strong>!</h2>
+                ) : (
+                    <h2 className="select-none">You have matched with <strong>{selectedMatch}</strong>!</h2>
+                )}
                 <Button  className="bg-transparent hover:bg-transparent text-primary/70"><X size={20} /></Button>
             </div>
 

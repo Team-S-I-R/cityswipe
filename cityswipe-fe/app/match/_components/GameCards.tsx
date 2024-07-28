@@ -19,6 +19,7 @@ import { useGameContext } from "./gameContext";
 import { CardSwipeDirection, IsDragOffBoundary } from "@/lib/games.type";
 import { useDestinationContext } from "./destinationContext";
 import handleResponse from "./handleResponse";
+import { DestinationItem } from "@/lib/destination.type";
 
 export const easeInExpo = [0.7, 0, 0.84, 0];
 export const easeOutExpo = [0.16, 1, 0.3, 1];
