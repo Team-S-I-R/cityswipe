@@ -213,7 +213,7 @@ export default function Hero() {
                         <span id="your" onMouseOver={() => hoverAnimationEnter('your')} onMouseLeave={() => hoverAnimationLeave('your')} className="cursor-pointer">your </span>
                         <span id="destination" onMouseOver={() => hoverAnimationEnter('destination')} onMouseLeave={() => hoverAnimationLeave('destination')} className="cursor-pointer">destination</span> 
                     </h1>
-
+{/* 
                     <Dialog>
                         <DialogTrigger>          
                     <span className=" text-white py-2 px-4 rounded-md select-none bg-gradient-to-t from-cyan-500 to-green-400 flex place-items-center gap-2">
@@ -245,14 +245,14 @@ export default function Hero() {
                             </DialogHeader>
                         </DialogContent>
                     </Dialog>
-          
+           */}
 
-                    {/* this buton leads to the quiz, the diolog and button above is for getting signups! */}
-                    {/* <Button className="select-none bg-gradient-to-t from-cyan-500 to-green-400 flex place-items-center gap-2" onClick={() => setIsStarted(true)}>
+                
+                    <Button className="select-none bg-gradient-to-t from-cyan-500 to-green-400 flex place-items-center gap-2" onClick={() => setIsStarted(true)}>
                         Get Started 
                         {updateHeart == false && <span><Heart className="w-2 h-2  "/></span>}
                         {updateHeart == true && <span><Heart className="w-2 h-2 text-red-300 animate-pulse"/></span>}
-                    </Button> */}
+                    </Button>
                 </>
             ) : (
                 <>
