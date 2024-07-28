@@ -5,9 +5,9 @@ export type Game = {
  
  export type Card = {
    id?: number;
-   affirmation: string;
-   answer: "left" | "right";
-   revised: string;
+   location: string;
+  //  answer: "left" | "right";
+  //  revised: string;
    illustration: string;
  };
  

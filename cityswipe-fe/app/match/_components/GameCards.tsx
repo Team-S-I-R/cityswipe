@@ -19,6 +19,7 @@ import { useGameContext } from "./gameContext";
 import { CardSwipeDirection, IsDragOffBoundary } from "@/lib/games.type";
 import { useDestinationContext } from "./destinationContext";
 import handleResponse from "./handleResponse";
+import { Button } from "@/components/ui/button";
 
 export const easeInExpo = [0.7, 0, 0.84, 0];
 export const easeOutExpo = [0.16, 1, 0.3, 1];
@@ -156,6 +157,9 @@ const GameCards = () => {
             })}
           </AnimatePresence>
         </div>
+        <Link id="destinations_button" className="flex items-center justify-center w-full  gap-4 relative z-10"  href="/explore">
+          <Button className="bg-gradient-to-t from-cyan-500 to-green-400 select-none w-max">See Save Destinations</Button>
+        </Link>
         {/* <div
           id="actions"
           className="flex items-center justify-center w-full  gap-4 relative z-10"

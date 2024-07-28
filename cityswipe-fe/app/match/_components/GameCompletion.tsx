@@ -14,7 +14,8 @@ import { useGameContext } from "./gameContext";
 const GameCompletion = () => {
   const [game, setGame] = useGameContext();
 
-  const cardsAmount = games[game.id].cards.length;
+  // const cardsAmount = games[game.id]?.cards.length;
+  const cardsAmount = 50;
 
   const initialGame = getInitialGame(0);
 

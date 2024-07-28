@@ -17,7 +17,11 @@ const Match = () => {
 
   useEffect(() => {
     setDestination(initialDestination);
-    setGame(initialGame);
+    // setGame(game);
+    // setGame({
+    //     id: 1,
+    //     cards: destination.reverse(),
+    // });
   }, []);
 
    const isCardStockEmpty = game.cards.length === 0;
