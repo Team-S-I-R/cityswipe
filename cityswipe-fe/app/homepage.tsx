@@ -195,9 +195,13 @@ export default function Hero() {
         message: '',
       });
   
+      const sanitizeText =(text: string) => {
+            const sanText = text.replace(/[*_~`]/g, '');
+            return sanText; 
+      }
 
+      
 
-  
 
     return (
         <>
@@ -268,6 +272,7 @@ export default function Hero() {
                     </Dialog>
            */}
 
+                    {/* QUIZ BUTTON */}
                 
                     <Button className="select-none bg-gradient-to-t from-cyan-500 to-green-400 flex place-items-center gap-2" onClick={() => setIsStarted(true)}>
                     {/* <Button className="select-none bg-gradient-to-t from-cyan-500 to-green-400 flex place-items-center gap-2" onClick={() => {
@@ -280,6 +285,8 @@ export default function Hero() {
                         {updateHeart == false && <span><Heart className="w-2 h-2  "/></span>}
                         {updateHeart == true && <span><Heart className="w-2 h-2 text-red-300 animate-pulse"/></span>}
                     </Button>
+
+
                 </>
             ) : (
                 <>
@@ -296,7 +303,7 @@ export default function Hero() {
                             type="text" 
                             className="w-1/4" 
                             autoComplete="off"
-                            value={responses[currentQuestionIndex] || ''}
+                            value={sanitizeText(responses[currentQuestionIndex] || '')}
                             onChange={handleInputChange}
                         />
                         {responses[currentQuestionIndex]?.length > 2 && 
