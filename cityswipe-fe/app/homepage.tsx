@@ -119,7 +119,7 @@ export default function Hero() {
         Tokyo, Japan 85%
         Paris, France 78%
         ... 48 more of the same format
-        Make sure the compatibility percentage is a number between 0 and 100. Each entry should be on a new line, there should be no additional text before or after the output(including bullet points or numbering), follow exact example. Questions are answered in order of listing as follows: traveler type, mountain or beach, history or adventure, local cuisine or not, hotel or rental, budget importance, solo or companions, planning or spontaneity, outdoor or no, preferred transportation. Responses in order:\n\n${responses.join('\n')}`;
+        Make sure the compatibility percentage is a number between 0 and 100. Each entry should be on a new line, there should be no additional text before or after the output(including bullet points or numbering), follow exact example. Coerlate all the data when making decisions. Questions are answered by the user in order of listing as follows: home country, luxury mid range or budget places, languages spoken, comfortable in country with unkwown language or no, preffered season, preffered temperature, beach mountain or city, 5 favorite activites, dietary restrictions and preferences, local food fine dining or street, preffered activites and facilities, comfortable in country with recreational drug use or not. Responses in order:\n\n${responses.join('\n')}`;
     
         const conversationHistory: Message[] = [
             { role: "user" as const, content: prompt },
