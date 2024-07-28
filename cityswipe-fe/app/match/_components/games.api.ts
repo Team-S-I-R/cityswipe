@@ -5,6 +5,7 @@ export const games: Game[] = [
     id: 1,
     cards: [
       {
+        id: 1,
         affirmation: "Paris",
         answer: "right",
         revised: //not required
@@ -13,6 +14,7 @@ export const games: Game[] = [
         // add advantages and disadvantages
       },
       {
+        id: 2,
         affirmation:
           "Japan",
         answer: "left",
@@ -21,6 +23,7 @@ export const games: Game[] = [
         illustration: "waste",
       },
       {
+        id: 3,
         affirmation:
           "New York ",
         answer: "right",

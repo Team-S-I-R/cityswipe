@@ -3,6 +3,8 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import GameProvider from "./match/_components/gameContext";
 import { getGame } from "./match/_components/games.api";
+import DestinationProvider from "./match/_components/destinationContext";
+import { getDestination } from "./match/_components/destination.api";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,10 +19,13 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const game = await getGame(0);
+  const destination = await getDestination();
   return (
     <html lang="en">
       <body className={inter.className}>
-        <GameProvider game={game}>{children}</GameProvider>
+        <DestinationProvider destination={destination}>
+          <GameProvider game={game}>{children}</GameProvider>
+        </DestinationProvider>
       </body>
     </html>
   );

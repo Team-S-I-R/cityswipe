@@ -21,6 +21,7 @@ import { useGameContext } from "./gameContext";
 // import handleScore from "../_utils/handleScore";
 
 import { type Card } from "@/lib/games.type";
+import { useDestinationContext } from "./destinationContext";
 // import SvgIconScoreLeaf from "@/components/svg/score-leaf.svg";
 
 type Props = {
@@ -50,6 +51,8 @@ const GameCard = ({
   // const { score, previousScore } = user;
 
   const [game, setGame] = useGameContext();
+  const [destination, setDestination] = useDestinationContext();
+  
 
   const { cards } = game;
   const cardsAmount = games[game.id].cards.length;
@@ -123,7 +126,7 @@ const GameCard = ({
           x: drivenX,
         }}
       >
-        {/* <div
+        <div
           id="metrics"
           className="flex w-full justify-between items-baseline"
         >
@@ -133,7 +136,7 @@ const GameCard = ({
               /<span className="ml-[2px]">{cardsAmount}</span>
             </span>
           </div>
-          <div id="score" className="flex relative">
+          {/* <div id="score" className="flex relative">
             <div className="text-[50px] text-grey-500 leading-none relative">
               <motion.div
                 id="scoreValue"
@@ -162,13 +165,13 @@ const GameCard = ({
                 </div>
               )}
             </div>
-          </div>
-        </div> */}
+          </div> */}
+        </div>
         <div
           id="illustration"
           className="w-full mx-auto max-w-[250px] aspect-square rounded-full relative"
         >
-          <div
+          {/* <div
             id="imgPlaceholder"
             className="bg-gameSwipe-neutral absolute object-cover w-full h-full"
             style={{
@@ -179,7 +182,7 @@ const GameCard = ({
               maskRepeat: "no-repeat",
               WebkitMaskRepeat: "no-repeat",
             }}
-          ></div>
+          ></div> */}
           {/* <Image
             priority
             className={`absolute object-cover object-center ${

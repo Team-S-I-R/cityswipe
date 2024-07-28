@@ -5,8 +5,8 @@ import Link from "next/link";
 
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
-import GameCard from "./GameCard";
-// import GameActionBtn from "./GameActionBtn";
+import {GameCard} from "./";
+import {GameActionBtn} from "./";
 
 // import { BgPattern } from "@/components/ui";
 import { useGameContext } from "./gameContext";
@@ -17,6 +17,8 @@ import { useGameContext } from "./gameContext";
 // import { GameActionBtn, GameCard } from "./";
 
 import { CardSwipeDirection, IsDragOffBoundary } from "@/lib/games.type";
+import { useDestinationContext } from "./destinationContext";
+import handleResponse from "./handleResponse";
 
 export const easeInExpo = [0.7, 0, 0.84, 0];
 export const easeOutExpo = [0.16, 1, 0.3, 1];
@@ -32,9 +34,11 @@ const initialDrivenProps = {
 const GameCards = () => {
   // const [user, setUser] = useUserContext();
   const [game, setGame] = useGameContext();
+  const [destination, setDestination] = useDestinationContext();
 
   // const { score } = user;
   const { cards } = game;
+  const { destinations } = destination;
 
   const [direction, setDirection] = useState<CardSwipeDirection | "">("");
   const [isDragOffBoundary, setIsDragOffBoundary] =
@@ -52,6 +56,15 @@ const GameCards = () => {
         ...game,
         cards: game.cards.slice(0, -1),
       });
+      setDestination({
+        destinations: handleResponse({direction, cards, destinations}),
+      });
+      // setLocations ({
+      //   locations: 
+      // });
+      // let destination = [
+      //   {id:1, location:"Paris"},
+      // ];
       // setUser({
       //   score: handleScore({ direction, score, cards }),
       //   previousScore: score,

@@ -1,16 +1,26 @@
 "use client";
 import { motion, AnimatePresence, cubicBezier } from "framer-motion";
-import GameCards from "./_components/GameCards";
+import { GameCompletion, GameCards } from "./_components";
 
 
-// import { user as initialUser } from "@/api/user.api";
-// import { getInitialGame } from "@/api/games.api";
-// import { useUserContext } from "@/store/userContext";
-// import { useGameContext } from "@/store/gameContext";
-// import { useEffect } from "react";
+import { destination as initialDestination } from "./_components/destination.api";
+import { getInitialGame } from "./_components/games.api";
+import { useGameContext } from "./_components/gameContext";
+import { useEffect } from "react";
+import { useDestinationContext } from "./_components/destinationContext";
 
 const Match = () => {
-   const isCardStockEmpty = false;
+  const [game, setGame] = useGameContext();
+  const [_, setDestination] = useDestinationContext();
+
+  const initialGame = getInitialGame(0);
+
+  useEffect(() => {
+    setDestination(initialDestination);
+    setGame(initialGame);
+  }, []);
+
+   const isCardStockEmpty = game.cards.length === 0;
    const gameScreenVariants = {
       initial: {
         opacity: 0,
@@ -48,7 +58,7 @@ const Match = () => {
             animate="animate"
             exit="exit"
           >
-            {/* <GameCompletion /> */}
+            <GameCompletion />
           </motion.div>
         )}
       </AnimatePresence>
