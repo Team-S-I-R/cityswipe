@@ -28,6 +28,7 @@ import {
 import { useFormState, useFormStatus } from "react-dom";
 import { useGameContext } from "./match/_components/gameContext";
 import { redirect } from "next/navigation";
+import { Description } from "@radix-ui/react-dialog";
 
 
 export default function Hero() {
@@ -147,6 +148,7 @@ export default function Hero() {
             return {
                 id: count++,
                 location: location ? location.trim() : '',
+                description: "",
                 rating: score ? parseFloat(score.replace(']', '').trim()) : null,
                 illustration: "",
             };
