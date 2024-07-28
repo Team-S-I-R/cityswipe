@@ -10,6 +10,7 @@ export const games: Game[] = [
         illustration: "car", //change to image link
         // description: "",
         rating: .80,
+        description: ''
         // add advantages and disadvantages
       },
       {
@@ -19,6 +20,7 @@ export const games: Game[] = [
         illustration: "waste",
         // description: "",
         rating: .80,
+        description: '',
       },
       {
         id: 3,
@@ -27,6 +29,7 @@ export const games: Game[] = [
         illustration: "plane",
         // description: "",
         rating: .80,
+        description: '',
       },
     ],
   },

@@ -5,5 +5,5 @@ export interface DestinationItem {
 }
 
 export interface Destination {
-  destinations: DestinationItem[];
+  destinations: any[];
 }

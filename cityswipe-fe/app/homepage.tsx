@@ -150,6 +150,7 @@ export default function Hero() {
                 location: location ? location.trim() : '',
                 rating: score ? parseFloat(score.replace(']', '').trim()) : null,
                 illustration: "",
+                description: "" // Add this line
             };
         });
 

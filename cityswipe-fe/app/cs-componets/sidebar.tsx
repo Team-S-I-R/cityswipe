@@ -101,14 +101,19 @@ export default function Sidebar() {
 
       {/* mapped destinations */}
 
-      {destination.destinations.map((dest: DestinationItem) => (
+      {destination.destinations.map((dest: DestinationItem) => {
+
+        return (
+            <>
             <div onClick={() => handleCityMatch(dest.location)} className="w-full hover:bg-slate-300/20 py-9 flex flex-col gap-5 place-items-start p-5">
                 <div key={dest.id}>
                     <h3 className="text-2xl font-bold">{dest.location}</h3>
                     <p>Rating: {dest.rating}</p>
                 </div>
             </div>
-        ))}
+            </>
+        );
+        })}
 
             <div>
                 {/* matches will go here */}

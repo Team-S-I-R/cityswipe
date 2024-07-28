@@ -22,6 +22,8 @@ import { useGameContext } from "./gameContext";
 
 import { type Card } from "@/lib/games.type";
 import { useDestinationContext } from "./destinationContext";
+import { DestinationItem } from "@/lib/destination.type";
+
 // import SvgIconScoreLeaf from "@/components/svg/score-leaf.svg";
 
 type Props = {
