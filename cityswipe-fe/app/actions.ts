@@ -16,7 +16,7 @@ const conversationHistory: Record<string, Message[]> = {};
 
 export async function generateCityBio(city: string) {
   const stream = createStreamableValue();
-  const model = google("models/gemini-1.5-pro-latest");
+  const model = google("models/gemini-1.5-flash-latest");
 
   const prompt = `Generate a bio for the city ${city}. Include the following details:
   - Age: The actual or estimated age of the city.
