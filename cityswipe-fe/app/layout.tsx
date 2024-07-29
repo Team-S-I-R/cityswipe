@@ -6,6 +6,8 @@ import GameProvider from "./match/_components/gameContext";
 import { getGame } from "./match/_components/games.api";
 import DestinationProvider from "./match/_components/destinationContext";
 import { getDestination } from "./match/_components/destination.api";
+import { Analytics } from '@vercel/analytics/react';
+
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,6 +26,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
+      <Analytics />
         <CitySwipeProvider>
           <DestinationProvider destination={destination}>
             <GameProvider game={game}>{children}</GameProvider>

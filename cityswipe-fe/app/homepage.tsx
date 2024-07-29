@@ -323,8 +323,6 @@ export default function Hero() {
                         <div className="flex place-self-center">
                             <Button onClick={() => {handleGemini()}} className="bg-gradient-to-t from-cyan-500 to-green-400 select-none w-max">Find Your Match!</Button>
                         </div>
-
-
                     </>
                     }
 

@@ -26,6 +26,13 @@ export default function Sidebar() {
     const { firstMatch, setFirstMatch } = useCitySwipe();
     const router = useRouter();
 
+    const extractMatchInfo = (matchString: string) => {
+        const [city, country, rating] = matchString.split(' ');
+        const cityAndCountry = `${city}, ${country}`;
+        const ratingPercentage = parseInt(rating.replace('%', ''));
+        return { city, country, rating: ratingPercentage, cityAndCountry };
+    };
+
     // make globe state for selected city match
     const handleCityMatch = (city: string) => {
         setSelectedMatch?.(city);
@@ -103,13 +110,13 @@ export default function Sidebar() {
       {/* mapped destinations */}
 
       {destination.destinations.map((dest: DestinationItem) => {
-
+          const { city, country, rating, cityAndCountry } = extractMatchInfo(dest.location);
           return (
               <>
-              <div onClick={() => handleCityMatch(dest.location)} className="w-full hover:bg-slate-300/20 py-9 flex flex-col gap-5 place-items-start p-5">
+              <div onClick={() => handleCityMatch(cityAndCountry)} className="w-full hover:bg-slate-300/20 py-9 flex flex-col gap-5 place-items-start p-5">
                   <div key={dest.id}>
-                      <h3 className="text-2xl font-bold">{dest.location}</h3>
-                      <p>Rating: {dest.rating}</p>
+                      <h3 className="text-2xl font-bold">{cityAndCountry}</h3>
+                      <p>Rating: {rating}%</p>
                   </div>
               </div>
               </>
