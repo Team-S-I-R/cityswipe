@@ -42,6 +42,7 @@ export default function Hero() {
     const [input, setInput] = useState<string>("");
     const [game, setGame] = useGameContext();
     const router = useRouter();
+    const [loadingMatches, setLoadingMatches] = useState(false);
     
     const handleKeyDown = (event: KeyboardEvent) => {
         if (event.key === 'ArrowDown') {
@@ -121,6 +122,7 @@ export default function Hero() {
 
     const handleGemini = async () => {
         // setResponses(['Canada', 'mid', 'english', 'yes', 'any', 'warm', 'beach', 'walking', 'vegan', 'street', 'any', 'no']);
+        setLoadingMatches(true);
         console.log(`responses`);
         console.log(responses);
         const prompt = 
@@ -158,16 +160,15 @@ export default function Hero() {
     
         setDestinations(generatedDestinations.filter(destination => destination.location));
         
-
         await setGame({
             id: 1,
             cards: generatedDestinations.reverse(),
         });
         
-        console.log(`game: `);
-        console.log(game?.cards);
-        console.log(generatedDestinations);
-
+        // console.log(`game: `);
+        // console.log(game?.cards);
+        // console.log(generatedDestinations);
+        setLoadingMatches(false);
         router.push('/match');
     };
 
@@ -243,6 +244,8 @@ export default function Hero() {
                         <span id="your" onMouseOver={() => hoverAnimationEnter('your')} onMouseLeave={() => hoverAnimationLeave('your')} className="cursor-pointer">your </span>
                         <span id="destination" onMouseOver={() => hoverAnimationEnter('destination')} onMouseLeave={() => hoverAnimationLeave('destination')} className="cursor-pointer">destination</span> 
                     </h1>
+
+                    
 {/* 
                     <Dialog>
                         <DialogTrigger>          
@@ -280,16 +283,39 @@ export default function Hero() {
                     {/* QUIZ BUTTON */}
                 
                     <Button className="select-none bg-gradient-to-t from-cyan-500 to-green-400 flex place-items-center gap-2" onClick={() => setIsStarted(true)}>
-                    {/* <Button className="select-none bg-gradient-to-t from-cyan-500 to-green-400 flex place-items-center gap-2" onClick={() => {
-                        // setResponses(['Canada', 'mid', 'english', 'yes', 'any', 'warm', 'beach', 'walking', 'vegan', 'street', 'any', 'no']);
-                        // setResponses(['Canada', 'mid', 'english', 'yes', 'any', 'warm', 'beach', 'walking', 'vegan', 'street', 'any', 'no']);
-                        // setInterval(handleGemini, 5000);
-                        // handleGemini();
-                        }}> */}
-                        Get Started 
+                        Demo
                         {updateHeart == false && <span><Heart className="w-2 h-2  "/></span>}
                         {updateHeart == true && <span><Heart className="w-2 h-2 text-red-300 animate-pulse"/></span>}
                     </Button>
+
+                    <Dialog>
+                        <DialogTrigger><h1 className="select-none font-bold underline">Join Waitlist</h1>
+                        </DialogTrigger>
+                        <DialogContent className="scale-[80%] sm:scale-100">
+                            <DialogHeader>
+                            <DialogTitle>Join our wait list for early access!</DialogTitle>
+                            <DialogDescription>
+                                
+
+                                <p>When we launch you will receive first access to our full beta!</p>
+
+                                <form className="flex flex-col gap-6 my-5" action={action}>
+                                
+                                <p className="flex place-self-center text-green-500">{formState.message}</p>
+
+                                <Input type="text" name="Name" placeholder="Name" className="w-full" />
+                                <Input type="email" name="Email" placeholder="Email address" className="w-full" />
+                                <SubmitButton />
+                                </form>
+
+                                <p>Thank you for the support!</p>
+
+                                <h1 className="select-none font-bold absolute bottom-0 right-0 m-3">cityswipe</h1>
+
+                            </DialogDescription>
+                            </DialogHeader>
+                        </DialogContent>
+                    </Dialog>
 
 
                 </>
@@ -322,6 +348,14 @@ export default function Hero() {
                     <>
                         <div className="flex place-self-center">
                             <Button onClick={() => {handleGemini()}} className="bg-gradient-to-t from-cyan-500 to-green-400 select-none w-max">Find Your Match!</Button>
+                        </div>
+                    </>
+                    }
+
+                    {isStarted && currentQuestionIndex === questionKeys.length - 1 && loadingMatches &&
+                    <>
+                        <div className="absolute w-full h-max flex place-items-center place-content-center">
+                            <span className="text-3xl animate-pulse">Your matches are loading...</span>
                         </div>
                     </>
                     }
