@@ -162,7 +162,7 @@ const GameCard = ({
       {/* inside of card  */}
         <div
           id="illustration"
-          className="w-full h-full relative overflow-hidden"
+          className="w-full h-full rounded-xl relative overflow-hidden"
         >
           {/* <div
             id="imgPlaceholder"
@@ -180,10 +180,10 @@ const GameCard = ({
             {/* 1 out of whatever card youre on */}
           <div id="metrics" className="relative z-[2] flex w-full justify-between items-baseline">
             {/* number of cards out of 50 */}
-            <div className="text-white p-4 bg-gradient-to-b from-black via-black to-transparent w-full flex place-content-start">
-              <span className="text-[40px] leading-none">{id}</span>
+            <div className="text-white p-4 bg-gradient-to-b from-black via-black to-transparent rounded-xl w-full flex place-content-start">
+              <span className="text-[30px] sm:text-[40px] leading-none">{id}</span>
               <span className="text-[20px] ml-1">
-                /<span className="ml-[2px]">{cardsAmount}</span>
+                /<span className="ml-[2px] text-[15px]">{cardsAmount}</span>
               </span>
             </div>
           {/* <div id="score" className="flex relative">
@@ -220,7 +220,7 @@ const GameCard = ({
 
           {/* the name of match */}
           <div id="locationWrapper"  className="mt-2 h-[30%] bg-gradient-to-t from-black via-black to-transparent w-full rounded absolute bottom-0 p-4 z-[2] text-white flex flex-col gap-2 place-items-start leading-tight">
-            <p id="location" className="text-[40px]">
+            <p id="location" className="text-[20px] sm:text-[30px]">
               {location}
             </p>
             <p>Bio</p>
