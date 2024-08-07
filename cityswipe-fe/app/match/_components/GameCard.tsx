@@ -114,6 +114,7 @@ const GameCard = ({
   // Pexels API
   const client = createClient('8U6Se7vVT3H9tx1KPZAQTkDUSW0IKi3ldgBTVyh3W9NFF7roIpZxktzY');
   const query = location as string;
+  console.log(query);
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
   const findPhotos = () => {
     try {
@@ -228,9 +229,7 @@ const GameCard = ({
           {/* theimage on the card */}
           <Image
             priority
-            className={`absolute rounded w-full h-full object-cover object-center ${
-              imgLoadingComplete ? "opacity-100" : "opacity-0"
-            } duration-500 ease-out`}
+            className='absolute rounded w-full h-full object-cover object-center'
             src={photoUrl || placeholderImg}
             fill
             sizes={`(max-width: 768px) 100vw, 250px`}
@@ -243,7 +242,6 @@ const GameCard = ({
             //   maskRepeat: "no-repeat",
             //   WebkitMaskRepeat: "no-repeat",
             // }}
-            onLoad={(img) => setImgLoadingComplete(true)}
           />
 
         </div>

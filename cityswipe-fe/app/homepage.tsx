@@ -34,7 +34,8 @@ import { Description } from "@radix-ui/react-dialog";
 export default function Hero() {
     const { isStarted, setIsStarted } = useCitySwipe();
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-    const [responses, setResponses] = useState<string[]>([]);
+    // const [responses, setResponses] = useState<string[]>([]);
+    const [responses, setResponses] = useState<string[]>(["United States", "Luxury", "English", "Yes", "Summer", "Warm", "Beach", "Sprinting, Hiking, Camping, Swimming, Drawing", "Vegan", "Street food", "No", "No"]);
     const questionKeys = Object.keys(quizQuestions);
     const [updateHeart, setUpdateHeart] = useState(false);
     const [destinations, setDestinations] = useState<any[]>([]);
@@ -88,9 +89,6 @@ export default function Hero() {
         console.log(responses);
     };
 
-
-
-
     // animations    
 
 
@@ -130,7 +128,8 @@ export default function Hero() {
         Tokyo, Japan 85%
         Paris, France 78%
         ... 48 more of the same format
-        Make sure the compatibility percentage is a number between 0 and 100. Each entry should be on a new line, there should be no additional text before or after the output(including bullet points or numbering), follow exact example. Coerlate all the data when making decisions. Questions are answered by the user in order of listing as follows: home country, luxury mid range or budget places, languages spoken, comfortable in country with unkwown language or no, preffered season, preffered temperature, beach mountain or city, 5 favorite activites, dietary restrictions and preferences, local food fine dining or street, preffered activites and facilities, comfortable in country with recreational drug use or not. Responses in order:\n\n${responses.join('\n')}`;
+        Make sure the compatibility percentage is a number between 0 and 100. Each entry should be on a new line, there should be no additional text before or after the output(including bullet points or numbering), follow exact example. Corelate all the data when making decisions. Questions are answered by the user in order of listing as follows: home country, luxury mid range or budget places, languages spoken, comfortable in country with unknown language or no, proffered season, proffered temperature, beach mountain or city, 5 favorite activities, dietary restrictions and preferences, local food fine dining or street, proffered activities and facilities, comfortable in country with recreational drug use or not. 
+        Here are the user preference answers in order:\n\n${responses.join('\n')}`;
     
         const conversationHistory: Message[] = [
             { role: "user" as const, content: prompt },
@@ -143,23 +142,36 @@ export default function Hero() {
             textContent += delta;
         }
         let count = 1;
-    
-        const generatedDestinations = textContent.split('\n').map(destination => {
-            const cleanedDestination = destination.replace(/^.*?(?=[A-Za-z]),/, '');
-            const [location, score] = cleanedDestination.split('[');
-            return {
-                id: count++,
-                location: location ? location.trim() : '',
-                rating: score ? parseFloat(score.replace(']', '').trim()) : null,
-                illustration: "",
-                description: "" // Add this line
-            };
-        });
+
+        console.log(`Getting textContent....... `);
+        console.log(textContent);
+        
+        const generatedDestinations = textContent.trim().split('\n').map(destination => {
+            const match = destination.match(/^(.*), ([A-Za-z\s]+) (\d+)%$/);
+        
+            if (match) {
+                const [ , city, country, score ] = match;
+                return {
+                    id: count++,
+                    location: `${city}, ${country}`.trim(),
+                    rating: parseFloat(score),
+                    illustration: "",
+                    description: ""
+                };
+            } else {
+                // If the format doesn't match, you can handle it accordingly
+                return null;
+            }
+        }).filter(destination => destination !== null);
+        
+        console.log(`Getting destinations....... `);
+        console.log(generatedDestinations);
 
         // const cityBio = await generateCityBio(generatedDestinations.location);
     
         setDestinations(generatedDestinations.filter(destination => destination.location));
         
+
         await setGame({
             id: 1,
             cards: generatedDestinations.reverse(),

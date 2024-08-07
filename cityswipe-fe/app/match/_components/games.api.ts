@@ -6,7 +6,7 @@ export const games: Game[] = [
     cards: [
       {
         id: 1,
-        location: "Paris",
+        location: "Rome",
         illustration: "car", //change to image link
         // description: "",
         rating: .80,

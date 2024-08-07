@@ -30,7 +30,7 @@ const GameCompletion = () => {
   //   setUser(initialUser);
   //   setGame(initialGame);
   // };
-  console.log(destination.destinations[0].toString());
+  // console.log(destination.destinations[0].toString());
 
   return (
     <div
