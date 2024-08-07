@@ -35,6 +35,8 @@ export default function Hero() {
     const { isStarted, setIsStarted } = useCitySwipe();
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [responses, setResponses] = useState<string[]>([]);
+    // Responses for debuggin!
+    // const [responses, setResponses] = useState<string[]>(["United States", "Luxury", "English", "Yes", "Summer", "Warm", "Beach", "Sprinting, Hiking, Camping, Swimming, Drawing", "Vegan", "Street food", "No", "No"]);
     const questionKeys = Object.keys(quizQuestions);
     const [updateHeart, setUpdateHeart] = useState(false);
     const [destinations, setDestinations] = useState<any[]>([]);
@@ -42,6 +44,7 @@ export default function Hero() {
     const [input, setInput] = useState<string>("");
     const [game, setGame] = useGameContext();
     const router = useRouter();
+    const [loadingMatches, setLoadingMatches] = useState(false);
     
     const handleKeyDown = (event: KeyboardEvent) => {
         if (event.key === 'ArrowDown') {
@@ -87,9 +90,6 @@ export default function Hero() {
         console.log(responses);
     };
 
-
-
-
     // animations    
 
 
@@ -121,6 +121,7 @@ export default function Hero() {
 
     const handleGemini = async () => {
         // setResponses(['Canada', 'mid', 'english', 'yes', 'any', 'warm', 'beach', 'walking', 'vegan', 'street', 'any', 'no']);
+        setLoadingMatches(true);
         console.log(`responses`);
         console.log(responses);
         const prompt = 
@@ -128,7 +129,8 @@ export default function Hero() {
         Tokyo, Japan 85%
         Paris, France 78%
         ... 48 more of the same format
-        Make sure the compatibility percentage is a number between 0 and 100. Each entry should be on a new line, there should be no additional text before or after the output(including bullet points or numbering), follow exact example. Coerlate all the data when making decisions. Questions are answered by the user in order of listing as follows: home country, luxury mid range or budget places, languages spoken, comfortable in country with unkwown language or no, preffered season, preffered temperature, beach mountain or city, 5 favorite activites, dietary restrictions and preferences, local food fine dining or street, preffered activites and facilities, comfortable in country with recreational drug use or not. Responses in order:\n\n${responses.join('\n')}`;
+        Make sure the compatibility percentage is a number between 0 and 100. Each entry should be on a new line, there should be no additional text before or after the output(including bullet points or numbering), follow exact example. Corelate all the data when making decisions. Questions are answered by the user in order of listing as follows: home country, luxury mid range or budget places, languages spoken, comfortable in country with unknown language or no, proffered season, proffered temperature, beach mountain or city, 5 favorite activities, dietary restrictions and preferences, local food fine dining or street, proffered activities and facilities, comfortable in country with recreational drug use or not. 
+        Here are the user preference answers in order:\n\n${responses.join('\n')}`;
     
         const conversationHistory: Message[] = [
             { role: "user" as const, content: prompt },
@@ -141,18 +143,30 @@ export default function Hero() {
             textContent += delta;
         }
         let count = 1;
-    
-        const generatedDestinations = textContent.split('\n').map(destination => {
-            const cleanedDestination = destination.replace(/^.*?(?=[A-Za-z]),/, '');
-            const [location, score] = cleanedDestination.split('[');
-            return {
-                id: count++,
-                location: location ? location.trim() : '',
-                rating: score ? parseFloat(score.replace(']', '').trim()) : null,
-                illustration: "",
-                description: "" // Add this line
-            };
-        });
+
+        console.log(`Getting textContent....... `);
+        console.log(textContent);
+        
+        const generatedDestinations = textContent.trim().split('\n').map(destination => {
+            const match = destination.match(/^(.*), ([A-Za-z\s]+) (\d+)%$/);
+        
+            if (match) {
+                const [ , city, country, score ] = match;
+                return {
+                    id: count++,
+                    location: `${city}, ${country}`.trim(),
+                    rating: parseFloat(score),
+                    illustration: "",
+                    description: ""
+                };
+            } else {
+                // If the format doesn't match, you can handle it accordingly
+                return null;
+            }
+        }).filter(destination => destination !== null);
+        
+        console.log(`Getting destinations....... `);
+        console.log(generatedDestinations);
 
         // const cityBio = await generateCityBio(generatedDestinations.location);
     
@@ -164,10 +178,10 @@ export default function Hero() {
             cards: generatedDestinations.reverse(),
         });
         
-        console.log(`game: `);
-        console.log(game?.cards);
-        console.log(generatedDestinations);
-
+        // console.log(`game: `);
+        // console.log(game?.cards);
+        // console.log(generatedDestinations);
+        setLoadingMatches(false);
         router.push('/match');
     };
 
@@ -243,6 +257,8 @@ export default function Hero() {
                         <span id="your" onMouseOver={() => hoverAnimationEnter('your')} onMouseLeave={() => hoverAnimationLeave('your')} className="cursor-pointer">your </span>
                         <span id="destination" onMouseOver={() => hoverAnimationEnter('destination')} onMouseLeave={() => hoverAnimationLeave('destination')} className="cursor-pointer">destination</span> 
                     </h1>
+
+                    
 {/* 
                     <Dialog>
                         <DialogTrigger>          
@@ -280,16 +296,39 @@ export default function Hero() {
                     {/* QUIZ BUTTON */}
                 
                     <Button className="select-none bg-gradient-to-t from-cyan-500 to-green-400 flex place-items-center gap-2" onClick={() => setIsStarted(true)}>
-                    {/* <Button className="select-none bg-gradient-to-t from-cyan-500 to-green-400 flex place-items-center gap-2" onClick={() => {
-                        // setResponses(['Canada', 'mid', 'english', 'yes', 'any', 'warm', 'beach', 'walking', 'vegan', 'street', 'any', 'no']);
-                        // setResponses(['Canada', 'mid', 'english', 'yes', 'any', 'warm', 'beach', 'walking', 'vegan', 'street', 'any', 'no']);
-                        // setInterval(handleGemini, 5000);
-                        // handleGemini();
-                        }}> */}
-                        Get Started 
+                        Demo
                         {updateHeart == false && <span><Heart className="w-2 h-2  "/></span>}
                         {updateHeart == true && <span><Heart className="w-2 h-2 text-red-300 animate-pulse"/></span>}
                     </Button>
+
+                    <Dialog>
+                        <DialogTrigger><h1 className="select-none font-bold underline">Join Waitlist</h1>
+                        </DialogTrigger>
+                        <DialogContent className="scale-[80%] sm:scale-100">
+                            <DialogHeader>
+                            <DialogTitle>Join our wait list for early access!</DialogTitle>
+                            <DialogDescription>
+                                
+
+                                <p>When we launch you will receive first access to our full beta!</p>
+
+                                <form className="flex flex-col gap-6 my-5" action={action}>
+                                
+                                <p className="flex place-self-center text-green-500">{formState.message}</p>
+
+                                <Input type="text" name="Name" placeholder="Name" className="w-full" />
+                                <Input type="email" name="Email" placeholder="Email address" className="w-full" />
+                                <SubmitButton />
+                                </form>
+
+                                <p>Thank you for the support!</p>
+
+                                <h1 className="select-none font-bold absolute bottom-0 right-0 m-3">cityswipe</h1>
+
+                            </DialogDescription>
+                            </DialogHeader>
+                        </DialogContent>
+                    </Dialog>
 
 
                 </>
@@ -322,6 +361,14 @@ export default function Hero() {
                     <>
                         <div className="flex place-self-center">
                             <Button onClick={() => {handleGemini()}} className="bg-gradient-to-t from-cyan-500 to-green-400 select-none w-max">Find Your Match!</Button>
+                        </div>
+                    </>
+                    }
+
+                    {isStarted && currentQuestionIndex === questionKeys.length - 1 && loadingMatches &&
+                    <>
+                        <div className="absolute w-full h-max flex place-items-center place-content-center">
+                            <span className="text-3xl animate-pulse">Your matches are loading...</span>
                         </div>
                     </>
                     }

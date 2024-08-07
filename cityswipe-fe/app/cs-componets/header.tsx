@@ -1,33 +1,18 @@
 "use client"
 
-import * as React from "react"
-import { useCitySwipe } from '../citySwipeContext';
-import Link from "next/link"
-import { cn } from "@/lib/utils"
 import {
-    NavigationMenu,
-    NavigationMenuContent,
-    NavigationMenuIndicator,
-    NavigationMenuItem,
-    NavigationMenuLink,
-    NavigationMenuList,
-    NavigationMenuTrigger,
-    NavigationMenuViewport,
-  } from "@/components/ui/navigation-menu"
-  import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-  } from "@/components/ui/dialog"
-import { submitFormResponse } from "../actions";
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { useFormStatus } from "react-dom";
-import { useFormState } from "react-dom";
-import { error } from "console";
-import { useRouter } from "next/router";
+import Link from "next/link";
+import { useFormState, useFormStatus } from "react-dom";
+import { submitFormResponse } from "../actions";
+import { useCitySwipe } from '../citySwipeContext';
 
   export default function Header() {
     const { isStarted } = useCitySwipe();
@@ -114,7 +99,7 @@ import { useRouter } from "next/router";
             </Link>
 
             <Dialog>
-              <DialogTrigger><h1 className="select-none font-bold un">Join The Wait list</h1>
+              <DialogTrigger><h1 className="select-none font-bold underline">Join Waitlist</h1>
               </DialogTrigger>
               <DialogContent className="scale-[80%] sm:scale-100">
                 <DialogHeader>
