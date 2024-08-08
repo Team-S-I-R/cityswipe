@@ -124,7 +124,7 @@ const GameCards = () => {
       >
         <div
           id="cardsWrapper"
-          className="w-full aspect-[100/150] max-w-xs mb-[20px] relative z-10"
+          className="w-full aspect-[100/150] max-w-xs mb-[5px] relative z-10"
         >
           <AnimatePresence>
             {cards.map((card, i) => {
@@ -157,12 +157,9 @@ const GameCards = () => {
             })}
           </AnimatePresence>
         </div>
-        <Link id="destinations_button" className="flex items-center justify-center w-full  gap-4 relative z-10"  href="/explore">
-          <Button className="bg-gradient-to-t from-cyan-500 to-green-400 select-none w-max">See Save Destinations</Button>
-        </Link>
-        {/* <div
+        <div
           id="actions"
-          className="flex items-center justify-center w-full  gap-4 relative z-10"
+          className="flex items-center justify-center w-full gap-4 relative z-10"
         >
           <GameActionBtn
             direction="left"
@@ -178,7 +175,11 @@ const GameCards = () => {
             isDragOffBoundary={isDragOffBoundary}
             onClick={() => handleActionBtnOnClick("right")}
           />
-        </div> */}
+        </div>
+
+        <Link id="destinations_button" className="flex items-center justify-center w-full gap-4 relative z-10 pt-10"  href="/explore">
+          <Button className="bg-gradient-to-t from-cyan-500 to-green-400 select-none w-max">See Save Destinations</Button>
+        </Link>
       </div>
     </motion.div>
   );

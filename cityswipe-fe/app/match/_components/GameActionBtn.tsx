@@ -1,20 +1,21 @@
+"use client";
 import { motion } from "framer-motion";
-import SvgIconAnswerBad from "@/components/svg/icon-answer-bad.svg";
-import SvgIconAnswerGood from "@/components/svg/icon-answer-good.svg";
+import BadIcon from "./BadIcon";
+import GoodIcon from "./GoodIcon";
 
 import { IsDragOffBoundary } from "@/lib/games.type";
 
 const actionPropsMatrix = {
   left: {
     ariaLabel: "Swipe Left",
-    bgColorClass: "bg-answerBad-500",
-    icon: SvgIconAnswerBad,
+    bgColorClass: "bg-[#F75064]",
+    icon: BadIcon,
     iconBaseColorClass: "text-[#701823]",
   },
   right: {
     ariaLabel: "Swipe Right",
-    bgColorClass: "bg-answerGood-500",
-    icon: SvgIconAnswerGood,
+    bgColorClass: "bg-[#82D350]",
+    icon: GoodIcon,
     iconBaseColorClass: "text-[#2C5B10]",
   },
 };
