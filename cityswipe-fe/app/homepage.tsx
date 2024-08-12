@@ -156,8 +156,8 @@ export default function Hero() {
                     rating: parseFloat(score),
                     illustration: "",
                     description: "",
-                    pros: "",
-                    cons: "",
+                    // pros: "",
+                    // cons: "",
                 };
             } else {
                 // If the format doesn't match, you can handle it accordingly
