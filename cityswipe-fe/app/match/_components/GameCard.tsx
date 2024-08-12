@@ -27,6 +27,8 @@ import { useDestinationContext } from "./destinationContext";
 import { DestinationItem } from "@/lib/destination.type";
 import { createClient } from 'pexels';
 import { Button } from "@/components/ui/button";
+import { useCitySwipe } from "@/app/citySwipeContext";
+import handleResponse from "./handleResponse";
 
 
 // import SvgIconScoreLeaf from "@/components/svg/score-leaf.svg";
@@ -114,24 +116,30 @@ const GameCard = ({
   // Pexels API
   const client = createClient('8U6Se7vVT3H9tx1KPZAQTkDUSW0IKi3ldgBTVyh3W9NFF7roIpZxktzY');
   const query = location as string;
-  console.log(query);
-  const [photoUrl, setPhotoUrl] = useState<string | null>(null);
-  const findPhotos = () => {
-    try {
-      client.photos.search({ query, per_page: 1 }).then(response => {
-        if ('photos' in response) {
-          const matchphoto = response.photos[0].src.landscape;
-          setPhotoUrl(matchphoto);
-          console.log(matchphoto);
-          return matchphoto;
-        } 
-      });
-    } catch (error) {
-      console.error('Error in fetching photos:', error);
-    }
-  }
-
+  const [ pexalsPhoto, setPexalsPhoto ] = useState<string>(''); 
+  const {photoUrl, setPhotoUrl} = useCitySwipe();
+  
+  //  each time the location updates, fetch a new photo from Pexels
   useEffect(() => {
+    const findPhotos = () => {
+      try {
+        client.photos.search({ query, per_page: 1 }).then(response => {
+          if ('photos' in response) {
+            const matchphoto = response.photos[0].src.landscape;
+            setPexalsPhoto?.(matchphoto);
+  
+            // Add the new photo to the existing photoUrl array as a set to avoid duplicates
+            setPhotoUrl?.((prevUrls) => Array.from(new Set([...prevUrls, matchphoto])));
+
+   
+            return matchphoto;
+          } 
+        });
+      } catch (error) {
+        console.error('Error in fetching photos:', error);
+      }
+    }
+  
     findPhotos();
   }, [location]);
   // --- Pexels End ---
@@ -164,19 +172,6 @@ const GameCard = ({
           id="illustration"
           className="w-full h-full rounded-xl relative overflow-hidden"
         >
-          {/* <div
-            id="imgPlaceholder"
-            className="bg-gameSwipe-neutral absolute object-cover w-full h-full"
-            style={{
-              maskImage: `url('/images/gamecard-image-mask.png')`,
-              WebkitMaskImage: `url(/images/gamecard-image-mask.png)`,
-              maskSize: "contain",
-              WebkitMaskSize: "contain",
-              maskRepeat: "no-repeat",
-              WebkitMaskRepeat: "no-repeat",
-            }}>
-            </div>  */}
-
             {/* 1 out of whatever card youre on */}
           <div id="metrics" className="relative z-[2] flex w-full justify-between items-baseline">
             {/* number of cards out of 50 */}
@@ -186,36 +181,6 @@ const GameCard = ({
                 /<span className="ml-[2px] text-[15px]">{cardsAmount}</span>
               </span>
             </div>
-          {/* <div id="score" className="flex relative">
-            <div className="text-[50px] text-grey-500 leading-none relative">
-              <motion.div
-                id="scoreValue"
-                className="relative"
-                variants={scoreVariants}
-                initial="initial"
-                animate={isLast && hasScoreIncreased ? "pop" : "initial"}
-                transition={{
-                  stiffness: 2000,
-                  damping: 5,
-                }}
-              >
-                {score}
-              </motion.div>
-              {isLast && hasScoreIncreased && (
-                <div
-                  id="sparks"
-                  className="absolute w-[100px] h-[100px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 scale-[2]"
-                >
-                  <Player
-                    autoplay
-                    src={lottieJson}
-                    style={{ width: "100%", height: "100%" }}
-                    speed={2}
-                  ></Player>
-                </div>
-              )}
-            </div>
-          </div> */}
           </div>
 
           {/* the name of match */}
@@ -230,24 +195,18 @@ const GameCard = ({
           <Image
             priority
             className='absolute rounded w-full h-full object-cover object-center'
-            src={photoUrl || placeholderImg}
+            src={pexalsPhoto || placeholderImg}
             fill
             sizes={`(max-width: 768px) 100vw, 250px`}
             alt="car"
-            // style={{
-            //   maskImage: `url('/images/gamecard-image-mask.png')`,
-            //   WebkitMaskImage: `url(/images/gamecard-image-mask.png)`,
-            //   maskSize: "contain",
-            //   WebkitMaskSize: "contain",
-            //   maskRepeat: "no-repeat",
-            //   WebkitMaskRepeat: "no-repeat",
-            // }}
           />
 
         </div>
       {/* images end */}
         
       </motion.div>
+
+      
 
       <motion.div
         id={`cardDriverWrapper-${id}`}

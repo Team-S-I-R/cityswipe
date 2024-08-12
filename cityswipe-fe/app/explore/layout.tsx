@@ -3,10 +3,8 @@ import Explore from './page';
 export default async function ExploreServer() {
     
     return (
-        <>
-            <main className="w-screen h-screen">
+            <main className="w-screen h-screen overflow=y-hidden">
                <Explore/>
             </main>
-        </>
     )
 }

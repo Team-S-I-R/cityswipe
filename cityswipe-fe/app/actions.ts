@@ -48,7 +48,8 @@ export async function generateCityBio(city: string) {
 
 export async function streamConversation(history: Message[]) {
   const stream = createStreamableValue();
-  const model = google("models/gemini-1.5-pro-latest");
+  // const model = google("models/gemini-1.5-pro-latest");
+  const model = google("models/gemini-1.5-flash");
 
   (async () => {
     const { textStream } = await streamText({
@@ -71,7 +72,8 @@ export async function streamConversation(history: Message[]) {
 
 export async function streamFlirtatiousConversation(city: string, country: string, history: Message[]) {
   const stream = createStreamableValue();
-  const model = google("models/gemini-1.5-pro-latest");
+  // const model = google("models/gemini-1.5-pro-latest");
+  const model = google("models/gemini-1.5-flash");
 
   const sanitizeText = (text: string,) => text.replace(/[*_~`]/g, '');
 

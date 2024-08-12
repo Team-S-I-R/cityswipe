@@ -20,7 +20,7 @@ export default function Explore() {
     // have to upload the header here for now
     return (
         <>
-            <main className="w-full h-full">
+            <main className="w-full h-full overflow-hidden">
             <ResizablePanelGroup
             direction="horizontal"
             className=" rounded-lg border"

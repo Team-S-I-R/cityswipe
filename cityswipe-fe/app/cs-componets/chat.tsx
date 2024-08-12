@@ -26,6 +26,10 @@ export default function Chat() {
         }
     });
 
+    useEffect(() => {
+        setSelectedMatch?.(destination.destinations[0]?.location as string)
+        console.log(selectedMatch)
+    }, [selectedMatch])
 
     
     const startChat = async () => {
@@ -66,9 +70,9 @@ export default function Chat() {
             </div>
 
 
+
             {conversation.length < 1 && (
                 <>
-                  
                     <p>You have matched with <strong>{selectedMatch}</strong>!</p>
                     <p>Ask {selectedMatch} anything you would like to know</p>
                 </>

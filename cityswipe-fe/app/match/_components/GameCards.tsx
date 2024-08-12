@@ -51,27 +51,20 @@ const GameCards = () => {
     setDirection(btn);
   };
 
+  // This controlls the cards that people are swiping on. If left or right it removes that card from available cards left to swipe on in the first place
   useEffect(() => {
     if (["left", "right"].includes(direction)) {
+      
       setGame({
         ...game,
-        cards: game.cards.slice(0, -1),
+        cards: game.cards.slice(0, -1), // Slice the cards array to remove the last element
       });
+
       setDestination({
         destinations: handleResponse({direction, cards, destinations}),
       });
-      // setLocations ({
-      //   locations: 
-      // });
-      // let destination = [
-      //   {id:1, location:"Paris"},
-      // ];
-      // setUser({
-      //   score: handleScore({ direction, score, cards }),
-      //   previousScore: score,
-      // });
-    }
-
+      }
+      
     setDirection("");
   }, [direction]);
 
@@ -110,13 +103,13 @@ const GameCards = () => {
       style={{ backgroundColor: cardDrivenProps.mainBgColor }}
     >
       {/* <BgPattern /> */}
-      <Link
+      {/* <Link
         href="/"
         id="close"
         className="absolute top-[20px] right-[20px] w-[30px] h-auto"
       >
         <X className="text-gray-500 w-full h-full" />
-      </Link>
+      </Link> */}
 
       <div
         id="gameUIWrapper"

@@ -9,6 +9,7 @@ import { useGameContext } from "./_components/gameContext";
 import { useEffect } from "react";
 import { useDestinationContext } from "./_components/destinationContext";
 import { Button } from "@/components/ui/button";
+import Header from "../cs-componets/header";
 
 const Match = () => {
   // "game" is the list of games 
@@ -46,6 +47,7 @@ const Match = () => {
 
   return (
     <>
+    <Header />
       <main className="min-h-screen h-full mx-auto bg-gameSwipe-neutral">
         <AnimatePresence mode="wait">
           {!isCardStockEmpty ? (

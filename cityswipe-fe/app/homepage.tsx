@@ -87,7 +87,6 @@ export default function Hero() {
         const newResponses = [...responses];
         newResponses[currentQuestionIndex] = event.target.value;
         setResponses(newResponses);
-        console.log(responses);
     };
 
     // animations    
@@ -122,8 +121,7 @@ export default function Hero() {
     const handleGemini = async () => {
         // setResponses(['Canada', 'mid', 'english', 'yes', 'any', 'warm', 'beach', 'walking', 'vegan', 'street', 'any', 'no']);
         setLoadingMatches(true);
-        console.log(`responses`);
-        console.log(responses);
+        // console.log(`responses`);
         const prompt = 
         `Based on the following travel preferences, generate a list of exactly 50 travel destinations formatted as 'City, Country, Compatibility Percentage. Exact Example format:
         Tokyo, Japan 85%
@@ -144,8 +142,8 @@ export default function Hero() {
         }
         let count = 1;
 
-        console.log(`Getting textContent....... `);
-        console.log(textContent);
+        // console.log(`Getting textContent....... `);
+        // console.log(textContent);
         
         const generatedDestinations = textContent.trim().split('\n').map(destination => {
             const match = destination.match(/^(.*), ([A-Za-z\s]+) (\d+)%$/);
@@ -157,22 +155,27 @@ export default function Hero() {
                     location: `${city}, ${country}`.trim(),
                     rating: parseFloat(score),
                     illustration: "",
-                    description: ""
+                    description: "",
+                    pros: "",
+                    cons: "",
                 };
             } else {
                 // If the format doesn't match, you can handle it accordingly
                 return null;
             }
+            
         }).filter(destination => destination !== null);
         
-        console.log(`Getting destinations....... `);
-        console.log(generatedDestinations);
+        // console.log(`Getting destinations....... `);
+        // console.log(generatedDestinations);
 
         // const cityBio = await generateCityBio(generatedDestinations.location);
     
+        // this is setting the keys [id, location, rating, illustration, description] for each game card
         setDestinations(generatedDestinations.filter(destination => destination.location));
         
 
+        // this sets the game cards initially
         await setGame({
             id: 1,
             cards: generatedDestinations.reverse(),
@@ -336,7 +339,7 @@ export default function Hero() {
                 <>
                     <div id="question-container" className="w-full h-64 gap-6 flex flex-col place-items-center place-content-center">
                         
-                        <p className="text-xl">{quizQuestions[questionKeys[currentQuestionIndex] as keyof typeof quizQuestions]}</p>
+                        <p className="text-xl w-[calc(100%-32px)] text-center flex place-content-center">{quizQuestions[questionKeys[currentQuestionIndex] as keyof typeof quizQuestions]}</p>
                         
                         <div className="flex w-full gap-6 place-content-center">
                         {responses[currentQuestionIndex]?.length > 2 && 

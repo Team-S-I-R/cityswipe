@@ -23,11 +23,11 @@ export default function Sidebar() {
     const { isMatching, setIsMatching } = useCitySwipe();
     const { selectedMatch, setSelectedMatch } = useCitySwipe();
     const { clearConversation, setClearConversation } = useCitySwipe();
+    const { photoUrl, setPhotoUrl } = useCitySwipe();
     const { firstMatch, setFirstMatch } = useCitySwipe();
     const router = useRouter();
 
     const extractMatchInfo = (matchString: string) => {
-        console.log('matchString: ',matchString)
         const cityAndCountry = matchString;
         // const ratingPercentage = parseInt(rating.replace('%', ''));
         return { cityAndCountry };
@@ -37,7 +37,6 @@ export default function Sidebar() {
     const handleCityMatch = (city: string) => {
         setSelectedMatch?.(city);
         setClearConversation?.(1)
-        console.log(clearConversation)
     }
 
     const handleChatting = () => {
@@ -49,20 +48,23 @@ export default function Sidebar() {
         setIsChatting?.(false);
         setIsMatching?.(true);
     }
-
-    
+ 
     const reload = () => {
         setTimeout(() => {
             window.location.reload();
         }, 300);
     }
 
-    console.log(destination)
-
-
+    useEffect(() => {
+        console.log('photoUrl',photoUrl)
+    }, [photoUrl])
+    
     return (
         <div className="w-full h-full" > 
-            <div className="w-full flex place-content-end h-[10%] bg-gradient-to-t from-cyan-500 to-green-400 p-5">
+        
+            <div className="w-full h-[15%]">
+
+            <div className="w-full flex place-content-end h-max bg-gradient-to-t from-cyan-500 to-green-400 p-5">
                 <div className="w-1/2 flex place-content-start place-items-center justify-start h-full gap-5">
                     <Link onClick={reload} href="/">
                         <div className="rounded-full flex place-items-center place-content-center p-2 cursor-pointer bg-white w-10 h-10">
@@ -104,27 +106,29 @@ export default function Sidebar() {
 
             </div>
 
-
             <p className="p-5">Matches</p>
 
-      {/* mapped destinations */}
+            </div>
 
-      {destination.destinations.map((dest: DestinationItem) => {
-          const { cityAndCountry } = extractMatchInfo(dest.location);
-          return (
-              <>
-              <div onClick={() => handleCityMatch(cityAndCountry)} className="w-full hover:bg-slate-300/20 py-9 flex flex-col gap-5 place-items-start p-5">
-                  <div key={dest.id}>
-                      <h3 className="text-2xl font-bold">{cityAndCountry}</h3>
-                      <p>Rating: {dest.rating}%</p>
-                  </div>
-              </div>
-              </>
-          );
-      })}
 
-            <div>
-                {/* matches will go here */}
+            {/* mapped destinations */}
+
+            <div className="w-full h-[80%] overflow-y-scroll">
+
+            {destination.destinations.map((dest: DestinationItem) => {
+                const { cityAndCountry } = extractMatchInfo(dest.location);
+                return (
+                    <>
+                    <div onClick={() => handleCityMatch(cityAndCountry)} className="w-full hover:bg-slate-300/20 py-9 flex flex-col gap-5 place-items-start p-5">
+                        <div className="w-full flex flex-col" style={{ backgroundImage: dest.img }} key={dest.id}>
+                            <h3 className="text-2xl font-bold">{cityAndCountry}</h3>
+                            <p>Rating: {dest.rating}%</p>
+                        </div>
+                    </div>
+                    </>
+                );
+            })}
+
             </div>
 
         </div> 
