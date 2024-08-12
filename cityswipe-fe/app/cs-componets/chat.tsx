@@ -73,8 +73,9 @@ export default function Chat() {
 
             {conversation.length < 1 && (
                 <>
-                    <p>You have matched with <strong>{selectedMatch}</strong>!</p>
-                    <p>Ask {selectedMatch} anything you would like to know</p>
+                    <p className="text-center">You have matched with <strong>{selectedMatch}</strong>!</p>
+                    <p className="text-center">Ask {selectedMatch} anything you would like to know</p>
+                    
                 </>
             )}
   

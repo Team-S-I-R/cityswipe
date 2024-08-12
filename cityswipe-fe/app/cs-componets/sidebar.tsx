@@ -113,7 +113,7 @@ export default function Sidebar() {
 
             {/* mapped destinations */}
 
-            <div className="w-full h-[80%] overflow-y-scroll">
+            <div className="w-full h-[80%] no-scrollbar overflow-y-scroll">
 
             {destination.destinations.map((dest: DestinationItem) => {
                 const { cityAndCountry } = extractMatchInfo(dest.location);
