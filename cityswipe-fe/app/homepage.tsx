@@ -129,7 +129,7 @@ export default function Hero() {
         ... 48 more of the same format
         Make sure the compatibility percentage is a number between 0 and 100. Each entry should be on a new line, there should be no additional text before or after the output(including bullet points or numbering), follow exact example. Corelate all the data when making decisions. Questions are answered by the user in order of listing as follows: home country, luxury mid range or budget places, languages spoken, comfortable in country with unknown language or no, proffered season, proffered temperature, beach mountain or city, 5 favorite activities, dietary restrictions and preferences, local food fine dining or street, proffered activities and facilities, comfortable in country with recreational drug use or not. 
         Here are the user preference answers in order:\n\n${responses.join('\n')}`;
-    
+        
         const conversationHistory: Message[] = [
             { role: "user" as const, content: prompt },
         ];
@@ -342,7 +342,7 @@ export default function Hero() {
                         <p className="text-xl w-[calc(100%-32px)] text-center flex place-content-center">{quizQuestions[questionKeys[currentQuestionIndex] as keyof typeof quizQuestions]}</p>
                         
                         <div className="flex w-full gap-6 place-content-center">
-                        {responses[currentQuestionIndex]?.length > 2 && 
+                        {responses[currentQuestionIndex]?.length > 1 && 
                         <Button className="p-0 m-0 select-none bg-transparent hover:bg-transparent text-primary hover:opacity-80 flex place-self-start" onClick={handlePrevious} disabled={currentQuestionIndex === 0}>Back</Button>
                         }
                         <Input 
@@ -353,7 +353,7 @@ export default function Hero() {
                             value={sanitizeText(responses[currentQuestionIndex] || '')}
                             onChange={handleInputChange}
                         />
-                        {responses[currentQuestionIndex]?.length > 2 && 
+                        {responses[currentQuestionIndex]?.length > 1 && 
                             <Button className="bg-gradient-to-t from-cyan-500 to-green-400  select-none" onClick={handleNext}>Next</Button>
                         }
                         </div>
