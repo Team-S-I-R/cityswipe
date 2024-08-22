@@ -100,22 +100,28 @@ export default function Chat() {
             )}
 
             <div className="absolute border-t border-primary/20 flex justify-between px-5 gap-3 place-items-center bottom-0 w-full h-[10vh]">
-               
-                <div className="p-2 px-4 w-full">
-                    <Input 
-                        value={input}
-                        onChange={(event) => {
-                            setInput(event.target.value);
-                        }} 
-                        className="outline outline-primary/20" autoFocus />
-                </div>
+            <div className="p-2 px-4 w-full">
+                <Input
+                value={input}
+                onChange={(event) => {
+                    setInput(event.target.value);
+                }}
+                onKeyPress={(event) => {
+                    if (event.key === 'Enter') {
+                    startChat();
+                    }
+                }}
+                className="outline outline-primary/20"
+                autoFocus
+                />
+            </div>
 
-                <button className="bg-gradient-to-t from-cyan-500 to-green-400 p-2 rounded-full"
-                    onClick={() => startChat()}
-                >
-                    <ArrowUp size={20} />
-                </button>
-
+            <button
+                className="bg-gradient-to-t from-cyan-500 to-green-400 p-2 rounded-full"
+                onClick={() => startChat()}
+            >
+                <ArrowUp size={20} />
+            </button>
             </div>
         </div>
     )
