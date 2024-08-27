@@ -27,11 +27,12 @@ export default function Chat() {
     });
 
     useEffect(() => {
-        setSelectedMatch?.(destination.destinations[0]?.location as string)
+        setSelectedMatch?.(selectedMatch?.split(',')[0] as string)
         console.log(selectedMatch)
     }, [selectedMatch])
 
     
+
     const startChat = async () => {
         const split = selectedMatch?.split(' ')
         const { messages, newMessage } = await streamFlirtatiousConversation(split==undefined ? "": split[0], split==undefined ? "": split[1], [

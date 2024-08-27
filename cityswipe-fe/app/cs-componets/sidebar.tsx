@@ -55,9 +55,9 @@ export default function Sidebar() {
         }, 300);
     }
 
-    useEffect(() => {
-        console.log('photoUrl',photoUrl)
-    }, [photoUrl])
+    console.log(destination.destinations[0].illustration)
+
+
     
     return (
         <div className="w-full h-full" > 
@@ -115,12 +115,16 @@ export default function Sidebar() {
 
             <div className="w-full h-[80%] no-scrollbar overflow-y-scroll">
 
+            <div className="w-full h-[10%]"></div>
             {destination.destinations.map((dest: DestinationItem) => {
                 const { cityAndCountry } = extractMatchInfo(dest.location);
                 return (
                     <>
-                    <div onClick={() => handleCityMatch(cityAndCountry)} className="w-full hover:bg-slate-300/20 py-9 flex flex-col gap-5 place-items-start p-5">
-                        <div className="w-full flex flex-col" style={{ backgroundImage: dest.img }} key={dest.id}>
+                    <div onClick={() => handleCityMatch(cityAndCountry)} className="w-full hover:bg-slate-300/20 flex flex-col gap-[15px] place-items-start">
+                        <div className="w-full relative flex flex-col p-5" 
+                        // style={{ backgroundImage: `url(${dest.illustration})`, backgroundRepeat: 'no-repeat', backgroundSize: 'fill', backgroundPosition: 'center' }}
+                        key={dest.id}>
+                            <img className="absolute inset-0 h-full w-full object-cover z-[-1]" src={dest.illustration} alt="" />
                             <h3 className="text-2xl font-bold">{cityAndCountry}</h3>
                             <p>Rating: {dest.rating}%</p>
                         </div>

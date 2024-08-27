@@ -112,39 +112,6 @@ const GameCard = ({
   // let drivenBg = useTransform(x, inputX, outputMainBgColor);
   let drivenBg = useTransform(x, [-20, 0, 20], outputMainBgColor);
 
-  // // --------------
-  // // Pexels API
-  // const client = createClient('8U6Se7vVT3H9tx1KPZAQTkDUSW0IKi3ldgBTVyh3W9NFF7roIpZxktzY');
-  // const query = location as string;
-  // const [ pexalsPhoto, setPexalsPhoto ] = useState<string>(''); 
-  // const {photoUrl, setPhotoUrl} = useCitySwipe();
-  
-  // //  each time the location updates, fetch a new photo from Pexels
-  // useEffect(() => {
-  //   const findPhotos = () => {
-  //     try {
-  //       client.photos.search({ query, per_page: 1 }).then(response => {
-  //         if ('photos' in response) {
-  //           const matchphoto = response.photos[0].src.landscape;
-  //           setPexalsPhoto?.(matchphoto);
-  
-  //           // Add the new photo to the existing photoUrl array as a set to avoid duplicates
-  //           setPhotoUrl?.((prevUrls) => Array.from(new Set([...prevUrls, matchphoto])));
-
-   
-  //           return matchphoto;
-  //         } 
-  //       });
-  //     } catch (error) {
-  //       console.error('Error in fetching photos:', error);
-  //     }
-  //   }
-  
-  //   findPhotos();
-  // }, [location]);
-  // // --- Pexels End ---
-
-
   useMotionValueEvent(x, "change", (latest) => {
     //@ts-ignore
     setCardDrivenProps((state) => ({
