@@ -25,6 +25,8 @@ export async function generateCityBio(city: string) {
   - Interests: Common interests or sports played in the city each separated by commas.
   Make sure to add a human touch, be a little flirtatious, and include emojis. Provide the information in a clear and exact manner structurally without any additional text or markdown. Separate each section with a new line.`;
 
+  console.log(`Generating bio for ${city} with prompt:`, prompt);
+
   (async () => {
     const { textStream } = await streamText({
       model: model,
@@ -34,8 +36,25 @@ export async function generateCityBio(city: string) {
       topK: 50,
     });
 
+    let fullBio = '';
+
     for await (const text of textStream) {
       stream.update(text);
+      fullBio += text;
+    }
+
+    console.log(`generated bio for ${city}:`, fullBio);
+    try {
+      const bioLines = fullBio.split('\n');
+      const bioObject = {
+        age: bioLines[0].split(':')[1].trim(),
+        languages: bioLines[1].split(':')[1].trim(),
+        food: bioLines[2].split(':')[1].trim(),
+        interests: bioLines[3].split(':')[1].trim(),
+      };
+      console.log(`Structured bio for ${city}:`, JSON.stringify(bioObject, null, 2));
+    } catch (error) {
+      console.error(`Error parsing bio for ${city}:`, error);
     }
 
     stream.done();
