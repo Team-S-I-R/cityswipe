@@ -125,17 +125,25 @@ export default function Sidebar() {
                     const { cityAndCountry } = extractMatchInfo(dest.location);
                     return (
                         <>
-                        <div onClick={() => handleCityMatch(cityAndCountry, dest.illustration ?? '')} className="w-full h-max flex flex-col gap-[15px] overflow-hidden place-items-start">
-                            <div className="w-full h-[110px] cursor-pointer relative flex flex-col place-items-start place-content-center" 
+                        <div onClick={() => handleCityMatch(cityAndCountry, dest.illustration ?? '')} className="w-full relative h-max flex flex-col gap-[15px] overflow-hidden place-items-start">
+                            <div className="w-full  h-max py-4 cursor-pointer relative flex flex-col place-items-start place-content-center" 
                             // style={{ backgroundImage: `url(${dest.illustration})`, backgroundRepeat: 'no-repeat', backgroundSize: 'fill', backgroundPosition: 'center' }}
                             key={dest.id}>
-                                <div className="absolute w-full h-full flex place-items-end place-content-end">
-                                    {/* <div className="absolute z-[-1] bg-gradient-to-r from-white via-white to-transparent w-full h-full"></div> */}
-                                    <img className="relative z-[-2] w-1/2 inset-0 h-full w-full object-cover z-[-1]" src={dest.illustration} alt="" />
-                                </div>
-                                <div className="p-5 text-white">
-                                    <h3 className="text-md font-bold">{cityAndCountry}</h3>
-                                    <p className="text-sm">Rating: {dest.rating}%</p>
+                                <div className="px-3 w-full mr-3 flex gap-1 place-items-center place-content-center justify-between">
+                                    
+                                    <div className="w-max flex gap-2 place-items-center place-content-center">
+                                        <div className="w-[30px] h-[30px] rounded-full flex place-items-end place-content-end">
+                                            {/* <div className="absolute z-[-1] bg-gradient-to-r from-white via-white to-transparent w-full h-full"></div> */}
+                                            <img className="relative rounded-full z-[-2] w-1/2 inset-0 h-full w-full object-cover z-[-1]" src={dest.illustration} alt="" />
+                                        </div>
+                                        <h3 className="text-[18px] p-2 rounded-full w-max">{cityAndCountry.split(',')[0]}</h3>
+                                    </div>
+
+                                    <p className="text-[10px] p-2 flex flex-col rounded-full font-bold w-max h-max">
+                                        <span className="text-green-500 text-[15px]">{dest.rating}% </span>
+                                        Match!
+                                    </p>
+            
                                 </div>
                             </div>
                         </div>

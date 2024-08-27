@@ -76,11 +76,15 @@ export default function Chat() {
             {conversation.length < 1 && (
                 <>
 
-                    <div className="w-[80px] h-[80px] rounded-full">
-                        <img className="object-cover w-full h-full rounded-full" src={chatImg} alt="" />
+                    <div className="flex flex-col gap-2 place-items-center">
+
+                        <div className="w-[80px] h-[80px] rounded-full">
+                            <img className="object-cover w-full h-full rounded-full" src={chatImg} alt="" />
+                        </div>
+                        <p className="text-center">You have matched with <strong>{selectedMatch}</strong>!</p>
+                        <p className="text-center">Ask {selectedMatch} anything you would like to know</p>
+
                     </div>
-                    <p className="text-center">You have matched with <strong>{selectedMatch}</strong>!</p>
-                    <p className="text-center">Ask {selectedMatch} anything you would like to know</p>
                     
                 </>
             )}
