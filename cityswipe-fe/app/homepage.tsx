@@ -29,14 +29,17 @@ import { useFormState, useFormStatus } from "react-dom";
 import { useGameContext } from "./match/_components/gameContext";
 import { redirect } from "next/navigation";
 import { Description } from "@radix-ui/react-dialog";
+import { createClient } from 'pexels';
 
 
 export default function Hero() {
+    
+    // ANCHOR project variables
     const { isStarted, setIsStarted } = useCitySwipe();
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-    const [responses, setResponses] = useState<string[]>([]);
+    // const [responses, setResponses] = useState<string[]>([]);
     // Responses for debuggin!
-    // const [responses, setResponses] = useState<string[]>(["United States", "Luxury", "English", "Yes", "Summer", "Warm", "Beach", "Sprinting, Hiking, Camping, Swimming, Drawing", "Vegan", "Street food", "No", "No"]);
+    const [responses, setResponses] = useState<string[]>(["United States", "Luxury", "English", "Yes", "Summer", "Warm", "Beach", "Sprinting, Hiking, Camping, Swimming, Drawing", "Vegan", "Street food", "No", "No"]);
     const questionKeys = Object.keys(quizQuestions);
     const [updateHeart, setUpdateHeart] = useState(false);
     const [destinations, setDestinations] = useState<any[]>([]);
@@ -45,7 +48,14 @@ export default function Hero() {
     const [game, setGame] = useGameContext();
     const router = useRouter();
     const [loadingMatches, setLoadingMatches] = useState(false);
+    // for pexals
+    const [ pexalsPhoto, setPexalsPhoto ] = useState<string>(''); 
+    const [cityCountryQuery, setCityCountryQuery] = useState<string>("");
+    const {photoUrl, setPhotoUrl} = useCitySwipe();
+
     
+
+// ANCHOR key listeners ⌨️
     const handleKeyDown = (event: KeyboardEvent) => {
         if (event.key === 'ArrowDown') {
             setCurrentQuestionIndex((prevIndex) => 
@@ -56,20 +66,7 @@ export default function Hero() {
             Math.max(prevIndex - 1, 0)
     );
 }
-};
-
-    const handleHomeFunction = () => {
-        setCurrentQuestionIndex(0);
-        setIsStarted(false);
-        setResponses([]);
-    }
-
-    useEffect(() => {
-        window.addEventListener('keydown', handleKeyDown);
-        return () => {
-            window.removeEventListener('keydown', handleKeyDown);
-        };
-    }, []);
+    };
 
     const handleNext = () => {
         setCurrentQuestionIndex((prevIndex) => 
@@ -83,14 +80,32 @@ export default function Hero() {
         );
     };
 
+    useEffect(() => {
+        window.addEventListener('keydown', handleKeyDown);
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+        };
+    }, []);
+// end key listeners
+
+
+// ANCHOR Resetting the quiz {
+    const handleHomeFunction = () => {
+        setCurrentQuestionIndex(0);
+        setIsStarted(false);
+        setResponses([]);
+    }
+// 
+
+
+// ANCHOR setting the quiz 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const newResponses = [...responses];
         newResponses[currentQuestionIndex] = event.target.value;
         setResponses(newResponses);
     };
 
-    // animations    
-
+// ANCHOR animation handling    
 
     const hoverAnimationEnter = (imgid : string) => {
         let id = '#' + imgid + '-img'
@@ -118,18 +133,12 @@ export default function Hero() {
         setUpdateHeart(false)
     }
 
+// ANCHOR Handles quiz submission and setting data like images, bio, matches, etc.
     const handleGemini = async () => {
-        // setResponses(['Canada', 'mid', 'english', 'yes', 'any', 'warm', 'beach', 'walking', 'vegan', 'street', 'any', 'no']);
         setLoadingMatches(true);
-        // console.log(`responses`);
-        const prompt = 
-        `Based on the following travel preferences, generate a list of exactly 50 travel destinations formatted as 'City, Country, Compatibility Percentage. Exact Example format:
-        Tokyo, Japan 85%
-        Paris, France 78%
-        ... 48 more of the same format
-        Make sure the compatibility percentage is a number between 0 and 100. Each entry should be on a new line, there should be no additional text before or after the output(including bullet points or numbering), follow exact example. Corelate all the data when making decisions. Questions are answered by the user in order of listing as follows: home country, luxury mid range or budget places, languages spoken, comfortable in country with unknown language or no, proffered season, proffered temperature, beach mountain or city, 5 favorite activities, dietary restrictions and preferences, local food fine dining or street, proffered activities and facilities, comfortable in country with recreational drug use or not. 
-        Here are the user preference answers in order:\n\n${responses.join('\n')}`;
     
+        const prompt = `Based on the following travel preferences, generate a list of exactly 50 travel destinations formatted as 'City, Country, Compatibility Percentage. Exact Example format: Tokyo, Japan 85% Paris, France 78% ... 48 more of the same format Make sure the compatibility percentage is a number between 0 and 100. Each entry should be on a new line, there should be no additional text before or after the output(including bullet points or numbering), follow exact example. Correlate all the data when making decisions. Questions are answered by the user in order of listing as follows: home country, luxury mid range or budget places, languages spoken, comfortable in country with unknown language or no, proffered season, proffered temperature, beach mountain or city, 5 favorite activities, dietary restrictions and preferences, local food fine dining or street, proffered activities and facilities, comfortable in country with recreational drug use or not. Here are the user preference answers in order:\n\n${responses.join('\n')}`;
+        
         const conversationHistory: Message[] = [
             { role: "user" as const, content: prompt },
         ];
@@ -141,49 +150,47 @@ export default function Hero() {
             textContent += delta;
         }
         let count = 1;
-
-        // console.log(`Getting textContent....... `);
-        // console.log(textContent);
-        
-        const generatedDestinations = textContent.trim().split('\n').map(destination => {
-            const match = destination.match(/^(.*), ([A-Za-z\s]+) (\d+)%$/);
-        
-            if (match) {
-                const [ , city, country, score ] = match;
-                return {
-                    id: count++,
-                    location: `${city}, ${country}`.trim(),
-                    rating: parseFloat(score),
-                    illustration: "",
-                    description: "",
-                    // pros: "",
-                    // cons: "",
-                };
-            } else {
-                // If the format doesn't match, you can handle it accordingly
-                return null;
-            }
-            
-        }).filter(destination => destination !== null);
-        
-        // console.log(`Getting destinations....... `);
-        // console.log(generatedDestinations);
-
-        // const cityBio = await generateCityBio(generatedDestinations.location);
     
-        // this is setting the keys [id, location, rating, illustration, description] for each game card
-        setDestinations(generatedDestinations.filter(destination => destination.location));
-        
-
-        // this sets the game cards initially
+        const generatedDestinations = await Promise.all(
+            textContent.trim().split('\n').map(async destination => {
+                const match = destination.match(/^(.*), ([A-Za-z\s]+) (\d+)%$/);
+    
+                if (match) {
+                    const [, city, country, score] = match;
+    
+                    // Fetch image for the current city-country pair
+                    const client = createClient('8U6Se7vVT3H9tx1KPZAQTkDUSW0IKi3ldgBTVyh3W9NFF7roIpZxktzY');
+                    let illustration = '';
+    
+                    try {
+                        const response = await client.photos.search({ query: `${city}, ${country}`, per_page: 1 });
+                        if ('photos' in response && response.photos.length > 0) {
+                            illustration = response.photos[0].src.landscape;
+                        }
+                    } catch (error) {
+                        console.error(`Error in fetching photo for ${city}, ${country}:`, error);
+                    }
+    
+                    return {
+                        id: count++,
+                        location: `${city}, ${country}`.trim(),
+                        rating: parseFloat(score),
+                        illustration: illustration,
+                        description: "",
+                    };
+                } else {
+                    return null;
+                }
+            })
+        );
+    
+        const validDestinations = generatedDestinations.filter(destination => destination !== null);
+        setDestinations(validDestinations);
         await setGame({
             id: 1,
-            cards: generatedDestinations.reverse(),
+            cards: validDestinations.reverse(),
         });
-        
-        // console.log(`game: `);
-        // console.log(game?.cards);
-        // console.log(generatedDestinations);
+    
         setLoadingMatches(false);
         router.push('/match');
     };
@@ -204,23 +211,23 @@ export default function Hero() {
         }
       }
 
-      type FormState = {
-        message: string;
-      };
+    type FormState = {
+    message: string;
+    };
   
-      const formAction = async (prevState: FormState, formData: FormData): Promise<FormState> => {
-        await submitFormResponse(formData, formState);
-        return { message: 'Submission successful!' };
-      };
+    const formAction = async (prevState: FormState, formData: FormData): Promise<FormState> => {
+    await submitFormResponse(formData, formState);
+    return { message: 'Submission successful!' };
+    };
   
-      const [formState, action] = useFormState(formAction, {
-        message: '',
-      });
+    const [formState, action] = useFormState(formAction, {
+    message: '',
+    });
   
-      const sanitizeText =(text: string) => {
-            const sanText = text.replace(/[*_~`]/g, '');
-            return sanText; 
-      }
+    const sanitizeText =(text: string) => {
+        const sanText = text.replace(/[*_~`]/g, '');
+        return sanText; 
+    }
 
       
 
