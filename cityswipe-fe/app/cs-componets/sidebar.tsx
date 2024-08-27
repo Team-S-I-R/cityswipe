@@ -24,6 +24,7 @@ export default function Sidebar() {
     const { selectedMatch, setSelectedMatch } = useCitySwipe();
     const { clearConversation, setClearConversation } = useCitySwipe();
     const { photoUrl, setPhotoUrl } = useCitySwipe();
+    const { chatImg, setChatImg } = useCitySwipe();
     const { firstMatch, setFirstMatch } = useCitySwipe();
     const router = useRouter();
 
@@ -33,9 +34,14 @@ export default function Sidebar() {
         return { cityAndCountry };
     };
 
+    const handleSetChatAvatar = (img: string) => {
+        setChatImg?.(img);
+    }
+
     // make globe state for selected city match
-    const handleCityMatch = (city: string) => {
+    const handleCityMatch = (city: string, img: string) => {
         setSelectedMatch?.(city);
+        handleSetChatAvatar(img);
         setClearConversation?.(1)
     }
 
@@ -55,7 +61,7 @@ export default function Sidebar() {
         }, 300);
     }
 
-    console.log(destination.destinations[0].illustration)
+    console.log(destination.destinations[0]?.illustration)
 
 
     
@@ -120,7 +126,7 @@ export default function Sidebar() {
                 const { cityAndCountry } = extractMatchInfo(dest.location);
                 return (
                     <>
-                    <div onClick={() => handleCityMatch(cityAndCountry)} className="w-full hover:bg-slate-300/20 flex flex-col gap-[15px] place-items-start">
+                    <div onClick={() => handleCityMatch(cityAndCountry, dest.illustration ?? '')} className="w-full hover:bg-slate-300/20 flex flex-col gap-[15px] place-items-start">
                         <div className="w-full relative flex flex-col p-5" 
                         // style={{ backgroundImage: `url(${dest.illustration})`, backgroundRepeat: 'no-repeat', backgroundSize: 'fill', backgroundPosition: 'center' }}
                         key={dest.id}>

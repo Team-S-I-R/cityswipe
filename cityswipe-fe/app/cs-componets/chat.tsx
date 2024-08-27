@@ -18,6 +18,7 @@ export default function Chat() {
     const { selectedMatch, setSelectedMatch } = useCitySwipe();
     const { clearConversation, setClearConversation } = useCitySwipe();
     const { firstMatch, setFirstMatch } = useCitySwipe();
+    const {chatImg, setChatImg} = useCitySwipe();
 
     useEffect(() => {
         if (clearConversation && clearConversation > 0) {
@@ -55,13 +56,13 @@ export default function Chat() {
         setInput(""); // Clear the input field after submitting
     }
     
-    console.log(selectedMatch)
     
     // import saved global state city
 
     return (
         <div className="relative flex flex-col place-content-center place-items-center w-full h-full">
             <div className="absolute border-b border-primary/20 top-0 w-full h-[10%] flex justify-between place-items-center px-5">
+                
                 {selectedMatch == '' ? (
                     <h2 className="select-none">You have matched with <strong>{destination.destinations[0]?.location}</strong>!</h2>
                 ) : (
@@ -74,6 +75,10 @@ export default function Chat() {
 
             {conversation.length < 1 && (
                 <>
+
+                    <div className="w-[80px] h-[80px] rounded-full">
+                        <img className="object-cover w-full h-full rounded-full" src={chatImg} alt="" />
+                    </div>
                     <p className="text-center">You have matched with <strong>{selectedMatch}</strong>!</p>
                     <p className="text-center">Ask {selectedMatch} anything you would like to know</p>
                     
