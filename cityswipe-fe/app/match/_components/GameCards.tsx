@@ -60,10 +60,12 @@ const GameCards = () => {
         cards: game.cards.slice(0, -1), // Slice the cards array to remove the last element
       });
 
-      setDestination({
-        destinations: handleResponse({direction, cards, destinations}),
-      });
+      
       }
+    
+    direction === "right" && setDestination({
+      destinations: handleResponse({direction, cards, destinations}),
+    })
       
     setDirection("");
   }, [direction]);
