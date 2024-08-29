@@ -25,14 +25,14 @@ export default function Explore() {
             direction="horizontal"
             className=" rounded-lg border"
     >
-            <ResizablePanel defaultSize={30}>
+            <ResizablePanel defaultSize={20}>
                 <div className="flex h-full items-center justify-center">
                     <Sidebar/>
                 </div>
             </ResizablePanel>
             <ResizableHandle />
 
-            <ResizablePanel defaultSize={70}>
+            <ResizablePanel defaultSize={80}>
                 <div className="flex h-full items-center justify-center relative">
                     <Chat/>
                 </div>

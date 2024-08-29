@@ -37,9 +37,9 @@ export default function Hero() {
     // ANCHOR project variables
     const { isStarted, setIsStarted } = useCitySwipe();
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-    const [responses, setResponses] = useState<string[]>([]);
+    // const [responses, setResponses] = useState<string[]>([]);
     // Responses for debuggin!
-    // const [responses, setResponses] = useState<string[]>(["United States", "Luxury", "English", "Yes", "Summer", "Warm", "Beach", "Sprinting, Hiking, Camping, Swimming, Drawing", "Vegan", "Street food", "No", "No"]);
+    const [responses, setResponses] = useState<string[]>(["United States", "Luxury", "English", "Yes", "Summer", "Warm", "Beach", "Sprinting, Hiking, Camping, Swimming, Drawing", "Vegan", "Street food", "No", "No"]);
     const questionKeys = Object.keys(quizQuestions);
     const [updateHeart, setUpdateHeart] = useState(false);
     const [destinations, setDestinations] = useState<any[]>([]);

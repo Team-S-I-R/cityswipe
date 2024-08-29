@@ -99,7 +99,7 @@ const GameCards = () => {
 
   return (
     <motion.div
-      className={`flex p-5 min-h-screen h-full flex-col justify-center items-center overflow-hidden  ${
+      className={`flex p-5 w-screen h-screen flex-col justify-center items-center overflow-hidden  ${
         isDragging ? "cursor-grabbing" : ""
       }`}
       style={{ backgroundColor: cardDrivenProps.mainBgColor }}
@@ -115,11 +115,11 @@ const GameCards = () => {
 
       <div
         id="gameUIWrapper"
-        className="flex flex-col gap-6 w-full items-center justify-center relative z-10"
+        className="flex flex-col place-content-center place-items-center gap-6 w-full h-full relative z-10"
       >
         <div
           id="cardsWrapper"
-          className="w-full aspect-[100/150] max-w-xs mb-[5px] relative z-10"
+          className="w-full relative overflow-hidden place-content-center place-items-center h-[500px] flex flex-col relative z-10"
         >
           <AnimatePresence>
             {cards.map((card, i) => {
@@ -129,7 +129,7 @@ const GameCards = () => {
                 <motion.div
                   key={`card-${i}`}
                   id={`card-${card.id}`}
-                  className={`relative `}
+                  className={`w-full h-full flex place-content-center place-items-center z-10`}
                   variants={cardVariants}
                   initial="remainings"
                   animate={
@@ -152,9 +152,10 @@ const GameCards = () => {
             })}
           </AnimatePresence>
         </div>
+
         <div
           id="actions"
-          className="flex items-center justify-center w-full gap-4 relative z-10"
+          className="flex items-center justify-center w-max h-max gap-4 relative z-10"
         >
           <GameActionBtn
             direction="left"
@@ -172,9 +173,10 @@ const GameCards = () => {
           />
         </div>
 
-        <Link id="destinations_button" className="flex items-center justify-center w-full gap-4 relative z-10 pt-10"  href="/explore">
+        <Link id="destinations_button" className="flex items-center justify-center w-max gap-4 relative z-10 h-max"  href="/explore">
           <Button className="bg-gradient-to-t from-cyan-500 to-green-400 select-none w-max">See Save Destinations</Button>
         </Link>
+
       </div>
     </motion.div>
   );

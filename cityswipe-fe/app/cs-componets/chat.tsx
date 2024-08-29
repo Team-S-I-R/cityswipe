@@ -108,8 +108,8 @@ export default function Chat() {
                 </>
             )}
 
-            <div className="absolute border-t border-primary/20 flex justify-between px-5 gap-3 place-items-center bottom-0 w-full h-[7vh]">
-            <div className="p-2 px-4 w-full">
+            <div className="absolute border-t border-primary/20 flex justify-center px-5 gap-3 place-items-center bottom-0 w-full h-[7vh]">
+            <div className="p-2 px-4 w-[70%]">
                 <Input
                 value={input}
                 onChange={(event) => {

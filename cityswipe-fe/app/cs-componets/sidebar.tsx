@@ -68,7 +68,7 @@ export default function Sidebar() {
     return (
         <div className="w-full h-full flex flex-col gap-6" > 
         
-            <div className="w-full h-[15%]">
+            <div className="w-full h-[10%]">
 
                 <div className="w-full flex h-[55px] bg-gradient-to-t from-cyan-500 to-green-400 p-3">
                     <div className="w-1/2 flex place-content-start place-items-center justify-start h-full gap-5">
@@ -119,7 +119,7 @@ export default function Sidebar() {
 
             {/* mapped destinations */}
 
-            <div className="w-full h-[80%] no-scrollbar overflow-y-scroll">
+            <div className="w-full h-full no-scrollbar overflow-y-scroll">
 
                 {destination.destinations.map((dest: DestinationItem) => {
                     const { cityAndCountry } = extractMatchInfo(dest.location);
