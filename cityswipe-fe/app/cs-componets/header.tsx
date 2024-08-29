@@ -14,6 +14,13 @@ import { useFormState, useFormStatus } from "react-dom";
 import { submitFormResponse } from "../actions";
 import { useCitySwipe } from '../citySwipeContext';
 import { motion } from "framer-motion";
+import {
+  SignInButton,
+  SignedIn,
+  SignUpButton,
+  SignedOut,
+  UserButton
+} from '@clerk/nextjs'
 
   export default function Header() {
     const { isStarted } = useCitySwipe();
@@ -104,12 +111,25 @@ import { motion } from "framer-motion";
             </Link>
 
             <div className="flex gap-4">
+
+                <SignedOut>
+
+        
               <Link href="/sign-in">
                 <button className="">Log In</button>
               </Link>
               <Link href="/sign-up">
                 <button>Sign Up</button>
               </Link>
+              
+                
+                </SignedOut>
+                
+                <SignedIn>
+                
+                  <UserButton />
+                
+                </SignedIn>
             </div>
 
             {/* <Dialog>
