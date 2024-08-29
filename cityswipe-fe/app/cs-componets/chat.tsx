@@ -60,15 +60,14 @@ export default function Chat() {
     // import saved global state city
 
     return (
-        <div className="relative flex flex-col place-content-center place-items-center w-full h-full">
-            <div className="absolute border-b border-primary/20 top-0 w-full h-[10%] flex justify-between place-items-center px-5">
+        <div className="relative flex text-[15px] flex-col place-content-center place-items-center w-full h-full">
+            <div className="absolute border-b border-primary/20 top-0 w-full h-[6%] flex justify-between place-items-center px-5">
                 
                 {selectedMatch == '' ? (
-                    <h2 className="select-none">You have matched with <strong>{destination.destinations[0]?.location}</strong>!</h2>
+                    <h2 className="select-none">You matched with <strong>{destination.destinations[0]?.location}</strong>!</h2>
                 ) : (
-                    <h2 className="select-none">You have matched with <strong>{selectedMatch}</strong>!</h2>
+                    <h2 className="select-none">You matched with <strong>{selectedMatch}</strong>!</h2>
                 )}
-                <Button  className="bg-transparent hover:bg-transparent text-primary/70"><X size={20} /></Button>
             </div>
 
 
@@ -81,7 +80,7 @@ export default function Chat() {
                         <div className="w-[80px] h-[80px] rounded-full">
                             <img className="object-cover w-full h-full rounded-full" src={chatImg} alt="" />
                         </div>
-                        <p className="text-center">You have matched with <strong>{selectedMatch}</strong>!</p>
+                        <p className="text-center">You matched with <strong>{selectedMatch}</strong>!</p>
                         <p className="text-center">Ask {selectedMatch} anything you would like to know</p>
 
                     </div>
@@ -109,7 +108,7 @@ export default function Chat() {
                 </>
             )}
 
-            <div className="absolute border-t border-primary/20 flex justify-between px-5 gap-3 place-items-center bottom-0 w-full h-[10vh]">
+            <div className="absolute border-t border-primary/20 flex justify-between px-5 gap-3 place-items-center bottom-0 w-full h-[7vh]">
             <div className="p-2 px-4 w-full">
                 <Input
                 value={input}
@@ -121,7 +120,7 @@ export default function Chat() {
                     startChat();
                     }
                 }}
-                className="outline outline-primary/20"
+                className="outline h-[25px] outline-primary/20"
                 autoFocus
                 />
             </div>
@@ -130,7 +129,7 @@ export default function Chat() {
                 className="bg-gradient-to-t from-cyan-500 to-green-400 p-2 rounded-full"
                 onClick={() => startChat()}
             >
-                <ArrowUp size={20} />
+                <ArrowUp className="text-white" size={20} />
             </button>
             </div>
         </div>

@@ -7,7 +7,7 @@ import { getGame } from "./match/_components/games.api";
 import DestinationProvider from "./match/_components/destinationContext";
 import { getDestination } from "./match/_components/destination.api";
 import { Analytics } from '@vercel/analytics/react';
-
+import { ClerkProvider } from "@clerk/nextjs";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,15 +24,20 @@ export default async function RootLayout({
   const game = await getGame(0);
   const destination = await getDestination();
   return (
-    <html lang="en" className="overflow-hidden">
-      <body className={`${inter.className}`}>
-      <Analytics />
-        <CitySwipeProvider>
-          <DestinationProvider destination={destination}>
-            <GameProvider game={game}>{children}</GameProvider>
-          </DestinationProvider>
-        </CitySwipeProvider>
-      </body>
-    </html>
+    <ClerkProvider
+    signInUrl="/sign-in"
+    signUpUrl="/sign-up"
+    >
+      <html lang="en" className="overflow-hidden">
+        <body className={`${inter.className}`}>
+        <Analytics />
+          <CitySwipeProvider>
+            <DestinationProvider destination={destination}>
+              <GameProvider game={game}>{children}</GameProvider>
+            </DestinationProvider>
+          </CitySwipeProvider>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

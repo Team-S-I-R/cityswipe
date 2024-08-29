@@ -5,7 +5,7 @@ import { useCitySwipe } from './citySwipeContext';
 import React, { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import quizQuestions from "./quiz-questions/questions";
-import { House } from "lucide-react";
+import { HeartIcon, House } from "lucide-react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import destination1 from './assets/imgs/destination-img-1.jpg'
@@ -30,16 +30,16 @@ import { useGameContext } from "./match/_components/gameContext";
 import { redirect } from "next/navigation";
 import { Description } from "@radix-ui/react-dialog";
 import { createClient } from 'pexels';
-
+import { motion } from 'framer-motion'
 
 export default function Hero() {
     
     // ANCHOR project variables
     const { isStarted, setIsStarted } = useCitySwipe();
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-    // const [responses, setResponses] = useState<string[]>([]);
+    const [responses, setResponses] = useState<string[]>([]);
     // Responses for debuggin!
-    const [responses, setResponses] = useState<string[]>(["United States", "Luxury", "English", "Yes", "Summer", "Warm", "Beach", "Sprinting, Hiking, Camping, Swimming, Drawing", "Vegan", "Street food", "No", "No"]);
+    // const [responses, setResponses] = useState<string[]>(["United States", "Luxury", "English", "Yes", "Summer", "Warm", "Beach", "Sprinting, Hiking, Camping, Swimming, Drawing", "Vegan", "Street food", "No", "No"]);
     const questionKeys = Object.keys(quizQuestions);
     const [updateHeart, setUpdateHeart] = useState(false);
     const [destinations, setDestinations] = useState<any[]>([]);
@@ -234,8 +234,26 @@ export default function Hero() {
         const sanText = text.replace(/[*_~`]/g, '');
         return sanText; 
     }
+    useEffect(() => {
+        const words = ["match", "with", "your", "destination"];
+        let currentIndex = 0;
 
-      
+        const timer = setInterval(() => {
+            hoverAnimationEnter(words[currentIndex]);
+            currentIndex = (currentIndex + 1) % words.length;
+        }, 3000);
+
+        if (currentIndex === 3) {
+            clearInterval(timer);
+            currentIndex = 0;
+            hoverAnimationEnter(words[currentIndex]);
+        }
+
+        return () => {
+            clearInterval(timer); // Cleanup the timer if the component unmounts
+            currentIndex = 0; // Reset the index when the component unmounts
+        };
+    }, [hoverAnimationEnter]);
 
 
     return (
@@ -247,22 +265,27 @@ export default function Hero() {
                 <>
   
                     <div className="z-[-1] top-0 left-0 w-screen h-screen absolute">
-                    <div className="absolute top-0 left-0 w-screen h-screen">
+                           
+                            <div className="absolute top-0 left-0 w-screen h-screen">
                             <img id="match-img" className="opacity-1  w-full h-full object-cover" src={destination1.src} alt="" />
                             <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-white via-white to-transparent pointer-events-none"></div>
-                        </div>
-                        <div className="absolute top-0 left-0 w-screen h-screen">
-                            <img id="with-img" className="opacity-0  w-full h-full object-cover" src={destination2.src} alt="" />
-                            <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-white via-white to-transparent pointer-events-none"></div>
-                        </div>
-                        <div className="absolute top-0 left-0 w-screen h-screen">
-                            <img id="your-img" className="opacity-0  w-full h-full object-cover" src={destination3.src} alt="" />
-                            <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-white via-white to-transparent pointer-events-none"></div>
-                        </div>
-                        <div className="absolute top-0 left-0 w-screen h-screen">
-                            <img id="destination-img" className="opacity-0  w-full h-full object-cover" src={destination4.src} alt="" />
-                            <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-white via-white to-transparent pointer-events-none"></div>
-                        </div>
+                            </div>
+                            
+                            <div className="absolute top-0 left-0 w-screen h-screen">
+                                <img id="with-img" className="opacity-0  w-full h-full object-cover" src={destination2.src} alt="" />
+                                <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-white via-white to-transparent pointer-events-none"></div>
+                            </div>
+                        
+                            <div className="absolute top-0 left-0 w-screen h-screen">
+                                <img id="your-img" className="opacity-0  w-full h-full object-cover" src={destination3.src} alt="" />
+                                <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-white via-white to-transparent pointer-events-none"></div>
+                            </div>
+
+                            <div className="absolute top-0 left-0 w-screen h-screen">
+                                <img id="destination-img" className="opacity-0  w-full h-full object-cover" src={destination4.src} alt="" />
+                                <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-white via-white to-transparent pointer-events-none"></div>
+                            </div>
+
                     </div>   
 
                     <h2>Like Tinder, but for your vacations!</h2>                 
@@ -275,49 +298,15 @@ export default function Hero() {
                     </h1>
 
                     
-{/* 
-                    <Dialog>
-                        <DialogTrigger>          
-                    <span className=" text-white py-2 px-4 rounded-md select-none bg-gradient-to-t from-cyan-500 to-green-400 flex place-items-center gap-2">
-                        Get Started 
-                        {updateHeart == false && <span><Heart className="w-2 h-2  "/></span>}
-                        {updateHeart == true && <span><Heart className="w-2 h-2 text-red-300 animate-pulse"/></span>}
-                    </span>
-                        </DialogTrigger>
-                        <DialogContent className="scale-[80%] sm:scale-100">
-                            <DialogHeader>
-                            <DialogTitle>Join our wait list for early access!</DialogTitle>
-                            <DialogDescription>
-                                
-                                <p>When we launch you will receive first access to our full beta!</p>
-
-
-                                <form className="flex flex-col gap-6 my-5" action={action}>
-                                
-                                <p className="flex place-self-center text-green-500">{formState.message}</p>
-
-                                <Input type="text" name="Name" placeholder="Name" className="w-full" />
-                                <Input type="email" name="Email" placeholder="Email address" className="w-full" />
-                                <SubmitButton />
-                                </form>
-
-                                <p>Thank you for the support!</p>
-                                <h1 className="select-none font-bold absolute bottom-0 right-0 m-3">cityswipe</h1>
-                            </DialogDescription>
-                            </DialogHeader>
-                        </DialogContent>
-                    </Dialog>
-           */}
-
                     {/* QUIZ BUTTON */}
                 
-                    <Button className="select-none bg-gradient-to-t from-cyan-500 to-green-400 flex place-items-center gap-2" onClick={() => setIsStarted(true)}>
-                        Demo
+                    <Button onMouseEnter={() => setUpdateHeart(true)} onMouseLeave={() => setUpdateHeart(false)} className="select-none bg-gradient-to-t from-cyan-500 to-green-400 flex place-items-center gap-2" onClick={() => setIsStarted(true)}>
+                        Get Started 
                         {updateHeart == false && <span><Heart className="w-2 h-2  "/></span>}
-                        {updateHeart == true && <span><Heart className="w-2 h-2 text-red-300 animate-pulse"/></span>}
+                        {updateHeart == true && <span>❤️</span>}
                     </Button>
 
-                    <Dialog>
+                    {/* <Dialog>
                         <DialogTrigger><h1 className="select-none font-bold underline">Join Waitlist</h1>
                         </DialogTrigger>
                         <DialogContent className="scale-[80%] sm:scale-100">
@@ -344,7 +333,7 @@ export default function Hero() {
                             </DialogDescription>
                             </DialogHeader>
                         </DialogContent>
-                    </Dialog>
+                    </Dialog> */}
 
 
                 </>

@@ -13,6 +13,7 @@ import Link from "next/link";
 import { useFormState, useFormStatus } from "react-dom";
 import { submitFormResponse } from "../actions";
 import { useCitySwipe } from '../citySwipeContext';
+import { motion } from "framer-motion";
 
   export default function Header() {
     const { isStarted } = useCitySwipe();
@@ -91,14 +92,23 @@ import { useCitySwipe } from '../citySwipeContext';
     return (
         <>    
 
-        <div className="flex absolute z-10 top-10 px-8 w-full place-items-center justify-between">
+        <motion.div 
+        initial={{ opacity: 0, y: 100 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1.5 }}
+        className="flex absolute z-10 top-10 px-8 w-full place-items-center justify-between">
         
           <>
-            <Link onClick={reload} href="/">
-                <h1 className="select-none">cityswipe</h1>
+            <Link href="/">
+                <h1 className="select-none text-xl">cityswipe</h1>
             </Link>
 
-            <Dialog>
+            <div className="flex gap-4">
+              <button>Log In</button>
+              <button>Sign Up</button>
+            </div>
+
+            {/* <Dialog>
               <DialogTrigger><h1 className="select-none font-bold underline">Join Waitlist</h1>
               </DialogTrigger>
               <DialogContent className="scale-[80%] sm:scale-100">
@@ -125,7 +135,7 @@ import { useCitySwipe } from '../citySwipeContext';
                   </DialogDescription>
                 </DialogHeader>
               </DialogContent>
-            </Dialog>
+            </Dialog> */}
             
               {/* <NavigationMenu>
               <NavigationMenuList>
@@ -189,7 +199,7 @@ import { useCitySwipe } from '../citySwipeContext';
               </NavigationMenu> */}
             </>
         
-        </div>  
+        </motion.div>  
           
         </>
     )

@@ -123,6 +123,8 @@ const GameCard = ({
     }));
   });
 
+  console.log("data",  data.illustration);
+
 
   return (
     <>
@@ -160,10 +162,23 @@ const GameCard = ({
           </div>
 
           {/* theimage on the card */}
+          {data.illustration.length > 10 && (     
+            <Image
+              priority
+              className='absolute rounded w-full h-full object-cover object-center'
+              // src={data.illustration || placeholderImg}
+              src={data.illustration}
+              fill
+              sizes={`(max-width: 768px) 100vw, 250px`}
+              alt="car"
+            />
+          )}
+   
           <Image
             priority
             className='absolute rounded w-full h-full object-cover object-center'
-            src={data.illustration || placeholderImg}
+            // src={data.illustration || placeholderImg}
+            src=""
             fill
             sizes={`(max-width: 768px) 100vw, 250px`}
             alt="car"

@@ -70,7 +70,7 @@ export default function Sidebar() {
         
             <div className="w-full h-[15%]">
 
-                <div className="w-full flex h-max bg-gradient-to-t from-cyan-500 to-green-400 p-5">
+                <div className="w-full flex h-[55px] bg-gradient-to-t from-cyan-500 to-green-400 p-3">
                     <div className="w-1/2 flex place-content-start place-items-center justify-start h-full gap-5">
                         <Link onClick={reload} href="/">
                             <div className="rounded-full flex place-items-center place-content-center p-2 cursor-pointer bg-white w-10 h-10">
@@ -125,7 +125,7 @@ export default function Sidebar() {
                     const { cityAndCountry } = extractMatchInfo(dest.location);
                     return (
                         <>
-                        <div onClick={() => handleCityMatch(cityAndCountry, dest.illustration ?? '')} className="w-full relative h-max flex flex-col gap-[15px] overflow-hidden place-items-start">
+                        <div onClick={() => handleCityMatch(cityAndCountry, dest.illustration ?? '')} className="w-full relative h-max select-none hover:scale-[102%] flex flex-col gap-[15px] overflow-hidden place-items-start">
                             <div className="w-full  h-max py-4 cursor-pointer relative flex flex-col place-items-start place-content-center" 
                             // style={{ backgroundImage: `url(${dest.illustration})`, backgroundRepeat: 'no-repeat', backgroundSize: 'fill', backgroundPosition: 'center' }}
                             key={dest.id}>

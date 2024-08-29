@@ -14,11 +14,15 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
+
 model User {
   id               String         @id @unique
   name             String?
   email            String         @unique
   Matchs           Match[]
+
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
 }
 
 model Match {
