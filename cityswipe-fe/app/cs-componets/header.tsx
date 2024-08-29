@@ -104,8 +104,12 @@ import { motion } from "framer-motion";
             </Link>
 
             <div className="flex gap-4">
-              <button>Log In</button>
-              <button>Sign Up</button>
+              <Link href="/sign-in">
+                <button className="">Log In</button>
+              </Link>
+              <Link href="/sign-up">
+                <button>Sign Up</button>
+              </Link>
             </div>
 
             {/* <Dialog>

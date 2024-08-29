@@ -24,20 +24,19 @@ export default async function RootLayout({
   const game = await getGame(0);
   const destination = await getDestination();
   return (
-    <ClerkProvider
-    signInUrl="/sign-in"
-    signUpUrl="/sign-up"
-    >
+    <ClerkProvider>
       <html lang="en" className="overflow-hidden">
         <body className={`${inter.className}`}>
         <Analytics />
           <CitySwipeProvider>
             <DestinationProvider destination={destination}>
-              <GameProvider game={game}>{children}</GameProvider>
+              <GameProvider game={game}>     
+                  {children}
+                </GameProvider>
             </DestinationProvider>
           </CitySwipeProvider>
         </body>
       </html>
     </ClerkProvider>
-  );
+  ); 
 }
