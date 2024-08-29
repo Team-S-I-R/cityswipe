@@ -3,18 +3,18 @@ import { motion, AnimatePresence, cubicBezier } from "framer-motion";
 import { GameCompletion, GameCards } from "./_components";
 
 
-import { destination, destination as initialDestination } from "./_components/destination.api";
+import { savedDestination as initialDestination } from "./_components/savedDestination.api";
 import { getInitialGame } from "./_components/games.api";
 import { useGameContext } from "./_components/gameContext";
 import { useEffect } from "react";
-import { useDestinationContext } from "./_components/destinationContext";
+import { useSavedDestinationContext } from "./_components/savedDestinationContext";
 import { Button } from "@/components/ui/button";
 import Header from "../cs-componets/header";
 
 const Match = () => {
   // "game" is the list of games 
   const [game, setGame] = useGameContext();
-  const [_, setDestination] = useDestinationContext();
+  const [_, setDestination] = useSavedDestinationContext();
 
   const initialGame = getInitialGame(0);
 

@@ -23,7 +23,7 @@ import { useGameContext } from "./gameContext";
 // import handleScore from "../_utils/handleScore";
 
 import { type Card } from "@/lib/games.type";
-import { useDestinationContext } from "./destinationContext";
+import { useSavedDestinationContext } from "./savedDestinationContext";
 import { DestinationItem } from "@/lib/destination.type";
 import { createClient } from 'pexels';
 import { Button } from "@/components/ui/button";
@@ -60,7 +60,7 @@ const GameCard = ({
   // const { score, previousScore } = user;
 
   const [game, setGame] = useGameContext();
-  const [destination, setDestination] = useDestinationContext();
+  const [savedDestination, setSavedDestination] = useSavedDestinationContext();
   const { cards } = game;
   
   // const cardsAmount = games[game.id]?.cards.length; //fix

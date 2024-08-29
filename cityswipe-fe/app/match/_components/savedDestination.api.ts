@@ -2,7 +2,7 @@ import { Destination } from "@/lib/destination.type";
 
 // Start of Selection
 // Start of Selection
-export const destination: Destination = {
+export const savedDestination: Destination = {
   destinations: [
     // { id: 8945, location: "Paris", rating: 0.36 },
     // { id: 395309, location: "Rome", rating: 0.76 },
@@ -12,9 +12,9 @@ export const destination: Destination = {
 };
 
 export const getDestination = async (): Promise<Destination> => {
-  return destination;
+  return savedDestination;
 };
 
 export const clearDestination = async (): Promise<Destination> => {
-  return destination;
+  return savedDestination;
 };

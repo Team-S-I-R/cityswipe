@@ -4,8 +4,8 @@ import { CitySwipeProvider } from './citySwipeContext';
 import "./globals.css";
 import GameProvider from "./match/_components/gameContext";
 import { getGame } from "./match/_components/games.api";
-import DestinationProvider from "./match/_components/destinationContext";
-import { getDestination } from "./match/_components/destination.api";
+import SavedDestinationProvider from "./match/_components/savedDestinationContext";
+import { getDestination } from "./match/_components/savedDestination.api";
 import { Analytics } from '@vercel/analytics/react';
 
 
@@ -22,15 +22,15 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const game = await getGame(0);
-  const destination = await getDestination();
+  const savedDestination = await getDestination();
   return (
     <html lang="en" className="overflow-hidden">
       <body className={`${inter.className}`}>
       <Analytics />
         <CitySwipeProvider>
-          <DestinationProvider destination={destination}>
+          <SavedDestinationProvider savedDestination={savedDestination}>
             <GameProvider game={game}>{children}</GameProvider>
-          </DestinationProvider>
+          </SavedDestinationProvider>
         </CitySwipeProvider>
       </body>
     </html>

@@ -5,8 +5,8 @@ import Link from "next/link";
 
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
-import {GameCard} from "./";
-import {GameActionBtn} from "./";
+import { GameCard } from "./";
+import { GameActionBtn } from "./";
 
 // import { BgPattern } from "@/components/ui";
 import { useGameContext } from "./gameContext";
@@ -17,7 +17,7 @@ import { useGameContext } from "./gameContext";
 // import { GameActionBtn, GameCard } from "./";
 
 import { CardSwipeDirection, IsDragOffBoundary } from "@/lib/games.type";
-import { useDestinationContext } from "./destinationContext";
+import { useSavedDestinationContext } from "./savedDestinationContext";
 import handleResponse from "./handleResponse";
 import { Button } from "@/components/ui/button";
 
@@ -35,11 +35,11 @@ const initialDrivenProps = {
 const GameCards = () => {
   // const [user, setUser] = useUserContext();
   const [game, setGame] = useGameContext();
-  const [destination, setDestination] = useDestinationContext();
+  const [savedDestination, setSavedDestination] = useSavedDestinationContext();
 
   // const { score } = user;
   const { cards } = game;
-  const { destinations } = destination;
+  const { destinations } = savedDestination;
 
   const [direction, setDirection] = useState<CardSwipeDirection | "">("");
   const [isDragOffBoundary, setIsDragOffBoundary] =
@@ -51,22 +51,21 @@ const GameCards = () => {
     setDirection(btn);
   };
 
-  // This controlls the cards that people are swiping on. If left or right it removes that card from available cards left to swipe on in the first place
+  // This controls the cards that people are swiping on. If left or right it removes that card from available cards left to swipe on in the first place
   useEffect(() => {
     if (["left", "right"].includes(direction)) {
-      
       setGame({
         ...game,
         cards: game.cards.slice(0, -1), // Slice the cards array to remove the last element
       });
+    }
 
-      
-      }
-    
-    direction === "right" && setDestination({
-      destinations: handleResponse({direction, cards, destinations}),
-    })
-      
+    // This updates the destinations array with the new destinations after a right swipe
+    direction === "right" &&
+      setSavedDestination({
+        destinations: handleResponse({ direction, cards, destinations }),
+      });
+
     setDirection("");
   }, [direction]);
 
@@ -172,8 +171,14 @@ const GameCards = () => {
           />
         </div>
 
-        <Link id="destinations_button" className="flex items-center justify-center w-full gap-4 relative z-10 pt-10"  href="/explore">
-          <Button className="bg-gradient-to-t from-cyan-500 to-green-400 select-none w-max">See Save Destinations</Button>
+        <Link
+          id="destinations_button"
+          className="flex items-center justify-center w-full gap-4 relative z-10 pt-10"
+          href="/explore"
+        >
+          <Button className="bg-gradient-to-t from-cyan-500 to-green-400 select-none w-max">
+            See Save Destinations
+          </Button>
         </Link>
       </div>
     </motion.div>

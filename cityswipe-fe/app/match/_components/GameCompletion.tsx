@@ -5,10 +5,10 @@ import { motion } from "framer-motion";
 
 // import { BgPattern } from "@/components/ui";
 
-import { destination as initialDestination } from "./destination.api";
+import { savedDestination as initialDestination } from "./savedDestination.api";
 import { games, getInitialGame } from "./games.api";
 
-import { useDestinationContext } from "./destinationContext";
+import { useSavedDestinationContext } from "./savedDestinationContext";
 import { useGameContext } from "./gameContext";
 
 const GameCompletion = () => {
@@ -19,7 +19,7 @@ const GameCompletion = () => {
 
   const initialGame = getInitialGame(0);
 
-  const [destination, setDestination] = useDestinationContext();
+  const [destination, setDestination] = useSavedDestinationContext();
 
   const memoizedStats = useRef({
     destination_count: structuredClone(destination.destinations.length),

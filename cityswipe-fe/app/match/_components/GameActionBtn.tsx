@@ -1,7 +1,7 @@
 "use client";
 import { motion } from "framer-motion";
-import BadIcon from "./BadIcon";
-import GoodIcon from "./GoodIcon";
+import BadIcon from "../../../components/ui/BadIcon";
+import GoodIcon from "../../../components/ui/GoodIcon";
 
 import { IsDragOffBoundary } from "@/lib/games.type";
 

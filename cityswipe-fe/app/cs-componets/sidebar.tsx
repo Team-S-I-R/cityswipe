@@ -12,7 +12,7 @@ import {
     TooltipTrigger,
   } from "@/components/ui/tooltip"
   import { useRouter } from "next/navigation";
-  import { destination } from "../match/_components/destination.api";
+  import { savedDestination } from "../match/_components/savedDestination.api";
   import { DestinationItem } from "@/lib/destination.type";
 import { useEffect } from "react";
 
@@ -61,7 +61,7 @@ export default function Sidebar() {
         }, 300);
     }
 
-    console.log(destination.destinations[0]?.illustration)
+    console.log(savedDestination.destinations[0]?.illustration)
 
 
     
@@ -121,7 +121,7 @@ export default function Sidebar() {
 
             <div className="w-full h-[80%] no-scrollbar overflow-y-scroll">
 
-                {destination.destinations.map((dest: DestinationItem) => {
+                {savedDestination.destinations.map((dest: DestinationItem) => {
                     const { cityAndCountry } = extractMatchInfo(dest.location);
                     return (
                         <>

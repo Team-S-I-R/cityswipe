@@ -9,7 +9,7 @@ import { streamConversation, getConversationHistory, Message, streamFlirtatiousC
 import { useEffect } from "react";
 import { readStreamableValue } from "ai/rsc";
 import { ArrowUp } from "lucide-react";
-import { destination } from "../match/_components/destination.api";
+import { savedDestination } from "../match/_components/savedDestination.api";
 import { DestinationItem } from "@/lib/destination.type";
 export default function Chat() {
 
@@ -64,7 +64,7 @@ export default function Chat() {
             <div className="absolute border-b border-primary/20 top-0 w-full h-[10%] flex justify-between place-items-center px-5">
                 
                 {selectedMatch == '' ? (
-                    <h2 className="select-none">You have matched with <strong>{destination.destinations[0]?.location}</strong>!</h2>
+                    <h2 className="select-none">You have matched with <strong>{savedDestination.destinations[0]?.location}</strong>!</h2>
                 ) : (
                     <h2 className="select-none">You have matched with <strong>{selectedMatch}</strong>!</h2>
                 )}
