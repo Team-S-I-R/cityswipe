@@ -1,25 +1,27 @@
 "use client";
 import { useRef } from "react";
 import { motion } from "framer-motion";
+
+// To be implemented
 // import { Button } from "@/components/ui";
 
 // import { BgPattern } from "@/components/ui";
 
-import { destination as initialDestination } from "./destination.api";
-import { games, getInitialGame } from "./games.api";
+import { savedDestination as initialDestination } from "../../../api/savedDestination.api";
 
-import { useDestinationContext } from "./destinationContext";
-import { useGameContext } from "./gameContext";
+import { useSavedDestinationContext } from "../../../context/savedDestinationContext";
+import { useDestinationSetContext } from "../../../context/destinationSetContext";
+import { getInitialSet } from "@/api/destinationSets.api";
 
 const GameCompletion = () => {
-  const [game, setGame] = useGameContext();
+  const [destinationSet, setDestinationSet] = useDestinationSetContext();
 
   // const cardsAmount = games[game.id]?.cards.length;
   const cardsAmount = 50;
 
-  const initialGame = getInitialGame(0);
+  const initialDestinationSet = getInitialSet(0);
 
-  const [destination, setDestination] = useDestinationContext();
+  const [destination, setDestination] = useSavedDestinationContext();
 
   const memoizedStats = useRef({
     destination_count: structuredClone(destination.destinations.length),

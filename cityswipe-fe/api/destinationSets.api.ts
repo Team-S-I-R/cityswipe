@@ -1,6 +1,6 @@
-import { Game, Card } from "@/lib/games.type";
+import { DestinationSet, Destination } from "@/lib/destinationSet.type";
 
-export const games: Game[] = [
+export const destinationSets: DestinationSet[] = [
   {
     id: 1,
     cards: [
@@ -35,17 +35,17 @@ export const games: Game[] = [
   },
 ];
 
-export const getGames = async (): Promise<Game[]> => games;
+export const getDestinationSets = async (): Promise<DestinationSet[]> => destinationSets;
 
-export const getGame = async (gameId: number): Promise<Game> => {
-  return { id: gameId, cards: reversedCards(games[gameId].cards) };
+export const getDestinationSet = async (destinationSetId: number): Promise<DestinationSet> => {
+  return { id: destinationSetId, cards: reversedCards(destinationSets[destinationSetId].cards) };
 };
 
-export const getInitialGame = (gameId: number) => {
-  return { id: gameId, cards: reversedCards(games[gameId].cards) };
+export const getInitialSet = (destinationSetId: number) => {
+  return { id: destinationSetId, cards: reversedCards(destinationSets[destinationSetId].cards) };
 };
 
-const reversedCards = (cards: Card[]) => {
+const reversedCards = (cards: Destination[]) => {
   return cards
     .map((item, i) => {
       return { ...item, id: i + 1 };

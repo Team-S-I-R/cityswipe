@@ -1,9 +1,9 @@
 import { DestinationItem } from "@/lib/destination.type";
-import { Card, CardSwipeDirection } from "@/lib/games.type";
+import { Destination, CardSwipeDirection } from "@/lib/destinationSet.type";
 
 type Props = {
   direction: CardSwipeDirection | "";
-  cards: Card[];
+  cards: Destination[];
   destinations: DestinationItem[];
 };
 

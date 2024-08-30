@@ -26,7 +26,7 @@ import {
     DialogTrigger,
   } from "@/components/ui/dialog"
 import { useFormState, useFormStatus } from "react-dom";
-import { useGameContext } from "./match/_components/gameContext";
+import { useDestinationSetContext } from "../context/destinationSetContext";
 import { redirect } from "next/navigation";
 import { Description } from "@radix-ui/react-dialog";
 import { createClient } from 'pexels';
@@ -45,7 +45,7 @@ export default function Hero() {
     const [destinations, setDestinations] = useState<any[]>([]);
     const [conversation, setConversation] = useState<Message[]>([]);
     const [input, setInput] = useState<string>("");
-    const [game, setGame] = useGameContext();
+    const [destinationSet, setDestinationSet] = useDestinationSetContext();
     const router = useRouter();
     const [loadingMatches, setLoadingMatches] = useState(false);
     // for pexals
@@ -190,7 +190,7 @@ export default function Hero() {
     
         const validDestinations = generatedDestinations.filter(destination => destination !== null);
         setDestinations(validDestinations);
-        await setGame({
+        await setDestinationSet({
             id: 1,
             cards: validDestinations.reverse(),
         });

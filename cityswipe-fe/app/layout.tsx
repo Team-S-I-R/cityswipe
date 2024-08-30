@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { CitySwipeProvider } from './citySwipeContext';
 import "./globals.css";
-import GameProvider from "./match/_components/gameContext";
-import { getGame } from "./match/_components/games.api";
-import DestinationProvider from "./match/_components/destinationContext";
-import { getDestination } from "./match/_components/destination.api";
+import DestinationSetProvider from "../context/destinationSetContext";
+import { getDestinationSet } from "../api/destinationSets.api";
+import SavedDestinationProvider from "../context/savedDestinationContext";
+import { getDestination } from "../api/savedDestination.api";
 import { Analytics } from '@vercel/analytics/react';
 import { ClerkProvider } from "@clerk/nextjs";
 
@@ -21,22 +21,20 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const game = await getGame(0);
-  const destination = await getDestination();
+  const destinationSet = await getDestinationSet(0);
+  const savedDestination = await getDestination();
   return (
     <ClerkProvider>
       <html lang="en" className="overflow-hidden">
         <body className={`${inter.className}`}>
         <Analytics />
           <CitySwipeProvider>
-            <DestinationProvider destination={destination}>
-              <GameProvider game={game}>     
-                  {children}
-                </GameProvider>
-            </DestinationProvider>
+            <SavedDestinationProvider savedDestination={savedDestination}>
+              <DestinationSetProvider destinationSet={destinationSet}>{children}</DestinationSetProvider>
+            </SavedDestinationProvider>
           </CitySwipeProvider>
         </body>
       </html>
     </ClerkProvider>
-  ); 
+  );
 }

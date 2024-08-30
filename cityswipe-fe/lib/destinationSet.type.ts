@@ -1,9 +1,9 @@
-export type Game = {
+export type DestinationSet = {
    id: number;
-   cards: Card[];
+   cards: Destination[];
  };
  
- export type Card = {
+ export type Destination = {
    id?: number;
    location: string;
    description: string;
