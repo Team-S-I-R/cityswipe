@@ -30,7 +30,7 @@ import { useGameContext } from "./match/_components/gameContext";
 import { redirect } from "next/navigation";
 import { Description } from "@radix-ui/react-dialog";
 import { createClient } from 'pexels';
-import { motion } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 
 export default function Hero() {
     
@@ -232,6 +232,7 @@ export default function Hero() {
         const sanText = text.replace(/[*_~`]/g, '');
         return sanText; 
     }
+
     useEffect(() => {
         const words = ["match", "with", "your", "destination"];
         let currentIndex = 0;
@@ -253,13 +254,22 @@ export default function Hero() {
         };
     }, [hoverAnimationEnter]);
 
+    // 🌳🌳🌳 Starting the animations --------------------------------------------------------------------------------
+
+    // animations
+    const variants = {
+        open: { opacity: 1, y: 0 },
+        closed: { opacity: 0, y: "100%" },
+    }
+
+    // 🪦🪦🪦 animations ends here ------------------------------------------------------------------------------------
+
 
     return (
         <>
         
-        
+
         <div className="flex flex-col w-full place-items-center gap-6">
-            {!isStarted ? (
                 <>
   
                     <div className="z-[-1] top-0 left-0 w-screen h-screen absolute">
@@ -304,60 +314,69 @@ export default function Hero() {
                         {updateHeart == true && <span>❤️</span>}
                     </Button>
 
-                    {/* <Dialog>
-                        <DialogTrigger><h1 className="select-none font-bold underline">Join Waitlist</h1>
-                        </DialogTrigger>
-                        <DialogContent className="scale-[80%] sm:scale-100">
-                            <DialogHeader>
-                            <DialogTitle>Join our wait list for early access!</DialogTitle>
-                            <DialogDescription>
-                                
-
-                                <p>When we launch you will receive first access to our full beta!</p>
-
-                                <form className="flex flex-col gap-6 my-5" action={action}>
-                                
-                                <p className="flex place-self-center text-green-500">{formState.message}</p>
-
-                                <Input type="text" name="Name" placeholder="Name" className="w-full" />
-                                <Input type="email" name="Email" placeholder="Email address" className="w-full" />
-                                <SubmitButton />
-                                </form>
-
-                                <p>Thank you for the support!</p>
-
-                                <h1 className="select-none font-bold absolute bottom-0 right-0 m-3">cityswipe</h1>
-
-                            </DialogDescription>
-                            </DialogHeader>
-                        </DialogContent>
-                    </Dialog> */}
-
-
                 </>
-            ) : (
+
+                {/* the quiz */}
                 <>
-                    <div id="question-container" className="w-full text-[12px] h-64 gap-6 flex flex-col place-items-center place-content-center">
+                <AnimatePresence mode="wait">
+                    <motion.div 
+                     initial="closed"
+                     animate={isStarted ? "open" : "closed"}
+                     variants={variants}
+                     transition = {{duration: 0.75}}
+                    id="question-container" className="w-full sm:w-[90vw] rounded-t-xl shadow-2xl absolute bottom-0 h-full sm:h-[85vh] bg-white text-[12px] h-64 gap-6 flex flex-col place-items-center place-content-center">
                         
-                        <p className="text-[14px] w-[calc(100%-32px)] text-center flex place-content-center">{quizQuestions[questionKeys[currentQuestionIndex] as keyof typeof quizQuestions]}</p>
+                        <h1 className="absolute hidden sm:flex w-[calc(100%-64px)] text-center text-muted-foreground top-[5%] text-[14px]">Take the Cityswipe quiz to find your perfect destination!</h1>
+                        {/* mobile */}
+                        <h1 className="sm:hidden flex w-[calc(100%-32px)] text-center w-md text-muted-foreground place-content-center text-[10px]">Take the Cityswipe quiz to find your perfect destination!</h1>
+
+                        <p className="text-[14px] w-[calc(100%-64px)] text-center flex place-content-center font-bold">{quizQuestions[questionKeys[currentQuestionIndex] as keyof typeof quizQuestions]}</p>
                         
-                        <div className="flex w-full gap-6 place-content-center">
-                        {responses[currentQuestionIndex]?.length > 1 && 
-                        <Button className="hover:scale-[95%] text-[12px] p-0 m-0 select-none bg-transparent hover:bg-transparent text-primary hover:opacity-80 flex place-self-start" onClick={handlePrevious} disabled={currentQuestionIndex === 0}>Back</Button>
-                        }
-                        <Input 
-                            id="response-input" 
-                            type="text" 
-                            className="w-1/4" 
-                            autoComplete="off"
-                            value={sanitizeText(responses[currentQuestionIndex] || '')}
-                            onChange={handleInputChange}
-                        />
-                        {responses[currentQuestionIndex]?.length > 1 && 
-                            <Button className="hover:scale-[95%] text-[12px] bg-gradient-to-t from-cyan-500 to-green-400  select-none" onClick={handleNext}>Next</Button>
-                        }
+                        <div className="hidden sm:flex w-full gap-6 place-content-center">
+                            {responses[currentQuestionIndex]?.length > 1 && 
+                            <Button className="hover:scale-[95%] text-[12px] p-0 m-0 select-none bg-transparent hover:bg-transparent text-primary hover:opacity-80 flex place-self-start" onClick={handlePrevious} disabled={currentQuestionIndex === 0}>Back</Button>
+                            }
+                            <Input 
+                                id="response-input" 
+                                type="text" 
+                                className="w-1/4" 
+                                autoComplete="off"
+                                value={sanitizeText(responses[currentQuestionIndex] || '')}
+                                onChange={handleInputChange}
+                            />
+                            {responses[currentQuestionIndex]?.length > 1 && 
+                                <Button className="hover:scale-[95%] text-[12px] bg-gradient-to-t from-cyan-500 to-green-400  select-none" onClick={handleNext}>Next</Button>
+                            }
                         </div>
-                    </div>
+
+                        {/* mobile */}
+                        <div className="flex sm:hidden w-full flex-col gap-6 place-content-center place-items-center">
+                            <Input 
+                                id="response-input" 
+                                type="text" 
+                                className="w-[80%]" 
+                                autoComplete="off"
+                                value={sanitizeText(responses[currentQuestionIndex] || '')}
+                                onChange={handleInputChange}
+                            />
+                            <div className="flex w-full gap-6 justify-center">
+
+                                {responses[currentQuestionIndex]?.length > 1 && 
+                                <Button className="hover:scale-[95%] text-[12px] px-0 m-0 select-none bg-transparent hover:bg-transparent text-primary hover:opacity-80 flex place-self-start" onClick={handlePrevious} disabled={currentQuestionIndex === 0}>Back</Button>
+                                }
+                                {responses[currentQuestionIndex]?.length > 1 && 
+                                    <Button className="hover:scale-[95%] text-[12px] bg-gradient-to-t from-cyan-500 to-green-400  select-none" onClick={handleNext}>Next</Button>
+                                }
+
+                            </div>
+                        </div>
+
+                        <button className=" w-max underline h-5 absolute bottom-10 right-10 bg-transparent hover:bg-transparent text-primary hover:opacity-80 z-10" onClick={() => handleHomeFunction()}>
+                            Go back
+                        </button>
+
+                    </motion.div>
+                    </AnimatePresence>
 
 
                     {isStarted && currentQuestionIndex === questionKeys.length - 1 &&
@@ -386,11 +405,7 @@ export default function Hero() {
                             </ul>
                             </div> */}
                     {/* debugging stuff end */}
-        <button className=" w-5 h-5 absolute bottom-10 right-10 bg-transparent hover:bg-transparent text-primary hover:opacity-80 z-10" onClick={() => handleHomeFunction()}>
-            <House className="absolute bottom-10 right-10 w-5 h-5" />
-        </button>
                 </>
-            )}
         </div> 
  
 
