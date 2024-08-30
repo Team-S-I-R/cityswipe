@@ -121,7 +121,7 @@ const GameCards = () => {
       >
         <div
           id="cardsWrapper"
-          className="w-full relative overflow-hidden place-content-center place-items-center h-[600px] flex flex-col relative z-10"
+          className="w-full relative overflow-hidden place-content-center place-items-center h-full sm:min-h-[600px] flex flex-col relative"
         >
           <AnimatePresence>
             {cards.map((card, i) => {
@@ -131,7 +131,7 @@ const GameCards = () => {
                 <motion.div
                   key={`card-${i}`}
                   id={`card-${card.id}`}
-                  className={`w-full absolute top-[5%] h-[600px] flex place-content-center place-items-center z-10`}
+                  className={`w-full absolute top-[5%] h-[calc(100%-15%)] sm:min-h-[600px] flex place-content-center place-items-center z-10`}
                   variants={cardVariants}
                   initial="remainings"
                   animate={

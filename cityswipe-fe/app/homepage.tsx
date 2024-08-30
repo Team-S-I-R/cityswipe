@@ -294,9 +294,12 @@ export default function Hero() {
                                 <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-white via-white to-transparent pointer-events-none"></div>
                             </div>
 
-                    </div>   
+                    </div>  
 
-                    <h2 className="select-none text-[14px]">Like Tinder, but for your vacations!</h2>                 
+                    <h2 className="select-none text-[14px]">
+                    <span className="font-bold">CitySwipe, </span>  
+                        like Tinder, but for your vacations!
+                    </h2>                 
                    
                     <h1 className="text-5xl mb-3 w-[80%] font-bold flex gap-2 place-content-center select-none relative flex-wrap">
                         <span id="match" onMouseOver={() => hoverAnimationEnter('match')} onMouseLeave={() => hoverAnimationLeave('match')} className="cursor-pointer">Match </span>

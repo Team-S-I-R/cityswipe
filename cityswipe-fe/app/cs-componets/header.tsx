@@ -104,13 +104,13 @@ import clogo from '../assets/imgs/path6.png'
         initial={{ opacity: 0, y: 100 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1.5 }}
-        className="flex absolute z-[20] top-10 px-8 w-full place-items-center place-content-center justify-between">
+        className="hidden sm:flex absolute z-[20] top-10 px-8 w-full place-items-center place-content-center justify-between">
         
           <>
             <Link href="/">
             <div className="flex gap-2 place-items-center place-content-center">
-                <img src={clogo.src} className="w-max h-[10px]"/>
-                <h1 className="select-none text-[15px] font-bold">cityswipe</h1>
+                {/* <img src={clogo.src} className="w-max h-[10px] mt-1"/> */}
+                <h1 className="select-none text-[15px] font-bold ">Cityswipe</h1>
             </div>
             </Link>
 
@@ -225,6 +225,45 @@ import clogo from '../assets/imgs/path6.png'
                   </NavigationMenuItem>
               </NavigationMenuList>
               </NavigationMenu> */}
+            </>
+        
+        </motion.div>  
+
+        <motion.div 
+        initial={{ opacity: 0, y: 100 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1.5 }}
+        className="flex sm:hidden absolute z-[20] top-10 px-8 w-full place-items-center place-content-center justify-between">
+        
+          <>
+            <Link href="/">
+            <div className="flex gap-2 place-items-center place-content-center">
+                <img src={clogo.src} className="w-max h-[10px] mt-1"/>
+                {/* <h1 className="select-none text-[15px] ">Cityswipe</h1>  */}
+            </div>
+            </Link>
+
+            {/* <div className="flex text-[12px] select-none gap-4 place-items-center place-content-center">
+
+                <SignedOut>
+
+        
+              <Link href="/sign-in">
+                <button className="shadow-md hover:shadow-lg hover:scale-[97%] px-4 py-2 rounded-lg">Log In</button>
+              </Link>
+              <Link href="/sign-up">
+                <button className="shadow-md px-4 py-2 hover:shadow-lg hover:scale-[97%] rounded-lg text-white bg-gradient-to-t from-cyan-500 to-green-400">Sign Up</button>
+              </Link>
+              
+                
+                </SignedOut>
+                
+                <SignedIn>
+                
+                  <UserButton />
+                
+                </SignedIn>
+            </div> */}
             </>
         
         </motion.div>  
