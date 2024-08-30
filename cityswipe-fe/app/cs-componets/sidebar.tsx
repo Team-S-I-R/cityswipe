@@ -66,11 +66,12 @@ export default function Sidebar() {
 
     
     return (
-        <div className="w-full h-full flex flex-col gap-6" > 
+        <div className="w-full h-full bg-gray-100 p-5 flex flex-col gap-6" > 
         
-            <div className="w-full h-[15%]">
+            <div className="w-full h-[10%]">
 
-                <div className="w-full flex h-max bg-gradient-to-t from-cyan-500 to-green-400 p-5">
+                <div className="w-full flex h-[60px]">
+                {/* <div className="w-full flex h-[60px] bg-gradient-to-t from-cyan-500 to-green-400 p-3"> */}
                     <div className="w-1/2 flex place-content-start place-items-center justify-start h-full gap-5">
                         <Link onClick={reload} href="/">
                             <div className="rounded-full flex place-items-center place-content-center p-2 cursor-pointer bg-white w-10 h-10">
@@ -112,31 +113,31 @@ export default function Sidebar() {
 
                 </div>
 
-                <p className="p-5">Matches</p>
+                <p className="py-4 text-muted-foreground font-bold">Matches</p>
 
             </div>
 
 
             {/* mapped destinations */}
 
-            <div className="w-full h-[80%] no-scrollbar overflow-y-scroll">
+            <div className="w-full h-full  no-scrollbar overflow-y-scroll">
 
                 {savedDestination.destinations.map((dest: DestinationItem) => {
                     const { cityAndCountry } = extractMatchInfo(dest.location);
                     return (
                         <>
-                        <div onClick={() => handleCityMatch(cityAndCountry, dest.illustration ?? '')} className="w-full relative h-max flex flex-col gap-[15px] overflow-hidden place-items-start">
-                            <div className="w-full  h-max py-4 cursor-pointer relative flex flex-col place-items-start place-content-center" 
+                        <div onClick={() => handleCityMatch(cityAndCountry, dest.illustration ?? '')} className="w-full relative h-max select-none hover:bg-gray-200 px-4 py-1 rounded-xl hover:scale-[102%] flex flex-col gap-[15px] overflow-hidden place-items-start">
+                            <div className="w-full  h-max cursor-pointer relative flex flex-col place-items-start place-content-center" 
                             // style={{ backgroundImage: `url(${dest.illustration})`, backgroundRepeat: 'no-repeat', backgroundSize: 'fill', backgroundPosition: 'center' }}
                             key={dest.id}>
-                                <div className="px-3 w-full mr-3 flex gap-1 place-items-center place-content-center justify-between">
+                                <div className="w-full mr-3 flex gap-1 place-items-center place-content-center justify-between">
                                     
                                     <div className="w-max flex gap-2 place-items-center place-content-center">
                                         <div className="w-[30px] h-[30px] rounded-full flex place-items-end place-content-end">
                                             {/* <div className="absolute z-[-1] bg-gradient-to-r from-white via-white to-transparent w-full h-full"></div> */}
-                                            <img className="relative rounded-full z-[-2] w-1/2 inset-0 h-full w-full object-cover z-[-1]" src={dest.illustration} alt="" />
+                                            <img className="rounded-full h-full  w-full object-cover" src={dest.illustration} alt="" />
                                         </div>
-                                        <h3 className="text-[18px] p-2 rounded-full w-max">{cityAndCountry.split(',')[0]}</h3>
+                                        <h3 className="text-[14px] p-2 rounded-full w-max">{cityAndCountry.split(',')[0]}</h3>
                                     </div>
 
                                     <p className="text-[10px] p-2 flex flex-col rounded-full font-bold w-max h-max">

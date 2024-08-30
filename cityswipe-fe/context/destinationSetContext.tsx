@@ -6,7 +6,7 @@ const useDestinationSetState = (initialDestination: DestinationSet) => useState<
 
 const DestinationSetContext = createContext<ReturnType<typeof useDestinationSetState> | null>(null);
 
-const DestinationProvider = ({
+const DestinationSetProvider = ({
   destinationSet: initialDestinationSet,
   children,
 }: {
@@ -22,7 +22,7 @@ const DestinationProvider = ({
   );
 };
 
-export default DestinationProvider;
+export default DestinationSetProvider;
 
 export const useDestinationSetContext = () => {
   const destinationSet = useContext(DestinationSetContext);

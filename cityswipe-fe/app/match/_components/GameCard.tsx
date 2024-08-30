@@ -23,7 +23,7 @@ import { createClient } from 'pexels';
 import { Button } from "@/components/ui/button";
 import { useCitySwipe } from "@/app/citySwipeContext";
 import handleResponse from "../_utils/handleResponse";
-
+import pimage from '../../assets/imgs/destination-img-1.jpg'
 
 // import SvgIconScoreLeaf from "@/components/svg/score-leaf.svg";
 
@@ -117,12 +117,17 @@ const GameCard = ({
     }));
   });
 
+  console.log("data",  data.illustration);
+
 
   return (
     <>
       <motion.div
+          initial={{ opacity: 0, y: 1000 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 5 }}
         id={`cardDrivenWrapper-${id}`}
-        className="absolute p-2 rounded-xl text-center w-full aspect-[100/150] pointer-events-none text-black origin-bottom shadow-card select-none"
+        className="absolute p-2 rounded-xl text-center w-[500px] h-[500px] pointer-events-none text-black top-[5%] shadow-card select-none transform translate-x-1/2 translate-y-1/2"
         style={{
           y: drivenY,
           rotate: drivenRotation,
@@ -154,10 +159,24 @@ const GameCard = ({
           </div>
 
           {/* theimage on the card */}
+          {data.illustration.length > 10 && (     
+            <Image
+              priority
+              className='absolute rounded w-full h-full object-cover object-center'
+              // src={data.illustration || placeholderImg}
+              src={data.illustration}
+              fill
+              sizes={`(max-width: 768px) 100vw, 250px`}
+              alt="car"
+            />
+          )}
+   
           <Image
             priority
             className='absolute rounded w-full h-full object-cover object-center'
-            src={data.illustration || placeholderImg}
+            // src={data.illustration || placeholderImg}
+            // src={pimage}
+            src=""
             fill
             sizes={`(max-width: 768px) 100vw, 250px`}
             alt="car"
