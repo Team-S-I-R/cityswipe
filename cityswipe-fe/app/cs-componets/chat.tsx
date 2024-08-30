@@ -75,7 +75,7 @@ export default function Chat() {
             {conversation.length < 1 && (
                 <>
 
-                    <div className="flex flex-col gap-2 place-items-center">
+                    <div className="flex flex-col select-none gap-2 place-items-center">
 
                         <div className="w-[80px] h-[80px] rounded-full">
                             <img className="object-cover w-full h-full rounded-full" src={chatImg} alt="" />
@@ -108,7 +108,7 @@ export default function Chat() {
                 </>
             )}
 
-            <div className="absolute border-t border-primary/20 flex justify-center px-5 gap-3 place-items-center bottom-0 w-full h-[7vh]">
+            <div className="absolute  flex justify-center px-5 gap-3 place-items-center bottom-0 w-full h-[9vh]">
             <div className="p-2 px-4 w-[70%]">
                 <Input
                 value={input}
@@ -120,13 +120,13 @@ export default function Chat() {
                     startChat();
                     }
                 }}
-                className="outline h-[25px] outline-primary/20"
+                className="outline h-[35px] outline-primary/20"
                 autoFocus
                 />
             </div>
 
             <button
-                className="bg-gradient-to-t from-cyan-500 to-green-400 p-2 rounded-full"
+                className="hover:scale-[95%] bg-gradient-to-t from-cyan-500 to-green-400 p-2 rounded-full"
                 onClick={() => startChat()}
             >
                 <ArrowUp className="text-white" size={20} />
