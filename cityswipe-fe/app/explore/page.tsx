@@ -7,10 +7,7 @@ import {
   } from "@/components/ui/resizable"
 import Chat from "../cs-componets/chat"
 import Sidebar from "../cs-componets/sidebar"
-import Header from "../cs-componets/header"
 import { useCitySwipe } from "../citySwipeContext"
-import Match from "../cs-componets/match"
-import { destination } from "../match/_components/destination.api"
 
 export default function Explore() {
     

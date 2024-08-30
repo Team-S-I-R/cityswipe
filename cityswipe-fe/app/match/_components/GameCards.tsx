@@ -5,20 +5,23 @@ import Link from "next/link";
 
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
-import {GameCard} from "./";
-import {GameActionBtn} from "./";
+import { GameCard } from "./";
+import { GameActionBtn } from "./";
 
 // import { BgPattern } from "@/components/ui";
-import { useGameContext } from "./gameContext";
+import { useDestinationSetContext } from "../../../context/destinationSetContext";
 // import { useUserContext } from "@/store/userContext";
 // import { themeColors } from "@/lib/theme";
 // import handleScore from "../_utils/handleScore";
 
 // import { GameActionBtn, GameCard } from "./";
 
-import { CardSwipeDirection, IsDragOffBoundary } from "@/lib/games.type";
-import { useDestinationContext } from "./destinationContext";
-import handleResponse from "./handleResponse";
+import {
+  CardSwipeDirection,
+  IsDragOffBoundary,
+} from "@/lib/destinationSet.type";
+import { useSavedDestinationContext } from "../../../context/savedDestinationContext";
+import handleResponse from "../_utils/handleResponse";
 import { Button } from "@/components/ui/button";
 
 export const easeInExpo = [0.7, 0, 0.84, 0];
@@ -34,12 +37,12 @@ const initialDrivenProps = {
 
 const GameCards = () => {
   // const [user, setUser] = useUserContext();
-  const [game, setGame] = useGameContext();
-  const [destination, setDestination] = useDestinationContext();
+  const [destinationSet, setDestinationSet] = useDestinationSetContext();
+  const [savedDestination, setSavedDestination] = useSavedDestinationContext();
 
   // const { score } = user;
-  const { cards } = game;
-  const { destinations } = destination;
+  const { cards } = destinationSet;
+  const { destinations } = savedDestination;
 
   const [direction, setDirection] = useState<CardSwipeDirection | "">("");
   const [isDragOffBoundary, setIsDragOffBoundary] =
@@ -51,22 +54,21 @@ const GameCards = () => {
     setDirection(btn);
   };
 
-  // This controlls the cards that people are swiping on. If left or right it removes that card from available cards left to swipe on in the first place
+  // This controls the cards that people are swiping on. If left or right it removes that card from available cards left to swipe on in the first place
   useEffect(() => {
     if (["left", "right"].includes(direction)) {
-      
-      setGame({
-        ...game,
-        cards: game.cards.slice(0, -1), // Slice the cards array to remove the last element
+      setDestinationSet({
+        ...destinationSet,
+        cards: destinationSet.cards.slice(0, -1), // Slice the cards array to remove the last element
+      });
+    }
+
+    // This updates the destinations array with the new destinations after a right swipe
+    direction === "right" &&
+      setSavedDestination({
+        destinations: handleResponse({ direction, cards, destinations }),
       });
 
-      
-      }
-    
-    direction === "right" && setDestination({
-      destinations: handleResponse({direction, cards, destinations}),
-    })
-      
     setDirection("");
   }, [direction]);
 
@@ -158,11 +160,10 @@ const GameCards = () => {
           className="flex items-center justify-center w-max h-max gap-4 relative z-10"
         >
           <motion.div
-          initial={{ opacity: 0, y: 1000 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 2 }}
+            initial={{ opacity: 0, y: 1000 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 2 }}
           >
-
             <GameActionBtn
               direction="left"
               ariaLabel="swipe left"
@@ -170,39 +171,38 @@ const GameCards = () => {
               isDragOffBoundary={isDragOffBoundary}
               onClick={() => handleActionBtnOnClick("left")}
             />
-
           </motion.div>
 
-            <motion.div
+          <motion.div
             initial={{ opacity: 0, y: 1000 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 2 }}            
-            >
-
-              <GameActionBtn
-                direction="right"
-                ariaLabel="swipe right"
-                scale={cardDrivenProps.buttonScaleGoodAnswer}
-                isDragOffBoundary={isDragOffBoundary}
-                onClick={() => handleActionBtnOnClick("right")}
-              />
-
-            </motion.div>
-
+            transition={{ duration: 2 }}
+          >
+            <GameActionBtn
+              direction="right"
+              ariaLabel="swipe right"
+              scale={cardDrivenProps.buttonScaleGoodAnswer}
+              isDragOffBoundary={isDragOffBoundary}
+              onClick={() => handleActionBtnOnClick("right")}
+            />
+          </motion.div>
         </div>
 
         <motion.div
-        initial={{ opacity: 0, y: 1000 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 4 }}
+          initial={{ opacity: 0, y: 1000 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 4 }}
         >
-
-          <Link id="destinations_button" className="flex items-center justify-center w-max gap-4 relative z-10 h-max"  href="/explore">
-            <Button className="text-[12px] bg-gradient-to-t from-cyan-500 to-green-400 select-none w-max">See Save Destinations</Button>
+          <Link
+            id="destinations_button"
+            className="flex items-center justify-center w-max gap-4 relative z-10 h-max"
+            href="/explore"
+          >
+            <Button className="text-[12px] bg-gradient-to-t from-cyan-500 to-green-400 select-none w-max">
+              See Save Destinations
+            </Button>
           </Link>
-
         </motion.div>
-
       </div>
     </motion.div>
   );
