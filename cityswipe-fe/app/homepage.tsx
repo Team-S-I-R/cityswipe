@@ -324,56 +324,58 @@ export default function Hero() {
                      animate={isStarted ? "open" : "closed"}
                      variants={variants}
                      transition = {{duration: 0.75}}
-                    id="question-container" className="w-full sm:w-[90vw] rounded-t-xl shadow-2xl absolute bottom-0 h-full sm:h-[85vh] bg-white text-[12px] h-64 gap-6 flex flex-col place-items-center place-content-center">
+                    id="question-container" className="w-full bg-red-500 rounded-t-xl shadow-2xl absolute bottom-0 h-full  bg-white text-[12px] h-64 gap-6 flex flex-col place-items-start place-content-center">
                         
-                        <h1 className="absolute hidden sm:flex w-[calc(100%-64px)] text-center text-muted-foreground top-[5%] text-[14px]">Take the Cityswipe quiz to find your perfect destination!</h1>
-                        {/* mobile */}
-                        <h1 className="sm:hidden flex w-[calc(100%-32px)] text-center w-md text-muted-foreground place-content-center text-[10px]">Take the Cityswipe quiz to find your perfect destination!</h1>
+                        <div className="flex flex-col w-full place-items-start px-8  gap-6">
 
-                        <p className="text-[14px] w-[calc(100%-64px)] text-center flex place-content-center font-bold">{quizQuestions[questionKeys[currentQuestionIndex] as keyof typeof quizQuestions]}</p>
-                        
-                        <div className="hidden sm:flex w-full gap-6 place-content-center">
-                            {responses[currentQuestionIndex]?.length > 1 && 
-                            <Button className="hover:scale-[95%] text-[12px] p-0 m-0 select-none bg-transparent hover:bg-transparent text-primary hover:opacity-80 flex place-self-start" onClick={handlePrevious} disabled={currentQuestionIndex === 0}>Back</Button>
-                            }
-                            <Input 
-                                id="response-input" 
-                                type="text" 
-                                className="w-1/4" 
-                                autoComplete="off"
-                                value={sanitizeText(responses[currentQuestionIndex] || '')}
-                                onChange={handleInputChange}
-                            />
-                            {responses[currentQuestionIndex]?.length > 1 && 
-                                <Button className="hover:scale-[95%] text-[12px] bg-gradient-to-t from-cyan-500 to-green-400  select-none" onClick={handleNext}>Next</Button>
-                            }
-                        </div>
+                            <h1 className="w-max w-md text-muted-foreground place-content-center text-[10px]">Take the Cityswipe quiz to find your perfect destination!</h1>
 
-                        {/* mobile */}
-                        <div className="flex sm:hidden w-full flex-col gap-6 place-content-center place-items-center">
-                            <Input 
-                                id="response-input" 
-                                type="text" 
-                                className="w-[80%]" 
-                                autoComplete="off"
-                                value={sanitizeText(responses[currentQuestionIndex] || '')}
-                                onChange={handleInputChange}
-                            />
-                            <div className="flex w-full gap-6 justify-center">
-
+                            <p className="text-3xl text-center sm:text-left sm:text-[44px] w-full font-bold">{quizQuestions[questionKeys[currentQuestionIndex] as keyof typeof quizQuestions]}</p>
+                            
+                            <div className="hidden sm:flex w-full gap-6">
                                 {responses[currentQuestionIndex]?.length > 1 && 
-                                <Button className="hover:scale-[95%] text-[12px] px-0 m-0 select-none bg-transparent hover:bg-transparent text-primary hover:opacity-80 flex place-self-start" onClick={handlePrevious} disabled={currentQuestionIndex === 0}>Back</Button>
+                                <Button className="hover:scale-[95%] text-[12px] p-0 m-0 select-none bg-transparent hover:bg-transparent text-primary hover:opacity-80 flex place-self-start" onClick={handlePrevious} disabled={currentQuestionIndex === 0}>Back</Button>
                                 }
+                                <Input 
+                                    id="response-input" 
+                                    type="text" 
+                                    className="w-full" 
+                                    autoComplete="off"
+                                    value={sanitizeText(responses[currentQuestionIndex] || '')}
+                                    onChange={handleInputChange}
+                                />
                                 {responses[currentQuestionIndex]?.length > 1 && 
                                     <Button className="hover:scale-[95%] text-[12px] bg-gradient-to-t from-cyan-500 to-green-400  select-none" onClick={handleNext}>Next</Button>
                                 }
-
                             </div>
-                        </div>
 
-                        <button className=" w-max underline h-5 absolute bottom-10 right-10 bg-transparent hover:bg-transparent text-primary hover:opacity-80 z-10" onClick={() => handleHomeFunction()}>
-                            Go back
-                        </button>
+                            {/* mobile */}
+                            <div className="flex sm:hidden w-full flex-col gap-6 place-content-center place-items-center">
+                                <Input 
+                                    id="response-input" 
+                                    type="text" 
+                                    className="w-[80%]" 
+                                    autoComplete="off"
+                                    value={sanitizeText(responses[currentQuestionIndex] || '')}
+                                    onChange={handleInputChange}
+                                />
+                                <div className="flex w-full gap-6 justify-center">
+
+                                    {responses[currentQuestionIndex]?.length > 1 && 
+                                    <Button className="hover:scale-[95%] text-[12px] px-0 m-0 select-none bg-transparent hover:bg-transparent text-primary hover:opacity-80 flex place-self-start" onClick={handlePrevious} disabled={currentQuestionIndex === 0}>Back</Button>
+                                    }
+                                    {responses[currentQuestionIndex]?.length > 1 && 
+                                        <Button className="hover:scale-[95%] text-[12px] bg-gradient-to-t from-cyan-500 to-green-400  select-none" onClick={handleNext}>Next</Button>
+                                    }
+
+                                </div>
+                            </div>
+
+                            <button className=" w-max underline h-5 absolute bottom-10 right-10 bg-transparent hover:bg-transparent text-primary hover:opacity-80 z-10" onClick={() => handleHomeFunction()}>
+                                Go back
+                            </button>
+
+                        </div>
 
                     </motion.div>
                     </AnimatePresence>
