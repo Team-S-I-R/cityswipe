@@ -3,20 +3,20 @@ import { motion, AnimatePresence, cubicBezier } from "framer-motion";
 import { GameCompletion, GameCards } from "./_components";
 
 
-import { savedDestination as initialDestination } from "./_components/savedDestination.api";
-import { getInitialGame } from "./_components/games.api";
-import { useGameContext } from "./_components/gameContext";
+import { savedDestination as initialDestination } from "../../api/savedDestination.api";
+import { getInitialSet } from "../../api/destinationSets.api";
+import { useDestinationSetContext } from "../../context/destinationSetContext";
 import { useEffect } from "react";
-import { useSavedDestinationContext } from "./_components/savedDestinationContext";
+import { useSavedDestinationContext } from "../../context/savedDestinationContext";
 import { Button } from "@/components/ui/button";
 import Header from "../cs-componets/header";
 
 const Match = () => {
   // "game" is the list of games 
-  const [game, setGame] = useGameContext();
+  const [destinationSet, setDestinationSet] = useDestinationSetContext();
   const [_, setDestination] = useSavedDestinationContext();
 
-  const initialGame = getInitialGame(0);
+  const initialDestinationSet = getInitialSet(0);
 
   useEffect(() => {
     setDestination(initialDestination);
@@ -27,7 +27,7 @@ const Match = () => {
     // });
   }, []);
 
-  const isCardStockEmpty = game.cards.length === 0;
+  const isCardStockEmpty = destinationSet.cards.length === 0;
   const gameScreenVariants = {
     initial: {
       opacity: 0,

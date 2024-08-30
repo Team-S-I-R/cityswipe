@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import BadIcon from "../../../components/ui/BadIcon";
 import GoodIcon from "../../../components/ui/GoodIcon";
 
-import { IsDragOffBoundary } from "@/lib/games.type";
+import { IsDragOffBoundary } from "@/lib/destinationSet.type";
 
 const actionPropsMatrix = {
   left: {

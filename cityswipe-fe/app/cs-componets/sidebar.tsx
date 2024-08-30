@@ -12,7 +12,7 @@ import {
     TooltipTrigger,
   } from "@/components/ui/tooltip"
   import { useRouter } from "next/navigation";
-  import { savedDestination } from "../match/_components/savedDestination.api";
+  import { savedDestination } from "../../api/savedDestination.api";
   import { DestinationItem } from "@/lib/destination.type";
 import { useEffect } from "react";
 

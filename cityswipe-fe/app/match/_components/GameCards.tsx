@@ -9,16 +9,16 @@ import { GameCard } from "./";
 import { GameActionBtn } from "./";
 
 // import { BgPattern } from "@/components/ui";
-import { useGameContext } from "./gameContext";
+import { useDestinationSetContext } from "../../../context/destinationSetContext";
 // import { useUserContext } from "@/store/userContext";
 // import { themeColors } from "@/lib/theme";
 // import handleScore from "../_utils/handleScore";
 
 // import { GameActionBtn, GameCard } from "./";
 
-import { CardSwipeDirection, IsDragOffBoundary } from "@/lib/games.type";
-import { useSavedDestinationContext } from "./savedDestinationContext";
-import handleResponse from "./handleResponse";
+import { CardSwipeDirection, IsDragOffBoundary } from "@/lib/destinationSet.type";
+import { useSavedDestinationContext } from "../../../context/savedDestinationContext";
+import handleResponse from "../_utils/handleResponse";
 import { Button } from "@/components/ui/button";
 
 export const easeInExpo = [0.7, 0, 0.84, 0];
@@ -34,11 +34,11 @@ const initialDrivenProps = {
 
 const GameCards = () => {
   // const [user, setUser] = useUserContext();
-  const [game, setGame] = useGameContext();
+  const [destinationSet, setDestinationSet] = useDestinationSetContext();
   const [savedDestination, setSavedDestination] = useSavedDestinationContext();
 
   // const { score } = user;
-  const { cards } = game;
+  const { cards } = destinationSet;
   const { destinations } = savedDestination;
 
   const [direction, setDirection] = useState<CardSwipeDirection | "">("");
@@ -54,9 +54,9 @@ const GameCards = () => {
   // This controls the cards that people are swiping on. If left or right it removes that card from available cards left to swipe on in the first place
   useEffect(() => {
     if (["left", "right"].includes(direction)) {
-      setGame({
-        ...game,
-        cards: game.cards.slice(0, -1), // Slice the cards array to remove the last element
+      setDestinationSet({
+        ...destinationSet,
+        cards: destinationSet.cards.slice(0, -1), // Slice the cards array to remove the last element
       });
     }
 

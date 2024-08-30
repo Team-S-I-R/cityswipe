@@ -9,7 +9,7 @@ import { streamConversation, getConversationHistory, Message, streamFlirtatiousC
 import { useEffect } from "react";
 import { readStreamableValue } from "ai/rsc";
 import { ArrowUp } from "lucide-react";
-import { savedDestination } from "../match/_components/savedDestination.api";
+import { savedDestination } from "../../api/savedDestination.api";
 import { DestinationItem } from "@/lib/destination.type";
 export default function Chat() {
 

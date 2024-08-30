@@ -1,13 +1,9 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
-import { useState, Dispatch, SetStateAction, useEffect } from "react";
+import { useState, Dispatch, SetStateAction } from "react";
 import Image from "next/image";
 import placeholderImg from'../../assets/imgs/white.png'
-import maskImage from'../../assets/imgs/mask.png'
 
-// import { Player } from "@lottiefiles/react-lottie-player";
-// import lottieJson from "@/assets/animations/data.json";
 import { useMediaQuery } from "usehooks-ts";
 
 import {
@@ -17,25 +13,23 @@ import {
   useMotionValueEvent,
 } from "framer-motion";
 
-import { games } from "./games.api";
-import { useGameContext } from "./gameContext";
-// import { useUserContext } from "@/store/userContext";
-// import handleScore from "../_utils/handleScore";
+import { destinationSets } from "../../../api/destinationSets.api";
+import { useDestinationSetContext } from "../../../context/destinationSetContext";
 
-import { type Card } from "@/lib/games.type";
-import { useSavedDestinationContext } from "./savedDestinationContext";
+import { type Destination } from "@/lib/destinationSet.type";
+import { useSavedDestinationContext } from "../../../context/savedDestinationContext";
 import { DestinationItem } from "@/lib/destination.type";
 import { createClient } from 'pexels';
 import { Button } from "@/components/ui/button";
 import { useCitySwipe } from "@/app/citySwipeContext";
-import handleResponse from "./handleResponse";
+import handleResponse from "../_utils/handleResponse";
 
 
 // import SvgIconScoreLeaf from "@/components/svg/score-leaf.svg";
 
 type Props = {
   id?: number;
-  data: Card;
+  data: Destination;
   setCardDrivenProps: Dispatch<SetStateAction<any>>;
   setIsDragging: Dispatch<SetStateAction<any>>;
   isDragging: boolean;
@@ -59,9 +53,9 @@ const GameCard = ({
   // const [user, setUser] = useUserContext();
   // const { score, previousScore } = user;
 
-  const [game, setGame] = useGameContext();
+  const [destinationSet, setDestinationSet] = useDestinationSetContext();
   const [savedDestination, setSavedDestination] = useSavedDestinationContext();
-  const { cards } = game;
+  const { cards } = destinationSet;
   
   // const cardsAmount = games[game.id]?.cards.length; //fix
   let cardsAmount = 50; //fix

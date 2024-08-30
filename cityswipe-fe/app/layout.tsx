@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { CitySwipeProvider } from './citySwipeContext';
 import "./globals.css";
-import GameProvider from "./match/_components/gameContext";
-import { getGame } from "./match/_components/games.api";
-import SavedDestinationProvider from "./match/_components/savedDestinationContext";
-import { getDestination } from "./match/_components/savedDestination.api";
+import GameProvider from "../context/destinationSetContext";
+import { getDestinationSet } from "../api/destinationSets.api";
+import SavedDestinationProvider from "../context/savedDestinationContext";
+import { getDestination } from "../api/savedDestination.api";
 import { Analytics } from '@vercel/analytics/react';
 
 
@@ -21,7 +21,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const game = await getGame(0);
+  const destinationSet = await getDestinationSet(0);
   const savedDestination = await getDestination();
   return (
     <html lang="en" className="overflow-hidden">
@@ -29,7 +29,7 @@ export default async function RootLayout({
       <Analytics />
         <CitySwipeProvider>
           <SavedDestinationProvider savedDestination={savedDestination}>
-            <GameProvider game={game}>{children}</GameProvider>
+            <GameProvider destinationSet={destinationSet}>{children}</GameProvider>
           </SavedDestinationProvider>
         </CitySwipeProvider>
       </body>

@@ -1,23 +1,25 @@
 "use client";
 import { useRef } from "react";
 import { motion } from "framer-motion";
+
+// To be implemented
 // import { Button } from "@/components/ui";
 
 // import { BgPattern } from "@/components/ui";
 
-import { savedDestination as initialDestination } from "./savedDestination.api";
-import { games, getInitialGame } from "./games.api";
+import { savedDestination as initialDestination } from "../../../api/savedDestination.api";
 
-import { useSavedDestinationContext } from "./savedDestinationContext";
-import { useGameContext } from "./gameContext";
+import { useSavedDestinationContext } from "../../../context/savedDestinationContext";
+import { useDestinationSetContext } from "../../../context/destinationSetContext";
+import { getInitialSet } from "@/api/destinationSets.api";
 
 const GameCompletion = () => {
-  const [game, setGame] = useGameContext();
+  const [destinationSet, setDestinationSet] = useDestinationSetContext();
 
   // const cardsAmount = games[game.id]?.cards.length;
   const cardsAmount = 50;
 
-  const initialGame = getInitialGame(0);
+  const initialDestinationSet = getInitialSet(0);
 
   const [destination, setDestination] = useSavedDestinationContext();
 
