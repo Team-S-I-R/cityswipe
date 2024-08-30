@@ -129,7 +129,7 @@ const GameCards = () => {
                 <motion.div
                   key={`card-${i}`}
                   id={`card-${card.id}`}
-                  className={`w-full h-full flex place-content-center place-items-center z-10`}
+                  className={`w-full absolute top-[5%] h-[600px] flex place-content-center place-items-center z-10`}
                   variants={cardVariants}
                   initial="remainings"
                   animate={
