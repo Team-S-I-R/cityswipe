@@ -21,6 +21,7 @@ import {
   SignedOut,
   UserButton
 } from '@clerk/nextjs'
+import clogo from '../assets/imgs/path6.png'
 
   export default function Header() {
     const { isStarted } = useCitySwipe();
@@ -107,7 +108,10 @@ import {
         
           <>
             <Link href="/">
-                <h1 className="select-none text-[14px] font-bold">cityswipe</h1>
+            <div className="flex gap-2 place-items-center place-content-center">
+                <img src={clogo.src} className="w-max h-[10px]"/>
+                <h1 className="select-none text-[15px] font-bold">cityswipe</h1>
+            </div>
             </Link>
 
             <div className="flex text-[12px] select-none gap-4 place-items-center place-content-center">

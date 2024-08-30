@@ -109,7 +109,7 @@ export default function Chat() {
             )}
 
             <div className="absolute  flex justify-center px-5 gap-3 place-items-center bottom-0 w-full h-[9vh]">
-            <div className="p-2 px-4 w-[70%]">
+            <div className=" py-3 flex gap-4 outline outline-primary/10 rounded-lg  px-4 w-[70%]">
                 <Input
                 value={input}
                 onChange={(event) => {
@@ -120,17 +120,18 @@ export default function Chat() {
                     startChat();
                     }
                 }}
-                className="outline h-[35px] outline-primary/20"
+                className="outline-none border-0 focus:ring-0 focus-visible:ring-0 h-[35px]"
                 autoFocus
                 />
-            </div>
-
             <button
                 className="hover:scale-[95%] bg-gradient-to-t from-cyan-500 to-green-400 p-2 rounded-full"
                 onClick={() => startChat()}
             >
                 <ArrowUp className="text-white" size={20} />
             </button>
+
+            </div>
+
             </div>
         </div>
     )
