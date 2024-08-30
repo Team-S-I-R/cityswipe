@@ -112,14 +112,14 @@ export default function Sidebar() {
 
                 </div>
 
-                <p className="p-5">Matches</p>
+                <p className="p-5 font-bold">Matches</p>
 
             </div>
 
 
             {/* mapped destinations */}
 
-            <div className="w-full h-full no-scrollbar overflow-y-scroll">
+            <div className="w-full h-full no-scrollbar overflow-y-scroll px-6">
 
                 {destination.destinations.map((dest: DestinationItem) => {
                     const { cityAndCountry } = extractMatchInfo(dest.location);
@@ -136,7 +136,7 @@ export default function Sidebar() {
                                             {/* <div className="absolute z-[-1] bg-gradient-to-r from-white via-white to-transparent w-full h-full"></div> */}
                                             <img className="relative rounded-full z-[-2] w-1/2 inset-0 h-full w-full object-cover z-[-1]" src={dest.illustration} alt="" />
                                         </div>
-                                        <h3 className="text-[18px] p-2 rounded-full w-max">{cityAndCountry.split(',')[0]}</h3>
+                                        <h3 className="text-[14px] p-2 rounded-full w-max">{cityAndCountry.split(',')[0]}</h3>
                                     </div>
 
                                     <p className="text-[10px] p-2 flex flex-col rounded-full font-bold w-max h-max">

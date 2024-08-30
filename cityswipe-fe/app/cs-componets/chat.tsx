@@ -60,7 +60,7 @@ export default function Chat() {
     // import saved global state city
 
     return (
-        <div className="relative flex text-[15px] flex-col place-content-center place-items-center w-full h-full">
+        <div className="relative flex text-[14px] flex-col place-content-center place-items-center w-full h-full">
             <div className="absolute border-b border-primary/20 top-0 w-full h-[6%] flex justify-between place-items-center px-5">
                 
                 {selectedMatch == '' ? (
