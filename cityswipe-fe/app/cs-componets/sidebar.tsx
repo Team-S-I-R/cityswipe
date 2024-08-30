@@ -66,9 +66,10 @@ export default function Sidebar() {
 
     
     return (
-        <div className="w-full h-full bg-gray-100 p-5 flex flex-col gap-6" > 
+        <div className="w-full h-full bg-gray-100 p-5 flex flex-col gap-3" > 
         
-            <div className="w-full h-[10%]">
+            {/* user stuff */}
+            <div className="w-full h-max">
 
                 <div className="w-full flex h-[60px]">
                 {/* <div className="w-full flex h-[60px] bg-gradient-to-t from-cyan-500 to-green-400 p-3"> */}
@@ -113,14 +114,24 @@ export default function Sidebar() {
 
                 </div>
 
-                <p className="py-4 text-muted-foreground font-bold">Matches</p>
-
             </div>
 
+            {/* selected */}
+            <div className="w-full h-max flex flex-col">
+                <p className="px-2 text-muted-foreground font-bold">Selected Match</p>
+                <div className="bg-gray-200 place-items-center px-4 mt-3 w-full flex gap-8 relative h-max select-none py-4 rounded-xl overflow-hidden place-items-start" >
+                    <div className="w-[30px] h-[30px] rounded-full flex place-items-end place-content-end">
+                        <img className="rounded-full h-full  w-full object-cover" src={chatImg} alt="" />
+                    </div> 
+                    <p className="text-[14px] font-bold">{selectedMatch}</p>
+
+                </div>
+            </div>
+
+            <p className="px-4 text-muted-foreground font-bold">All Matches</p>
 
             {/* mapped destinations */}
-
-            <div className="w-full h-full  no-scrollbar overflow-y-scroll">
+            <div className="w-full h-[35%]  no-scrollbar overflow-y-scroll">
 
                 {savedDestination.destinations.map((dest: DestinationItem) => {
                     const { cityAndCountry } = extractMatchInfo(dest.location);
@@ -153,6 +164,8 @@ export default function Sidebar() {
                 })}
 
             </div>
+
+            {/* settings stuff / upgrade stuff maybe */}
 
         </div> 
     )

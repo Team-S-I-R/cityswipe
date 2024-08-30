@@ -1,8 +1,8 @@
 import Hero from "./homepage";
 import Header from "./cs-componets/header";
 
-
 export default function Home() {
+
 
 
 
