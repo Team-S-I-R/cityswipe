@@ -8,15 +8,15 @@ import { IsDragOffBoundary } from "@/lib/games.type";
 const actionPropsMatrix = {
   left: {
     ariaLabel: "Swipe Left",
-    bgColorClass: "bg-[#F75064]",
+    bgColorClass: "bg-gradient-to-t from-pink-500 to-red-400",
     icon: BadIcon,
-    iconBaseColorClass: "text-[#701823]",
+    iconBaseColorClass: "text-white",
   },
   right: {
     ariaLabel: "Swipe Right",
-    bgColorClass: "bg-[#82D350]",
+    bgColorClass: "bg-gradient-to-t from-cyan-500 to-green-400",
     icon: GoodIcon,
-    iconBaseColorClass: "text-[#2C5B10]",
+    iconBaseColorClass: "text-white",
   },
 };
 
@@ -39,11 +39,11 @@ const GameActionBtn = ({
   return (
     <motion.button onClick={onClick} whileTap={{ scale: 0.9 }}>
       <motion.div
-        className={`flex items-center justify-center w-[60px] h-[60px] rounded-full ${actionPropsMatrix[direction].bgColorClass} shadow`}
+        className={`flex items-center justify-center p-2 rounded-full ${actionPropsMatrix[direction].bgColorClass} shadow`}
         style={{ scale: scale }}
       >
         <Icon
-          className={`w-[24px] h-[24px] duration-100 ease-out ${
+          className={`scale-[60%] duration-100 ease-out ${
             isDragOffBoundary != null && isDragOffBoundary === direction
               ? "text-white"
               : actionPropsMatrix[direction!].iconBaseColorClass

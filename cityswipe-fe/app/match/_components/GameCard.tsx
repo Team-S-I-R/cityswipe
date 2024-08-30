@@ -129,8 +129,11 @@ const GameCard = ({
   return (
     <>
       <motion.div
+          initial={{ opacity: 0, y: 1000 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 5 }}
         id={`cardDrivenWrapper-${id}`}
-        className="absolute p-2 rounded-xl text-center w-[500px] h-[500px] pointer-events-none text-black bottom-0 shadow-card select-none transform translate-x-1/2 translate-y-1/2"
+        className="absolute p-2 rounded-xl text-center w-[500px] h-[500px] pointer-events-none text-black top-[5%] shadow-card select-none transform translate-x-1/2 translate-y-1/2"
         style={{
           y: drivenY,
           rotate: drivenRotation,

@@ -103,23 +103,23 @@ import {
         initial={{ opacity: 0, y: 100 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1.5 }}
-        className="flex absolute z-[20] top-10 px-8 w-full place-items-center justify-between">
+        className="flex absolute z-[20] top-10 px-8 w-full place-items-center place-content-center justify-between">
         
           <>
             <Link href="/">
-                <h1 className="select-none text-xl">cityswipe</h1>
+                <h1 className="select-none text-[14px] font-bold">cityswipe</h1>
             </Link>
 
-            <div className="flex gap-4">
+            <div className="flex text-[12px] select-none gap-4 place-items-center place-content-center">
 
                 <SignedOut>
 
         
               <Link href="/sign-in">
-                <button className="">Log In</button>
+                <button className="shadow-md hover:shadow-lg hover:scale-[97%] px-4 py-2 rounded-lg">Log In</button>
               </Link>
               <Link href="/sign-up">
-                <button>Sign Up</button>
+                <button className="shadow-md px-4 py-2 hover:shadow-lg hover:scale-[97%] rounded-lg text-white bg-gradient-to-t from-cyan-500 to-green-400">Sign Up</button>
               </Link>
               
                 

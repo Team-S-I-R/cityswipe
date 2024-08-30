@@ -37,9 +37,9 @@ export default function Hero() {
     // ANCHOR project variables
     const { isStarted, setIsStarted } = useCitySwipe();
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-    const [responses, setResponses] = useState<string[]>([]);
+    // const [responses, setResponses] = useState<string[]>([]);
     // Responses for debuggin!
-    // const [responses, setResponses] = useState<string[]>(["United States", "Luxury", "English", "Yes", "Summer", "Warm", "Beach", "Sprinting, Hiking, Camping, Swimming, Drawing", "Vegan", "Street food", "No", "No"]);
+    const [responses, setResponses] = useState<string[]>(["United States", "Luxury", "English", "Yes", "Summer", "Warm", "Beach", "Sprinting, Hiking, Camping, Swimming, Drawing", "Vegan", "Street food", "No", "No"]);
     const questionKeys = Object.keys(quizQuestions);
     const [updateHeart, setUpdateHeart] = useState(false);
     const [destinations, setDestinations] = useState<any[]>([]);
@@ -117,7 +117,6 @@ export default function Hero() {
             });
         } 
 
-        setUpdateHeart(true)
 
     }
 
@@ -130,7 +129,6 @@ export default function Hero() {
             });
         } 
 
-        setUpdateHeart(false)
     }
 
 // ANCHOR Handles quiz submission and setting data like images, bio, matches, etc.
@@ -288,9 +286,9 @@ export default function Hero() {
 
                     </div>   
 
-                    <h2>Like Tinder, but for your vacations!</h2>                 
+                    <h2 className="select-none text-[14px]">Like Tinder, but for your vacations!</h2>                 
                    
-                    <h1 className="text-5xl w-full flex gap-2 place-content-center select-none relative flex-wrap">
+                    <h1 className="text-5xl mb-3 w-[80%] font-bold flex gap-2 place-content-center select-none relative flex-wrap">
                         <span id="match" onMouseOver={() => hoverAnimationEnter('match')} onMouseLeave={() => hoverAnimationLeave('match')} className="cursor-pointer">Match </span>
                         <span id="with" onMouseOver={() => hoverAnimationEnter('with')} onMouseLeave={() => hoverAnimationLeave('with')} className="cursor-pointer">with </span>
                         <span id="your" onMouseOver={() => hoverAnimationEnter('your')} onMouseLeave={() => hoverAnimationLeave('your')} className="cursor-pointer">your </span>
@@ -300,7 +298,7 @@ export default function Hero() {
                     
                     {/* QUIZ BUTTON */}
                 
-                    <Button onMouseEnter={() => setUpdateHeart(true)} onMouseLeave={() => setUpdateHeart(false)} className="select-none bg-gradient-to-t from-cyan-500 to-green-400 flex place-items-center gap-2" onClick={() => setIsStarted(true)}>
+                    <Button onMouseEnter={() => setUpdateHeart(true)} onMouseLeave={() => setUpdateHeart(false)} className="select-none text-[12px] hover:scale-[95%] bg-gradient-to-t from-cyan-500 to-green-400 flex place-items-center gap-2" onClick={() => setIsStarted(true)}>
                         Get Started 
                         {updateHeart == false && <span><Heart className="w-2 h-2  "/></span>}
                         {updateHeart == true && <span>❤️</span>}
@@ -339,13 +337,13 @@ export default function Hero() {
                 </>
             ) : (
                 <>
-                    <div id="question-container" className="w-full h-64 gap-6 flex flex-col place-items-center place-content-center">
+                    <div id="question-container" className="w-full text-[12px] h-64 gap-6 flex flex-col place-items-center place-content-center">
                         
-                        <p className="text-xl w-[calc(100%-32px)] text-center flex place-content-center">{quizQuestions[questionKeys[currentQuestionIndex] as keyof typeof quizQuestions]}</p>
+                        <p className="text-[14px] w-[calc(100%-32px)] text-center flex place-content-center">{quizQuestions[questionKeys[currentQuestionIndex] as keyof typeof quizQuestions]}</p>
                         
                         <div className="flex w-full gap-6 place-content-center">
                         {responses[currentQuestionIndex]?.length > 1 && 
-                        <Button className="p-0 m-0 select-none bg-transparent hover:bg-transparent text-primary hover:opacity-80 flex place-self-start" onClick={handlePrevious} disabled={currentQuestionIndex === 0}>Back</Button>
+                        <Button className="hover:scale-[95%] text-[12px] p-0 m-0 select-none bg-transparent hover:bg-transparent text-primary hover:opacity-80 flex place-self-start" onClick={handlePrevious} disabled={currentQuestionIndex === 0}>Back</Button>
                         }
                         <Input 
                             id="response-input" 
@@ -356,7 +354,7 @@ export default function Hero() {
                             onChange={handleInputChange}
                         />
                         {responses[currentQuestionIndex]?.length > 1 && 
-                            <Button className="bg-gradient-to-t from-cyan-500 to-green-400  select-none" onClick={handleNext}>Next</Button>
+                            <Button className="hover:scale-[95%] text-[12px] bg-gradient-to-t from-cyan-500 to-green-400  select-none" onClick={handleNext}>Next</Button>
                         }
                         </div>
                     </div>
@@ -365,7 +363,7 @@ export default function Hero() {
                     {isStarted && currentQuestionIndex === questionKeys.length - 1 &&
                     <>
                         <div className="flex place-self-center">
-                            <Button onClick={() => {handleGemini()}} className="bg-gradient-to-t from-cyan-500 to-green-400 select-none w-max">Find Your Match!</Button>
+                            <Button onClick={() => {handleGemini()}} className="hover:scale-[95%] text-[12px] bg-gradient-to-t from-cyan-500 to-green-400 select-none w-max">Find Your Match!</Button>
                         </div>
                     </>
                     }
@@ -373,7 +371,7 @@ export default function Hero() {
                     {isStarted && currentQuestionIndex === questionKeys.length - 1 && loadingMatches &&
                     <>
                         <div className="absolute w-full h-max flex place-items-center place-content-center">
-                            <span className="text-3xl animate-pulse">Your matches are loading...</span>
+                            <span className="text-[12px] animate-pulse">Your matches are loading...</span>
                         </div>
                     </>
                     }

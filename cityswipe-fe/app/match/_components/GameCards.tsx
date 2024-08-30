@@ -119,7 +119,7 @@ const GameCards = () => {
       >
         <div
           id="cardsWrapper"
-          className="w-full relative overflow-hidden place-content-center place-items-center h-[500px] flex flex-col relative z-10"
+          className="w-full relative overflow-hidden place-content-center place-items-center h-[600px] flex flex-col relative z-10"
         >
           <AnimatePresence>
             {cards.map((card, i) => {
@@ -157,25 +157,51 @@ const GameCards = () => {
           id="actions"
           className="flex items-center justify-center w-max h-max gap-4 relative z-10"
         >
-          <GameActionBtn
-            direction="left"
-            ariaLabel="swipe left"
-            scale={cardDrivenProps.buttonScaleBadAnswer}
-            isDragOffBoundary={isDragOffBoundary}
-            onClick={() => handleActionBtnOnClick("left")}
-          />
-          <GameActionBtn
-            direction="right"
-            ariaLabel="swipe right"
-            scale={cardDrivenProps.buttonScaleGoodAnswer}
-            isDragOffBoundary={isDragOffBoundary}
-            onClick={() => handleActionBtnOnClick("right")}
-          />
+          <motion.div
+          initial={{ opacity: 0, y: 1000 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 2 }}
+          >
+
+            <GameActionBtn
+              direction="left"
+              ariaLabel="swipe left"
+              scale={cardDrivenProps.buttonScaleBadAnswer}
+              isDragOffBoundary={isDragOffBoundary}
+              onClick={() => handleActionBtnOnClick("left")}
+            />
+
+          </motion.div>
+
+            <motion.div
+            initial={{ opacity: 0, y: 1000 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 2 }}            
+            >
+
+              <GameActionBtn
+                direction="right"
+                ariaLabel="swipe right"
+                scale={cardDrivenProps.buttonScaleGoodAnswer}
+                isDragOffBoundary={isDragOffBoundary}
+                onClick={() => handleActionBtnOnClick("right")}
+              />
+
+            </motion.div>
+
         </div>
 
-        <Link id="destinations_button" className="flex items-center justify-center w-max gap-4 relative z-10 h-max"  href="/explore">
-          <Button className="bg-gradient-to-t from-cyan-500 to-green-400 select-none w-max">See Save Destinations</Button>
-        </Link>
+        <motion.div
+        initial={{ opacity: 0, y: 1000 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 4 }}
+        >
+
+          <Link id="destinations_button" className="flex items-center justify-center w-max gap-4 relative z-10 h-max"  href="/explore">
+            <Button className="text-[12px] bg-gradient-to-t from-cyan-500 to-green-400 select-none w-max">See Save Destinations</Button>
+          </Link>
+
+        </motion.div>
 
       </div>
     </motion.div>
