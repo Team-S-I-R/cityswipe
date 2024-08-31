@@ -182,7 +182,7 @@ export default function QuizClient({clerkdata} : any) {
                         
                         <div className="flex flex-col w-full place-items-start px-8  gap-6">
 
-                            <h1 className="w-max w-md text-muted-foreground place-content-center text-[15px]">Hi {userdata?.name.split(' ')[0]}, Take the Cityswipe quiz to find your perfect destination!</h1>
+                            <h1 className="w-max w-md text-muted-foreground place-content-center text-[15px]">Hi {userdata?.name?.split(' ')[0]}, Take the Cityswipe quiz to find your perfect destination!</h1>
 
                             <p className="text-3xl text-center sm:text-left sm:text-[44px] w-full font-bold">{quizQuestions[questionKeys[currentQuestionIndex] as keyof typeof quizQuestions]}</p>
                             
