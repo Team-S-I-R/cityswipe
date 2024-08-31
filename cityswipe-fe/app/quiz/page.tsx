@@ -17,7 +17,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import Header from "../cs-componets/header";
 
 
-export default function QuizClient() {
+export default function QuizClient({clerkdata} : any) {
 
     const { isStarted, setIsStarted } = useCitySwipe();
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -36,6 +36,14 @@ export default function QuizClient() {
     const [ pexalsPhoto, setPexalsPhoto ] = useState<string>(''); 
     const [cityCountryQuery, setCityCountryQuery] = useState<string>("");
     const {photoUrl, setPhotoUrl} = useCitySwipe();
+    
+    // sets user data
+    const { userdata, setUserData } = useCitySwipe();
+    useEffect(() => {
+        if (clerkdata) {
+            setUserData?.(clerkdata);
+        }
+    }, [clerkdata]);
 
 
     const sanitizeText =(text: string) => {
@@ -115,7 +123,7 @@ export default function QuizClient() {
                 if (match) {
                     const [, city, country, score] = match;
     
-                    // Fetch image for the current city-country pair
+                    // ANCHOR Fetch image for the current city-country pair
                     const client = createClient('8U6Se7vVT3H9tx1KPZAQTkDUSW0IKi3ldgBTVyh3W9NFF7roIpZxktzY');
                     let illustration = '';
     
@@ -158,7 +166,8 @@ export default function QuizClient() {
             router.push('/');
             setResponses([]);
         }
-    // 
+    
+    console.log('userdata', userdata);
 
     return (
         <>
@@ -169,11 +178,11 @@ export default function QuizClient() {
                      initial = {{opacity: 0}}
                      animate = {{opacity: 1}}
                      transition = {{duration: 1.75}}
-                    id="question-container" className="w-full bg-red-500 rounded-t-xl shadow-2xl absolute bottom-0 h-full  bg-white text-[12px] h-64 gap-6 flex flex-col place-items-start place-content-center">
+                    id="question-container" className="w-full px-8 bg-red-500 rounded-t-xl shadow-2xl absolute bottom-0 h-full  bg-white text-[12px] h-64 gap-6 flex flex-col place-items-start place-content-center">
                         
                         <div className="flex flex-col w-full place-items-start px-8  gap-6">
 
-                            <h1 className="w-max w-md text-muted-foreground place-content-center text-[10px]">Take the Cityswipe quiz to find your perfect destination!</h1>
+                            <h1 className="w-max w-md text-muted-foreground place-content-center text-[15px]">Hi {userdata?.name.split(' ')[0]}, Take the Cityswipe quiz to find your perfect destination!</h1>
 
                             <p className="text-3xl text-center sm:text-left sm:text-[44px] w-full font-bold">{quizQuestions[questionKeys[currentQuestionIndex] as keyof typeof quizQuestions]}</p>
                             

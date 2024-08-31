@@ -132,7 +132,7 @@ export default function Hero() {
                     
                     {/* QUIZ BUTTON */}
                 
-                    <Button onMouseEnter={() => setUpdateHeart(true)} onMouseLeave={() => setUpdateHeart(false)} className="select-none text-[12px] hover:scale-[95%] bg-gradient-to-t from-cyan-500 to-green-400 flex place-items-center gap-2" onClick={() => router.push('/quiz')}>
+                    <Button onMouseEnter={() => setUpdateHeart(true)} onMouseLeave={() => setUpdateHeart(false)} className="select-none text-[12px] hover:scale-[95%] hover:shadow-2xl bg-gradient-to-t from-cyan-500 to-green-400 flex place-items-center gap-2" onClick={() => router.push('/quiz')}>
                         Get Started 
                         {updateHeart == false && <span><Heart className="w-2 h-2  "/></span>}
                         {updateHeart == true && <span>❤️</span>}
