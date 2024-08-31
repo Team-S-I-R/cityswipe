@@ -29,15 +29,13 @@ async function fetchData() {
                 name: clerkuser.fullName || "",
                 email: clerkuser.emailAddresses[0]?.emailAddress || "",
                 username: clerkuser.username || "",
-                stripeCustomerId: "",
             },
         });
     } else {
         console.log("updating user: ", user);
-        const updateData: { name?: string; email?: string; stripeCustomerId?: string; username?: string } = {};
+        const updateData: { name?: string; email?: string; username?: string } = {};
         if (!user.name) updateData.name = clerkuser.fullName || "";
         if (!user.email) updateData.email = clerkuser.emailAddresses[0]?.emailAddress || "";
-        if (!user.stripeCustomerId) updateData.stripeCustomerId = "";
         if (!user.username) updateData.username = clerkuser.username || "";
 
         if (Object.keys(updateData).length > 0) {
