@@ -2,6 +2,7 @@ import { Suspense } from 'react';
 import Explore from './page';
 import prisma from "@/lib/db";
 import { currentUser } from "@clerk/nextjs/server";
+import { useSavedDestinationContext } from '@/context/savedDestinationContext';
 
 async function fetchData() {
     const clerkuser = await currentUser();
@@ -22,6 +23,9 @@ async function fetchData() {
 
     return user;
 }
+
+
+
 
 export default async function ExploreServer() {
     

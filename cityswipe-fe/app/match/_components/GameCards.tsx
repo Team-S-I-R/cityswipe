@@ -23,6 +23,9 @@ import {
 import { useSavedDestinationContext } from "../../../context/savedDestinationContext";
 import handleResponse from "../_utils/handleResponse";
 import { Button } from "@/components/ui/button";
+import prisma from "@/lib/db";
+import { useCitySwipe } from "@/app/citySwipeContext";
+import { addMatch } from "@/app/actions";
 
 export const easeInExpo = [0.7, 0, 0.84, 0];
 export const easeOutExpo = [0.16, 1, 0.3, 1];
@@ -36,7 +39,7 @@ const initialDrivenProps = {
 };
 
 const GameCards = () => {
-  // const [user, setUser] = useUserContext();
+  const {userdata, setUserData} = useCitySwipe()
   const [destinationSet, setDestinationSet] = useDestinationSetContext();
   const [savedDestination, setSavedDestination] = useSavedDestinationContext();
 
@@ -63,11 +66,19 @@ const GameCards = () => {
       });
     }
 
-    // This updates the destinations array with the new destinations after a right swipe
-    direction === "right" &&
+    if (direction === "right") {
+      
+      // This updates the destinations array with the new destinations after a right swipe
+      const updatedDestinations = handleResponse({ direction, cards, destinations });
       setSavedDestination({
-        destinations: handleResponse({ direction, cards, destinations }),
+        destinations: updatedDestinations,
       });
+      
+      // server action that adds a match to the database
+      addMatch({ destinations: updatedDestinations }, userdata);
+    }
+
+    
 
     setDirection("");
   }, [direction]);

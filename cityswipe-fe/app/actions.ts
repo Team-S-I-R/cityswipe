@@ -135,7 +135,6 @@ export async function streamFlirtatiousConversation(city: string, country: strin
   };
 }
 
-
 export async function getConversationHistory(city: string) {
   return conversationHistory[city] || [];
 }
@@ -195,5 +194,20 @@ export async function submitFormResponse(formData: FormData, formState: FormStat
   }
 }
 
+
+// adding matches to database
+export async function addMatch( savedDestination: any, userdata: any) {
+  // Add the destinations to prisma
+  //  await prisma?.match.create({
+  //     data: {
+  //         MatchTitle: savedDestination?.destinations[0]?.location,
+  //         MatchPercent: savedDestination?.destinations[0]?.rating as number,
+  //         userId: userdata?.id
+  //     },
+  // });
+
+  console.log("server savedDestination: ", savedDestination)
+  console.log("server userdata: ", userdata)
+}
 
 
