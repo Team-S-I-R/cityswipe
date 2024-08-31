@@ -68,7 +68,7 @@ export default function Sidebar( {clerkdata} : any) {
     return (
         <div className="w-full h-full bg-gray-100 px-3 py-1 flex flex-col justify-between" > 
         
-            <div className="flex flex-col w-full h-max gap-3">
+            <div className="flex flex-col w-full h-[70%]  gap-3">
             
                 {/* user stuff */}
                 <div className="w-full h-max">
@@ -102,7 +102,7 @@ export default function Sidebar( {clerkdata} : any) {
                 <p className="px-4 text-muted-foreground font-bold">All Matches</p>
 
                 {/* mapped destinations */}
-                <div className="w-full h-[35%]  no-scrollbar overflow-y-scroll">
+                <div className="w-full h-[50%]  no-scrollbar overflow-y-scroll">
 
                     {savedDestination.destinations.map((dest: DestinationItem) => {
                         const { cityAndCountry } = extractMatchInfo(dest.location);
@@ -139,7 +139,7 @@ export default function Sidebar( {clerkdata} : any) {
             </div>
 
             {/* settings stuff / upgrade stuff maybe */}
-            <div className="w-full my-6 h-max flex flex-col gap-6">
+            <div className="w-full  h-max my-6  flex flex-col gap-6">
 
                 <Link href="/">
                 
