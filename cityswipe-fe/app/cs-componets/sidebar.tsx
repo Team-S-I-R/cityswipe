@@ -27,7 +27,11 @@ export default function Sidebar( {clerkdata} : any) {
     const { photoUrl, setPhotoUrl } = useCitySwipe();
     const { chatImg, setChatImg } = useCitySwipe();
     const { firstMatch, setFirstMatch } = useCitySwipe();
-
+    useEffect(() => {
+        setSelectedMatch?.(selectedMatch?.split(',')[0] as string)
+        setChatImg?.(savedDestination?.destinations[0]?.illustration as string)
+        console.log(selectedMatch)
+    }, [selectedMatch, savedDestination])
     
     const router = useRouter();
 
@@ -89,14 +93,23 @@ export default function Sidebar( {clerkdata} : any) {
 
                 {/* selected */}
                 <div className="w-full h-max flex flex-col">
+                    
                     <p className="px-2 text-muted-foreground font-bold">Selected Match</p>
+                    
                     <div className="bg-gray-200 place-items-center px-4 mt-3 w-full flex gap-8 relative h-max select-none py-4 rounded-xl overflow-hidden place-items-start" >
+                        
                         <div className="w-[30px] h-[30px] rounded-full flex place-items-end place-content-end">
                             <img className="rounded-full h-full  w-full object-cover" src={chatImg} alt="" />
                         </div> 
-                        <p className="text-[14px] font-bold">{selectedMatch}</p>
+
+                        {selectedMatch == '' ? (
+                            <p className="select-none"><strong>{savedDestination.destinations[0]?.location.split(',')[0]}</strong></p>
+                        ) : (
+                            <p className="select-none"><strong>{selectedMatch}</strong></p>
+                        )}
 
                     </div>
+
                 </div>
 
                 <p className="px-4 text-muted-foreground font-bold">All Matches</p>

@@ -15,6 +15,7 @@ export default function Explore({clerkdata}: any) {
     const { isChatting } = useCitySwipe();
     const { isMatching } = useCitySwipe();
     const { userdata, setUserData } = useCitySwipe();
+    
     useEffect(() => {
         setUserData?.(clerkdata);
     }, []);

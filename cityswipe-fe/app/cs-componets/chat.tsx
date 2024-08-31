@@ -29,8 +29,9 @@ export default function Chat() {
 
     useEffect(() => {
         setSelectedMatch?.(selectedMatch?.split(',')[0] as string)
+        setChatImg?.(savedDestination?.destinations[0]?.illustration as string)
         console.log(selectedMatch)
-    }, [selectedMatch])
+    }, [selectedMatch, savedDestination])
 
     
 
@@ -80,8 +81,18 @@ export default function Chat() {
                         <div className="w-[80px] h-[80px] rounded-full">
                             <img className="object-cover w-full h-full rounded-full" src={chatImg} alt="" />
                         </div>
-                        <p className="text-center">You matched with <strong>{selectedMatch}</strong>!</p>
-                        <p className="text-center">Ask {selectedMatch} anything you would like to know</p>
+
+                        {selectedMatch == '' ? (
+                            <>
+                            <p className="text-center">You matched with <strong>{savedDestination.destinations[0]?.location}</strong>!</p>
+                            <p className="text-center">Ask {savedDestination.destinations[0]?.location} anything you would like to know</p>
+                            </>
+                        ) : (    
+                            <>
+                            <p className="text-center">You matched with <strong>{selectedMatch}</strong>!</p>
+                            <p className="text-center">Ask {selectedMatch} anything you would like to know</p>
+                            </>
+                        )}
 
                     </div>
                     
