@@ -8,12 +8,16 @@ import {
 import Chat from "../cs-componets/chat"
 import Sidebar from "../cs-componets/sidebar"
 import { useCitySwipe } from "../citySwipeContext"
+import { useEffect } from "react"
 
-export default function Explore() {
+export default function Explore({clerkdata}: any) {
     
     const { isChatting } = useCitySwipe();
     const { isMatching } = useCitySwipe();
-
+    const { userdata, setUserData } = useCitySwipe();
+    useEffect(() => {
+        setUserData?.(clerkdata);
+    }, []);
     // have to upload the header here for now
     return (
         <>
@@ -24,7 +28,7 @@ export default function Explore() {
     >
             <ResizablePanel defaultSize={20}>
                 <div className="flex h-full items-center justify-center">
-                    <Sidebar/>
+                    <Sidebar clerkdata={userdata}/>
                 </div>
             </ResizablePanel>
             <ResizableHandle />

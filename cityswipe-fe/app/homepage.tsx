@@ -118,7 +118,7 @@ export default function Hero() {
                     </div>  
 
                     <h2 className="select-none text-[14px]">
-                    <span className="font-bold">CitySwipe, </span>  
+                    <span className="font-bold">Cityswipe, </span>  
                         like Tinder, but for your vacations!
                     </h2>                 
                    

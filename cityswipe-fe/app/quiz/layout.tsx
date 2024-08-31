@@ -53,7 +53,6 @@ async function fetchData() {
 export default async function QuizServer() {
     // try {
         const data = await fetchData();
-        console.log("data: ", data);
         return (
             <>
                 <QuizClient clerkdata={data} />
