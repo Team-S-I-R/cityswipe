@@ -28,7 +28,7 @@ type Props = {
   onClick: () => void;
 };
 
-const GameActionBtn = ({
+const DestinationActionBtn = ({
   scale,
   direction,
   isDragOffBoundary = null,
@@ -54,4 +54,4 @@ const GameActionBtn = ({
   );
 };
 
-export default GameActionBtn;
+export default DestinationActionBtn;

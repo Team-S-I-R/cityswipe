@@ -1,8 +1,12 @@
 export interface DestinationItem {
-  id: number;
-  location: string;
-  rating: number | null;
-  illustration?: string;
+  id?: number;
+  city: string;
+  country: string;
+  description: string;
+  compatibility: number|null;
+  pros: string[];
+  cons: string[];
+  illustration: string;
 }
 
 export interface Destination {

@@ -5,9 +5,12 @@ export type DestinationSet = {
  
  export type Destination = {
    id?: number;
-   location: string;
+   city: string;
+   country: string;
    description: string;
-   rating: number|null;
+   compatibility: number|null;
+   pros: string[];
+   cons: string[];
   //  answer: "left" | "right";
   //  revised: string;
    illustration: string;

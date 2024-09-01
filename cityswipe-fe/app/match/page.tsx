@@ -1,6 +1,6 @@
 "use client";
 import { motion, AnimatePresence, cubicBezier } from "framer-motion";
-import { GameCompletion, GameCards } from "./_components";
+import { DestinationCompletion, DestinationCards } from "./_components";
 
 
 import { savedDestination as initialDestination } from "../../api/savedDestination.api";
@@ -13,7 +13,7 @@ import Header from "../cs-componets/header";
 import { createClient } from "pexels";
 
 const Match = () => {
-  // "game" is the list of games 
+  // "destination" is the list of destinations 
   const [destinationSet, setDestinationSet] = useDestinationSetContext();
   const [_, setDestination] = useSavedDestinationContext();
 
@@ -21,15 +21,15 @@ const Match = () => {
 
   useEffect(() => {
     setDestination(initialDestination);
-    // setGame(game);
-    // setGame({
+    // setDestination(destination);
+    // setDestination({
     //     id: 1,
     //     cards: destination.reverse(),
     // });
   }, []);
 
   const isCardStockEmpty = destinationSet.cards.length === 0;
-  const gameScreenVariants = {
+  const destinationScreenVariants = {
     initial: {
       opacity: 0,
     },
@@ -76,26 +76,26 @@ const Match = () => {
           {!isCardStockEmpty ? (
             <motion.div
               // else (if the matching is not done) 
-              key="gameScreen1"
-              id="gameScreen"
-              variants={gameScreenVariants}
+              key="destinationScreen1"
+              id="destinationScreen"
+              variants={destinationScreenVariants}
               initial="initial"
               animate="animate"
               exit="exit"
             >
-              <GameCards />
+              <DestinationCards />
             </motion.div>
             /* if the matching is done! */
           ) : (
             <motion.div
-              key="gameScreen2"
-              id="gameCompletion"
-              variants={gameScreenVariants}
+              key="destinationScreen2"
+              id="destinationCompletion"
+              variants={destinationScreenVariants}
               initial="initial"
               animate="animate"
               exit="exit"
             >
-              <GameCompletion />
+              <DestinationCompletion />
             </motion.div>
           )}
         </AnimatePresence>

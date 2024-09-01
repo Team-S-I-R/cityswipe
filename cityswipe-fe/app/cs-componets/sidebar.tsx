@@ -33,6 +33,7 @@ export default function Sidebar( {clerkdata} : any) {
         setSelectedMatch?.(selectedMatch?.split(',')[0] as string)
         setChatImg?.(savedDestination?.destinations[0]?.illustration as string)
         console.log(selectedMatch)
+        console.log(savedDestination)
     }, [selectedMatch, savedDestination])
     
     const router = useRouter();
@@ -114,7 +115,7 @@ export default function Sidebar( {clerkdata} : any) {
                         </div> 
 
                         {selectedMatch == '' ? (
-                            <p className="select-none"><strong>{savedDestination.destinations[0]?.location.split(',')[0]}</strong></p>
+                            <p className="select-none"><strong>{savedDestination.destinations[0]?.city}</strong></p>
                         ) : (
                             <p className="select-none"><strong>{selectedMatch}</strong></p>
                         )}
@@ -131,10 +132,9 @@ export default function Sidebar( {clerkdata} : any) {
                 <div className="w-full h-[50%]  no-scrollbar overflow-y-scroll">
 
                     {savedDestination.destinations.map((dest: DestinationItem) => {
-                        const { cityAndCountry } = extractMatchInfo(dest.location);
                         return (
                             <>
-                            <div onClick={() => handleCityMatch(cityAndCountry, dest.illustration ?? '')} className="w-full relative h-max select-none hover:bg-gray-200 px-4 py-1 rounded-xl hover:scale-[102%] flex flex-col gap-[15px] overflow-hidden place-items-start">
+                            <div onClick={() => handleCityMatch(dest.city, dest.illustration ?? '')} className="w-full relative h-max select-none hover:bg-gray-200 px-4 py-1 rounded-xl hover:scale-[102%] flex flex-col gap-[15px] overflow-hidden place-items-start">
                                 <div className="w-full  h-max cursor-pointer relative flex flex-col place-items-start place-content-center" 
                                 // style={{ backgroundImage: `url(${dest.illustration})`, backgroundRepeat: 'no-repeat', backgroundSize: 'fill', backgroundPosition: 'center' }}
                                 key={dest.id}>
@@ -145,11 +145,11 @@ export default function Sidebar( {clerkdata} : any) {
                                                 {/* <div className="absolute z-[-1] bg-gradient-to-r from-white via-white to-transparent w-full h-full"></div> */}
                                                 <img className="rounded-full h-full  w-full object-cover" src={dest.illustration} alt="" />
                                             </div>
-                                            <h3 className="text-[14px] p-2 rounded-full w-max">{cityAndCountry.split(',')[0]}</h3>
+                                            <h3 className="text-[14px] p-2 rounded-full w-max">{dest.city}</h3>
                                         </div>
 
                                         <p className="text-[10px] p-2 flex flex-col rounded-full font-bold w-max h-max">
-                                            <span className="text-green-500 text-[15px]">{dest.rating}% </span>
+                                            <span className="text-green-500 text-[15px]">{dest.compatibility}% </span>
                                             Match!
                                         </p>
                 
@@ -245,7 +245,7 @@ export default function Sidebar( {clerkdata} : any) {
                             </div> 
 
                             {selectedMatch == '' ? (
-                                <p className="select-none"><strong>{savedDestination.destinations[0]?.location.split(',')[0]}</strong></p>
+                                <p className="select-none"><strong>{savedDestination.destinations[0]?.city}</strong></p>
                             ) : (
                                 <p className="select-none"><strong>{selectedMatch}</strong></p>
                             )}
@@ -259,10 +259,9 @@ export default function Sidebar( {clerkdata} : any) {
                     <div className="w-full h-[50%]  no-scrollbar overflow-y-scroll">
 
                         {savedDestination.destinations.map((dest: DestinationItem) => {
-                            const { cityAndCountry } = extractMatchInfo(dest.location);
                             return (
                                 <>
-                                <div onClick={() => handleCityMatch(cityAndCountry, dest.illustration ?? '')} className="w-full relative h-max select-none hover:bg-gray-200 px-4 py-1 rounded-xl hover:scale-[102%] flex flex-col gap-[15px] overflow-hidden place-items-start">
+                                <div onClick={() => handleCityMatch(dest.city, dest.illustration ?? '')} className="w-full relative h-max select-none hover:bg-gray-200 px-4 py-1 rounded-xl hover:scale-[102%] flex flex-col gap-[15px] overflow-hidden place-items-start">
                                     <div className="w-full  h-max cursor-pointer relative flex flex-col place-items-start place-content-center" 
                                     // style={{ backgroundImage: `url(${dest.illustration})`, backgroundRepeat: 'no-repeat', backgroundSize: 'fill', backgroundPosition: 'center' }}
                                     key={dest.id}>
@@ -272,11 +271,11 @@ export default function Sidebar( {clerkdata} : any) {
                                                 <div className="w-[30px] h-[30px] rounded-full flex place-items-end place-content-end">
                                                     <img className="rounded-full h-full  w-full object-cover" src={dest.illustration} alt="" />
                                                 </div>
-                                                <h3 className="text-[14px] p-2 rounded-full w-max">{cityAndCountry.split(',')[0]}</h3>
+                                                <h3 className="text-[14px] p-2 rounded-full w-max">{dest.city}</h3>
                                             </div>
 
                                             <p className="text-[10px] p-2 flex flex-col rounded-full font-bold w-max h-max">
-                                                <span className="text-green-500 text-[15px]">{dest.rating}% </span>
+                                                <span className="text-green-500 text-[15px]">{dest.compatibility}% </span>
                                                 Match!
                                             </p>
                     

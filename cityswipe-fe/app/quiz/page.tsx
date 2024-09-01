@@ -97,11 +97,34 @@ export default function QuizClient({clerkdata} : any) {
         setLoadingMatches(true);
         // console.log(`responses`);
         const prompt = 
-        `Based on the following travel preferences, generate a list of exactly 50 travel destinations formatted as 'City, Country, Compatibility Percentage. Exact Example format:
-        Tokyo, Japan 85%
-        Paris, France 78%
-        ... 48 more of the same format
-        Make sure the compatibility percentage is a number between 0 and 100. Each entry should be on a new line, there should be no additional text before or after the output(including bullet points or numbering), follow exact example. Corelate all the data when making decisions. Questions are answered by the user in order of listing as follows: home country, luxury mid range or budget places, languages spoken, comfortable in country with unknown language or no, proffered season, proffered temperature, beach mountain or city, 5 favorite activities, dietary restrictions and preferences, local food fine dining or street, proffered activities and facilities, comfortable in country with recreational drug use or not. 
+        `Based on the following travel preferences, generate a list of exactly 30 travel destinations formatted as json with values City, Country, Compatibility Percentage(based on the user preferences provided), a brief description of the city, the pros (based on the user preferences), the cons (based on the user preferences). Example format:
+        [
+            {
+                "id": 0
+                "city": "Tokyo",
+                "country": "Japan",
+                "compatibility": 85,
+                "description": "A short description about tokyo",
+                "pros": ["Rich history", "Modern architecture", "Vibrant nightlife", "Delicious food", "Famous landmarks", "Fashion industry", "Technology industry", "Historical sites", "Cultural attractions", "Entertainment options"],
+                "cons": ["Crowded", "Expensive", "Pollution", "Language barrier", "Lack of green spaces", "High cost of living", "Long working hours", "Traffic congestion", "Limited public transportation", "Limited public transportation"],
+            },
+            {
+                "id": 1
+                "city": "Paris",
+                "country": "France",
+                "compatibility": 78,
+                "description": "A short description about paris",
+                "pros": ["Beautiful architecture", "Delicious food", "Romantic atmosphere", "Art and fashion", "Historical sites", "Cultural attractions", "Entertainment options", "Museums", "Restaurants", "Parks"],
+                "cons": ["Expensive", "Crowded", "Language barrier", "Lack of green spaces", "High cost of living", "Long working hours", "Traffic congestion", "Limited public transportation", "Limited public transportation"],
+            },
+                ... 28 more of the same format
+        ]
+
+        Make sure the compatibility percentage is a number between 0 and 100. 
+        Do not include formatting or code blocks, follow example. 
+        Corelate all the data when making decisions. 
+        Questions are answered by the user in order of listing as follows: home country, luxury mid range or budget places, languages spoken, comfortable in country with unknown language or no, proffered season, proffered temperature, beach mountain or city, 5 favorite activities, dietary restrictions and preferences, local food fine dining or street, proffered activities and facilities, comfortable in country with recreational drug use or not. 
+        
         Here are the user preference answers in order:\n\n${responses.join('\n')}`;
         
         const conversationHistory: Message[] = [
@@ -146,10 +169,15 @@ export default function QuizClient({clerkdata} : any) {
 
                 generatedDestinations.push({
                     id: count++,
+                    city: city.trim(),
+                    country: country.trim(),
+                    compatibility: parseFloat(score),
                     location: `${city}, ${country}`.trim(),
                     rating: parseFloat(score),
                     illustration: illustration,
                     description: "",
+                    pros: [],
+                    cons: [],
                 });
 
                 // Delay to ensure only 10 requests per second
