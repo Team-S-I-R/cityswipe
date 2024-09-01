@@ -97,11 +97,34 @@ export default function QuizClient({clerkdata} : any) {
         setLoadingMatches(true);
         // console.log(`responses`);
         const prompt = 
-        `Based on the following travel preferences, generate a list of exactly 50 travel destinations formatted as 'City, Country, Compatibility Percentage. Exact Example format:
-        Tokyo, Japan 85%
-        Paris, France 78%
-        ... 48 more of the same format
-        Make sure the compatibility percentage is a number between 0 and 100. Each entry should be on a new line, there should be no additional text before or after the output(including bullet points or numbering), follow exact example. Corelate all the data when making decisions. Questions are answered by the user in order of listing as follows: home country, luxury mid range or budget places, languages spoken, comfortable in country with unknown language or no, proffered season, proffered temperature, beach mountain or city, 5 favorite activities, dietary restrictions and preferences, local food fine dining or street, proffered activities and facilities, comfortable in country with recreational drug use or not. 
+        `Based on the following travel preferences, generate a list of exactly 30 travel destinations formatted as json with values City, Country, Compatibility Percentage(based on the user preferences provided), a brief description of the city, the pros (based on the user preferences), the cons (based on the user preferences). Example format:
+        [
+            {
+                "id": 0
+                "city": "Tokyo",
+                "country": "Japan",
+                "compatibility": 85,
+                "description": "Tokyo is a bustling metropolis with a rich history and culture. It is the capital of Japan and is known for its modern architecture, vibrant nightlife, and delicious food. The city is home to the famous Tokyo Tower and the Senso-ji Temple. Tokyo is also known for its fashion and technology industries. The city is a great place to visit for anyone interested in history, culture, or modern life.",
+                "pros": ["Rich history", "Modern architecture", "Vibrant nightlife", "Delicious food", "Famous landmarks", "Fashion industry", "Technology industry", "Historical sites", "Cultural attractions", "Entertainment options"],
+                "cons": ["Crowded", "Expensive", "Pollution", "Language barrier", "Lack of green spaces", "High cost of living", "Long working hours", "Traffic congestion", "Limited public transportation", "Limited public transportation"],
+            },
+            {
+                "id": 1
+                "city": "Paris",
+                "country": "France",
+                "compatibility": 78,
+                "description": "Paris is a city known for its art, fashion, and romance. It is the capital of France and is known for its beautiful architecture, delicious food, and romantic atmosphere. The city is home to the famous Eiffel Tower and the Louvre Museum. Paris is also known for its fashion and art industries. The city is a great place to visit for anyone interested in history, culture, or modern life.",
+                "pros": ["Beautiful architecture", "Delicious food", "Romantic atmosphere", "Art and fashion", "Historical sites", "Cultural attractions", "Entertainment options", "Museums", "Restaurants", "Parks"],
+                "cons": ["Expensive", "Crowded", "Language barrier", "Lack of green spaces", "High cost of living", "Long working hours", "Traffic congestion", "Limited public transportation", "Limited public transportation"],
+            },
+                ... 28 more of the same format
+        ]
+
+        Make sure the compatibility percentage is a number between 0 and 100. 
+        Do not include formatting or code blocks, follow example. 
+        Corelate all the data when making decisions. 
+        Questions are answered by the user in order of listing as follows: home country, luxury mid range or budget places, languages spoken, comfortable in country with unknown language or no, proffered season, proffered temperature, beach mountain or city, 5 favorite activities, dietary restrictions and preferences, local food fine dining or street, proffered activities and facilities, comfortable in country with recreational drug use or not. 
+        
         Here are the user preference answers in order:\n\n${responses.join('\n')}`;
         
         const conversationHistory: Message[] = [
@@ -115,45 +138,67 @@ export default function QuizClient({clerkdata} : any) {
             textContent += delta;
         }
         let count = 1;
-    
-        const generatedDestinations = await Promise.all(
-            textContent.trim().split('\n').map(async destination => {
-                const match = destination.match(/^(.*), ([A-Za-z\s]+) (\d+)%$/);
-    
-                if (match) {
-                    const [, city, country, score] = match;
-    
-                    // ANCHOR Fetch image for the current city-country pair
-                    const client = createClient('8U6Se7vVT3H9tx1KPZAQTkDUSW0IKi3ldgBTVyh3W9NFF7roIpZxktzY');
-                    let illustration = '';
-    
-                    try {
-                        const response = await client.photos.search({ query: `${city}, ${country}`, per_page: 1 });
-                        if ('photos' in response && response.photos.length > 0) {
-                            illustration = response.photos[0].src.landscape;
-                        }
-                    } catch (error) {
-                        console.error(`Error in fetching photo for ${city}, ${country}:`, error);
-                    }
-    
-                    return {
-                        id: count++,
-                        location: `${city}, ${country}`.trim(),
-                        rating: parseFloat(score),
-                        illustration: illustration,
-                        description: "",
-                    };
-                } else {
-                    return null;
+
+        // console.log(textContent)
+        let data = JSON.parse(textContent)
+        // Add illustration
+        for (var i in data) {
+            // ANCHOR Fetch image for the current city-country pair
+            const client = createClient('8U6Se7vVT3H9tx1KPZAQTkDUSW0IKi3ldgBTVyh3W9NFF7roIpZxktzY');
+            let illustration = '';
+
+            try {
+                const response = await client.photos.search({ query: `${data[i].city}, ${data[i].country}`, per_page: 1 });
+                if ('photos' in response && response.photos.length > 0) {
+                    illustration = response.photos[0].src.landscape;
                 }
-            })
-        );
+            } catch (error) {
+                console.error(`Error in fetching photo for ${data[i].city}, ${data[i].country}:`, error);
+            }
+            data[i].illustration = illustration
+        }
+
+        console.log(data) // formatted data
     
-        const validDestinations = generatedDestinations.filter(destination => destination !== null);
-        setDestinations(validDestinations);
+        // const generatedDestinations = await Promise.all(
+        //     textContent.trim().split('\n').map(async destination => {
+        //         //  console.log(destination)
+        //         const match = destination.match(/^(.*), ([A-Za-z\s]+) (\d+)%$/);
+    
+        //         if (match) {
+        //             const [, city, country, score] = match;
+    
+        //             // ANCHOR Fetch image for the current city-country pair
+        //             const client = createClient('8U6Se7vVT3H9tx1KPZAQTkDUSW0IKi3ldgBTVyh3W9NFF7roIpZxktzY');
+        //             let illustration = '';
+    
+        //             try {
+        //                 const response = await client.photos.search({ query: `${city}, ${country}`, per_page: 1 });
+        //                 if ('photos' in response && response.photos.length > 0) {
+        //                     illustration = response.photos[0].src.landscape;
+        //                 }
+        //             } catch (error) {
+        //                 console.error(`Error in fetching photo for ${city}, ${country}:`, error);
+        //             }
+    
+        //             return {
+        //                 id: count++,
+        //                 location: `${city}, ${country}`.trim(),
+        //                 rating: parseFloat(score),
+        //                 illustration: illustration,
+        //                 description: "",
+        //             };
+        //         } else {
+        //             return null;
+        //         }
+        //     })
+        // );
+    
+        // const validDestinations = generatedDestinations.filter(destination => destination !== null);
+        setDestinations(data);
         await setDestinationSet({
             id: 1,
-            cards: validDestinations.reverse(),
+            cards: data.reverse(),
         });
     
         setLoadingMatches(false);

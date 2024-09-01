@@ -15,9 +15,10 @@ import { getInitialSet } from "@/api/destinationSets.api";
 
 const DestinationCompletion = () => {
   const [destinationSet, setDestinationSet] = useDestinationSetContext();
+  const { cards } = destinationSet;
 
   // const cardsAmount = games[game.id]?.cards.length;
-  const cardsAmount = 50;
+  const cardsAmount = cards.length;
 
   const initialDestinationSet = getInitialSet(0);
 

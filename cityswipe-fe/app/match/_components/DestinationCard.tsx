@@ -58,12 +58,14 @@ const DestinationCard = ({
   const { cards } = destinationSet;
   
   // const cardsAmount = games[game.id]?.cards.length; //fix
+  console.log(cards.length)
+  // console.log(destinationSet[0].length)
   let cardsAmount = cards.length; //fix
 
   const [imgLoadingComplete, setImgLoadingComplete] = useState(false);
   // const hasScoreIncreased = previousScore !== score;
 
-  const { location, illustration } = data;
+  const { city, country, illustration } = data;
   const x = useMotionValue(0);
   const isMobile = useMediaQuery("(max-width: 768px)");
 
@@ -118,6 +120,7 @@ const DestinationCard = ({
   });
 
   console.log("data",  data.illustration);
+  console.log("data",  illustration);
 
 
   return (
@@ -153,18 +156,18 @@ const DestinationCard = ({
           {/* the name of match */}
           <div id="locationWrapper"  className="mt-2 h-[30%] bg-gradient-to-t from-black via-black to-transparent w-full rounded absolute bottom-0 p-4 z-[2] text-white flex flex-col gap-2 place-items-start leading-tight">
             <p id="location" className="text-[20px] sm:text-[30px]">
-              {location}
+              {city}, {country}
             </p>
             <p>Bio</p>
           </div>
 
           {/* theimage on the card */}
-          {data.illustration.length > 10 && (     
+          {illustration.length > 10 && (     
             <Image
               priority
               className='absolute rounded w-full h-full object-cover object-center'
               // src={data.illustration || placeholderImg}
-              src={data.illustration}
+              src={illustration}
               fill
               sizes={`(max-width: 768px) 100vw, 250px`}
               alt="car"
