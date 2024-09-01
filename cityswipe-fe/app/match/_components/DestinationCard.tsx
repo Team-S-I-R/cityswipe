@@ -2,7 +2,7 @@
 
 import { useState, Dispatch, SetStateAction } from "react";
 import Image from "next/image";
-import placeholderImg from'../../assets/imgs/white.png'
+import placeholderImg from "../../assets/imgs/white.png";
 
 import { useMediaQuery } from "usehooks-ts";
 
@@ -19,11 +19,11 @@ import { useDestinationSetContext } from "../../../context/destinationSetContext
 import { type Destination } from "@/lib/destinationSet.type";
 import { useSavedDestinationContext } from "../../../context/savedDestinationContext";
 import { DestinationItem } from "@/lib/destination.type";
-import { createClient } from 'pexels';
+import { createClient } from "pexels";
 import { Button } from "@/components/ui/button";
 import { useCitySwipe } from "@/app/citySwipeContext";
 import handleResponse from "../_utils/handleResponse";
-import pimage from '../../assets/imgs/destination-img-1.jpg'
+import pimage from "../../assets/imgs/destination-img-1.jpg";
 
 // import SvgIconScoreLeaf from "@/components/svg/score-leaf.svg";
 
@@ -48,7 +48,7 @@ const DestinationCard = ({
   isDragging,
   isLast,
   setIsDragOffBoundary,
-  setDirection
+  setDirection,
 }: Props) => {
   // const [user, setUser] = useUserContext();
   // const { score, previousScore } = user;
@@ -56,16 +56,16 @@ const DestinationCard = ({
   const [destinationSet, setDestinationSet] = useDestinationSetContext();
   const [savedDestination, setSavedDestination] = useSavedDestinationContext();
   const { cards } = destinationSet;
-  
+
   // const cardsAmount = games[game.id]?.cards.length; //fix
-  console.log(cards.length)
+  console.log(cards.length);
   // console.log(destinationSet[0].length)
   let cardsAmount = cards.length; //fix
 
   const [imgLoadingComplete, setImgLoadingComplete] = useState(false);
   // const hasScoreIncreased = previousScore !== score;
 
-  const { city, country, illustration } = data;
+  const { city, country, illustration, description, pros, cons } = data;
   const x = useMotionValue(0);
   const isMobile = useMediaQuery("(max-width: 768px)");
 
@@ -86,11 +86,7 @@ const DestinationCard = ({
   const outputRotate = [-40, 0, 40];
   const outputActionScaleBadAnswer = [3, 1, 0.3];
   const outputActionScaleRightAnswer = [0.3, 1, 3];
-  const outputMainBgColor = [
-    "#fcbab6",
-    "#fafafa",
-    "#D4E0B2",
-  ];
+  const outputMainBgColor = ["#fcbab6", "#fafafa", "#D4E0B2"];
 
   let drivenX = useTransform(x, inputX, outputX);
   let drivenY = useTransform(x, inputX, outputY);
@@ -119,34 +115,38 @@ const DestinationCard = ({
     }));
   });
 
-  console.log("data",  data.illustration);
-  console.log("data",  illustration);
-
+  console.log("data", data.illustration);
+  console.log("data", illustration);
 
   return (
     <>
       <motion.div
-          initial={{ opacity: 0, y: 1000 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 5 }}
+        initial={{ opacity: 0, y: 1000 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 5 }}
         id={`cardDrivenWrapper-${id}`}
-        className="absolute p-2  z-10 rounded-xl text-center w-full sm:w-[500px] h-full sm:h-[500px] pointer-events-none text-black top-[5%] shadow-card select-none transform translate-x-1/2 translate-y-1/2"
+        className="absolute flex flex-row bg-black z-10 rounded-xl text-center w-full sm:w-[800px] h-full sm:h-[500px] pointer-events-none text-black top-[8%] shadow-card select-none transform translate-x-1/2 translate-y-1/2"
         style={{
           y: drivenY,
           rotate: drivenRotation,
           x: drivenX,
         }}
       >
-      {/* inside of card  */}
+        {/* inside of card  */}
         <div
           id="illustration"
-          className="w-full h-full rounded-xl relative overflow-hidden"
+          className="w-[62.5%] h-full rounded-xl relative overflow-hidden z-10 flex flex-col"
         >
-            {/* 1 out of whatever card youre on */}
-          <div id="metrics" className="relative z-[2] flex w-full justify-between items-baseline">
+          {/* 1 out of whatever card youre on */}
+          <div
+            id="metrics"
+            className="relative z-[2] flex w-full justify-between items-baseline"
+          >
             {/* number of cards out of 50 */}
             <div className="text-white p-4 bg-gradient-to-b from-black via-black to-transparent rounded-xl w-full flex place-content-start">
-              <span className="text-[30px] sm:text-[40px] leading-none">{id}</span>
+              <span className="text-[30px] sm:text-[40px] leading-none">
+                {id}
+              </span>
               <span className="text-[20px] ml-1">
                 /<span className="ml-[2px] text-[15px]">{cardsAmount}</span>
               </span>
@@ -154,18 +154,21 @@ const DestinationCard = ({
           </div>
 
           {/* the name of match */}
-          <div id="locationWrapper"  className="mt-2 h-[30%] bg-gradient-to-t from-black via-black to-transparent w-full rounded absolute bottom-0 p-4 z-[2] text-white flex flex-col gap-2 place-items-start leading-tight">
+          <div
+            id="locationWrapper"
+            className="mt-2 h-[30%] bg-gradient-to-t from-black via-black to-transparent w-full rounded absolute bottom-0 p-4 z-[2] text-white flex flex-col gap-2 place-items-start leading-tight"
+          >
             <p id="location" className="text-[20px] sm:text-[30px]">
               {city}, {country}
             </p>
-            <p>Bio</p>
+            <p>{description}</p>
           </div>
 
-          {/* theimage on the card */}
-          {illustration.length > 10 && (     
+          {/* the image on the card */}
+          {illustration.length > 10 && (
             <Image
               priority
-              className='absolute rounded w-full h-full object-cover object-center'
+              className="absolute rounded w-full h-full object-cover object-center"
               // src={data.illustration || placeholderImg}
               src={illustration}
               fill
@@ -173,10 +176,10 @@ const DestinationCard = ({
               alt="car"
             />
           )}
-   
+
           <Image
             priority
-            className='absolute rounded w-full h-full object-cover object-center'
+            className="absolute rounded w-full h-full object-cover object-center"
             // src={data.illustration || placeholderImg}
             // src={pimage}
             src=""
@@ -184,13 +187,33 @@ const DestinationCard = ({
             sizes={`(max-width: 768px) 100vw, 250px`}
             alt="car"
           />
-
         </div>
-      {/* images end */}
-        
+        {/* images end */}
+        <div
+          id="info"
+          className="w-[38.5%] h-full rounded-xl relative overflow-hidden z-10"
+        >
+          <div
+            id="benefitsWrapper"
+            className="h-full w-full rounded p-4 z-[2] text-white flex flex-col gap-2 place-items-start leading-tight"
+          >
+            <p id="pros" className="text-[20px] sm:text-[30px]">
+              Pros
+            </p>
+            {pros.slice(0, 5).map((pro) => {
+              return <p>- {pro}</p>;
+            })}
+            <div className="w-full absolute top-1/2 flex flex-col gap-2 place-items-start">
+              <p id="pros" className="text-[20px] sm:text-[30px] ">
+                Cons
+              </p>
+              {cons.slice(0, 5).map((con) => {
+                return <p>- {con}</p>;
+              })}
+            </div>
+          </div>
+        </div>
       </motion.div>
-
-      
 
       <motion.div
         id={`cardDriverWrapper-${id}`}
@@ -204,12 +227,12 @@ const DestinationCard = ({
         dragTransition={{ bounceStiffness: 1000, bounceDamping: 50 }}
         onDragStart={() => setIsDragging(true)}
         onDrag={(_, info) => {
-          const offset = info.offset.x;          
+          const offset = info.offset.x;
 
           if (offset < 0 && offset < offsetBoundary * -1) {
-          setIsDragOffBoundary("left");
+            setIsDragOffBoundary("left");
           } else if (offset > 0 && offset > offsetBoundary) {
-          setIsDragOffBoundary("right");
+            setIsDragOffBoundary("right");
           } else {
             setIsDragOffBoundary(null);
           }
@@ -230,7 +253,6 @@ const DestinationCard = ({
 
       {/* debug for pexals */}
       {/* <Button className="fixed top-0 right-0 z-50" onClick={() => findPhotos()}>Pexals</Button> */}
-
     </>
   );
 };

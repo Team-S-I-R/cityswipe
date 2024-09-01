@@ -9,8 +9,8 @@ export type DestinationSet = {
    country: string;
    description: string;
    compatibility: number|null;
-   pros: number;
-   cons: number;
+   pros: string[];
+   cons: string[];
   //  answer: "left" | "right";
   //  revised: string;
    illustration: string;

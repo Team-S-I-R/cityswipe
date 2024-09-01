@@ -130,7 +130,7 @@ const DestinationCards = () => {
       >
         <div
           id="cardsWrapper"
-          className="w-full relative overflow-hidden place-content-center place-items-center h-full sm:min-h-[600px] flex flex-col relative"
+          className="w-full relative overflow-hidden place-content-center place-items-center h-full sm:min-h-[600px] flex flex-col"
         >
           <AnimatePresence>
             {cards.map((card, i) => {

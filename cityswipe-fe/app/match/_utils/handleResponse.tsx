@@ -16,7 +16,7 @@ const handleResponse = ({ direction, cards, destinations }: Props) => {
   const imgUrl = currentCard.illustration ? currentCard.illustration : '';
   // If the choice is "true", add the current card details to destinations array
   // choice ? destinations.push({id:cards.length-1, location:currentCard.location, rating:currentCard.rating, img:imgUrl}) : null;
-  choice ? destinations.push({id:cards.length-1, location:currentCard.location, rating:currentCard.rating, illustration:currentCard.illustration}) : null;
+  choice ? destinations.push(currentCard) : null;
   // Return the updated destinations array
   console.log("destinations", destinations);
   return destinations;
