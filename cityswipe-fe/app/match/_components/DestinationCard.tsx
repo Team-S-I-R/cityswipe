@@ -125,7 +125,7 @@ const DestinationCard = ({
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 5 }}
         id={`cardDrivenWrapper-${id}`}
-        className="absolute flex flex-row bg-black z-10 rounded-xl text-center w-full sm:w-[800px] h-full sm:h-[500px] pointer-events-none text-black top-[8%] shadow-card select-none transform translate-x-1/2 translate-y-1/2"
+        className="absolute flex flex-row bg-white z-10 rounded-xl text-center w-full sm:w-[800px] h-full sm:h-[500px] pointer-events-none text-black top-[8%] shadow-card select-none transform translate-x-1/2 translate-y-1/2"
         style={{
           y: drivenY,
           rotate: drivenRotation,
@@ -168,7 +168,7 @@ const DestinationCard = ({
           {illustration.length > 10 && (
             <Image
               priority
-              className="absolute rounded w-full h-full object-cover object-center"
+              className="absolute rounded w-full h-full pt-2.5 object-cover object-center"
               // src={data.illustration || placeholderImg}
               src={illustration}
               fill
@@ -177,7 +177,7 @@ const DestinationCard = ({
             />
           )}
 
-          <Image
+          {/* <Image
             priority
             className="absolute rounded w-full h-full object-cover object-center"
             // src={data.illustration || placeholderImg}
@@ -186,7 +186,7 @@ const DestinationCard = ({
             fill
             sizes={`(max-width: 768px) 100vw, 250px`}
             alt="car"
-          />
+          /> */}
         </div>
         {/* images end */}
         <div
@@ -195,7 +195,7 @@ const DestinationCard = ({
         >
           <div
             id="benefitsWrapper"
-            className="h-full w-full rounded p-4 z-[2] text-white flex flex-col gap-2 place-items-start leading-tight"
+            className="h-full w-full rounded p-4 z-[2] text-black flex flex-col gap-2 place-items-start leading-tight"
           >
             <p id="pros" className="text-[20px] sm:text-[30px]">
               Pros
