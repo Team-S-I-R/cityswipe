@@ -5,16 +5,14 @@ import Link from "next/link";
 
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
-import { GameCard } from "./";
-import { GameActionBtn } from "./";
+import { DestinationCard } from ".";
+import { DestinationActionBtn } from ".";
 
 // import { BgPattern } from "@/components/ui";
 import { useDestinationSetContext } from "../../../context/destinationSetContext";
 // import { useUserContext } from "@/store/userContext";
 // import { themeColors } from "@/lib/theme";
 // import handleScore from "../_utils/handleScore";
-
-// import { GameActionBtn, GameCard } from "./";
 
 import {
   CardSwipeDirection,
@@ -38,7 +36,7 @@ const initialDrivenProps = {
   mainBgColor: "#fafafa",
 };
 
-const GameCards = () => {
+const DestinationCards = () => {
   const {userdata, setUserData} = useCitySwipe()
   const [destinationSet, setDestinationSet] = useDestinationSetContext();
   const [savedDestination, setSavedDestination] = useSavedDestinationContext();
@@ -150,7 +148,7 @@ const GameCards = () => {
                   }
                   exit="exit"
                 >
-                  <GameCard
+                  <DestinationCard
                     data={card}
                     id={card.id}
                     setCardDrivenProps={setCardDrivenProps}
@@ -175,7 +173,7 @@ const GameCards = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 2 }}
           >
-            <GameActionBtn
+            <DestinationActionBtn
               direction="left"
               ariaLabel="swipe left"
               scale={cardDrivenProps.buttonScaleBadAnswer}
@@ -189,7 +187,7 @@ const GameCards = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 2 }}
           >
-            <GameActionBtn
+            <DestinationActionBtn
               direction="right"
               ariaLabel="swipe right"
               scale={cardDrivenProps.buttonScaleGoodAnswer}
@@ -219,4 +217,4 @@ const GameCards = () => {
   );
 };
 
-export default GameCards;
+export default DestinationCards;

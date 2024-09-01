@@ -13,7 +13,7 @@ import { useSavedDestinationContext } from "../../../context/savedDestinationCon
 import { useDestinationSetContext } from "../../../context/destinationSetContext";
 import { getInitialSet } from "@/api/destinationSets.api";
 
-const GameCompletion = () => {
+const DestinationCompletion = () => {
   const [destinationSet, setDestinationSet] = useDestinationSetContext();
 
   // const cardsAmount = games[game.id]?.cards.length;
@@ -67,4 +67,4 @@ const GameCompletion = () => {
   );
 };
 
-export default GameCompletion;
+export default DestinationCompletion;

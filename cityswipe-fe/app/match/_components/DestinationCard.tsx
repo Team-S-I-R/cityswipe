@@ -40,7 +40,7 @@ type Props = {
 
 type cardSwipeDirection = "left" | "right";
 
-const GameCard = ({
+const DestinationCard = ({
   id,
   data,
   setCardDrivenProps,
@@ -58,7 +58,7 @@ const GameCard = ({
   const { cards } = destinationSet;
   
   // const cardsAmount = games[game.id]?.cards.length; //fix
-  let cardsAmount = 50; //fix
+  let cardsAmount = cards.length; //fix
 
   const [imgLoadingComplete, setImgLoadingComplete] = useState(false);
   // const hasScoreIncreased = previousScore !== score;
@@ -232,4 +232,4 @@ const GameCard = ({
   );
 };
 
-export default GameCard;
+export default DestinationCard;

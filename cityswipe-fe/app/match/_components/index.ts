@@ -1,4 +1,4 @@
-export { default as GameCards } from "./GameCards";
-export { default as GameCard } from "./GameCard";
-export { default as GameActionBtn } from "./GameActionBtn";
-export { default as GameCompletion } from "./GameCompletion";
+export { default as DestinationCards } from "./DestinationCards";
+export { default as DestinationCard } from "./DestinationCard";
+export { default as DestinationActionBtn } from "./DestinationActionBtn";
+export { default as DestinationCompletion } from "./DestinationCompletion";
