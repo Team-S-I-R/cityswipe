@@ -100,6 +100,7 @@ import clogo from '../assets/imgs/path6.png'
     return (
         <>    
 
+        {/* desktop */}
         <motion.div 
         initial={{ opacity: 0, y: 100 }}
         animate={{ opacity: 1, y: 0 }}
@@ -113,6 +114,17 @@ import clogo from '../assets/imgs/path6.png'
                 <h1 className="select-none text-[15px] font-bold ">Cityswipe</h1>
             </div>
             </Link>
+
+            <div className="flex gap-4 place-items-center place-content-center text-[12px]">
+              
+              <Link href="/match">
+                <button className="shadow-md hover:shadow-lg hover:scale-[97%] px-4 py-2 rounded-lg">Match</button>
+              </Link>
+
+              <Link href="/explore">
+                <button className="shadow-md hover:shadow-lg hover:scale-[97%] px-4 py-2 rounded-lg">Chat</button>
+              </Link>
+            </div>
 
             <div className="flex text-[12px] select-none gap-4 place-items-center place-content-center">
 
@@ -136,99 +148,11 @@ import clogo from '../assets/imgs/path6.png'
                 </SignedIn>
             </div>
 
-            {/* <Dialog>
-              <DialogTrigger><h1 className="select-none font-bold underline">Join Waitlist</h1>
-              </DialogTrigger>
-              <DialogContent className="scale-[80%] sm:scale-100">
-                <DialogHeader>
-                  <DialogTitle>Join our wait list for early access!</DialogTitle>
-                  <DialogDescription>
-                    
-
-                    <p>When we launch you will receive first access to our full beta!</p>
-
-                    <form className="flex flex-col gap-6 my-5" action={action}>
-                      
-                      <p className="flex place-self-center text-green-500">{formState.message}</p>
-
-                      <Input type="text" name="Name" placeholder="Name" className="w-full" />
-                      <Input type="email" name="Email" placeholder="Email address" className="w-full" />
-                      <SubmitButton />
-                    </form>
-
-                    <p>Thank you for the support!</p>
-
-                    <h1 className="select-none font-bold absolute bottom-0 right-0 m-3">cityswipe</h1>
-
-                  </DialogDescription>
-                </DialogHeader>
-              </DialogContent>
-            </Dialog> */}
-            
-              {/* <NavigationMenu>
-              <NavigationMenuList>
-                  <NavigationMenuItem>
-                  <NavigationMenuTrigger>Getting started</NavigationMenuTrigger>
-                  <NavigationMenuContent>
-                      <ul className="grid gap-3 p-4 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
-                      <li className="row-span-3">
-                          <NavigationMenuLink asChild>
-                          <a
-                              className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
-                              href="/"
-                          >
-                              <span className="h-6 w-6 bg-red-400" />
-                              <div className="mb-2 mt-4 text-lg font-medium">
-                              shadcn/ui
-                              </div>
-                              <p className="text-sm leading-tight text-muted-foreground">
-                              Beautifully designed components built with Radix UI and
-                              Tailwind CSS.
-                              </p>
-                          </a>
-                          </NavigationMenuLink>
-                      </li>
-                      <ListItem href="/docs" title="Introduction">
-                          Re-usable components built using Radix UI and Tailwind CSS.
-                      </ListItem>
-                      <ListItem href="/docs/installation" title="Installation">
-                          How to install dependencies and structure your app.
-                      </ListItem>
-                      <ListItem href="/docs/primitives/typography" title="Typography">
-                          Styles for headings, paragraphs, lists...etc
-                      </ListItem>
-                      </ul>
-                  </NavigationMenuContent>
-                  </NavigationMenuItem>
-                  <NavigationMenuItem>
-                  <NavigationMenuTrigger>Components</NavigationMenuTrigger>
-                  <NavigationMenuContent>
-                      <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
-                      {components.map((component) => (
-                          <ListItem
-                          key={component.title}
-                          title={component.title}
-                          href={component.href}
-                          >
-                          {component.description}
-                          </ListItem>
-                      ))}
-                      </ul>
-                  </NavigationMenuContent>
-                  </NavigationMenuItem>
-                  <NavigationMenuItem>
-                  <Link href="/docs" legacyBehavior passHref>
-                      <NavigationMenuLink>
-                      Documentation
-                      </NavigationMenuLink>
-                  </Link>
-                  </NavigationMenuItem>
-              </NavigationMenuList>
-              </NavigationMenu> */}
             </>
         
         </motion.div>  
 
+        {/* Mobile */}
         <motion.div 
         initial={{ opacity: 0, y: 100 }}
         animate={{ opacity: 1, y: 0 }}
@@ -271,29 +195,3 @@ import clogo from '../assets/imgs/path6.png'
         </>
     )
 }
-
-// const ListItem = React.forwardRef<
-//   React.ElementRef<"a">,
-//   React.ComponentPropsWithoutRef<"a">
-// >(({ className, title, children, ...props }, ref) => {
-//   return (
-//     <li>
-//       <NavigationMenuLink asChild>
-//         <a
-//           ref={ref}
-//           className={cn(
-//             "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
-//             className
-//           )}
-//           {...props}
-//         >
-//           <div className="text-sm font-medium leading-none">{title}</div>
-//           <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-//             {children}
-//           </p>
-//         </a>
-//       </NavigationMenuLink>
-//     </li>
-//   )
-// })
-// ListItem.displayName = "ListItem"

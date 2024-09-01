@@ -3,12 +3,13 @@ import Explore from './page';
 import prisma from "@/lib/db";
 import { currentUser } from "@clerk/nextjs/server";
 import { useSavedDestinationContext } from '@/context/savedDestinationContext';
+import { redirect } from 'next/navigation';
 
 async function fetchData() {
     const clerkuser = await currentUser();
 
     if (!clerkuser) {
-        throw new Error("No current user found");
+        redirect("/sign-in");
     }
 
     // find user in database by Clerk ID or email

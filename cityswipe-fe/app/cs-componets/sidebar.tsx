@@ -121,6 +121,8 @@ export default function Sidebar( {clerkdata} : any) {
 
                     </div>
 
+
+
                 </div>
 
                 <p className="px-4 text-muted-foreground font-bold">All Matches</p>
@@ -179,6 +181,8 @@ export default function Sidebar( {clerkdata} : any) {
                     <p className="font-bold">Settings</p>
                 </div>
 
+                <p className="px-4 flex w-full place-content-start text-[10px] text-muted-foreground font-bold">Cityswipe</p>
+
             </div>
 
         </div> 
@@ -225,9 +229,9 @@ export default function Sidebar( {clerkdata} : any) {
             initial="closed"
             animate={isSidebarOpen ? "open" : "closed"}
             variants={variants}
-            className="w-[calc(100vw-150px)] bg-gray-100 px-3 h-screen absolute z-[-1] top-0 left-[45px]">
+            className="w-[calc(100vw-150px)] flex flex-col justify-between py-8 bg-gray-100 px-3 h-screen absolute z-[-1] top-0 left-[45px]">
 
-                <div className="flex z-10 my-8 flex-col  gap-3">
+                <div className="flex z-10 flex-col  gap-3">
                     
 
                     <div className="w-full h-max flex flex-col">
@@ -285,7 +289,10 @@ export default function Sidebar( {clerkdata} : any) {
 
                     </div>
 
+
                 </div>
+
+                <p className="px-4 flex w-full place-content-center text-[10px] text-muted-foreground font-bold">Cityswipe</p>
 
             </motion.div>
 
@@ -300,64 +307,3 @@ export default function Sidebar( {clerkdata} : any) {
         
     )
 }
-
-
-{/* <div className="flex z-10 my-8 flex-col  gap-3">
-                    
-
-<div className="w-full h-max flex flex-col">
-    
-    <p className="px-2 text-muted-foreground font-bold">Selected Match</p>
-    
-    <div className="bg-gray-200 place-items-center px-4 mt-3 w-full flex gap-8 relative h-max select-none py-4 rounded-xl overflow-hidden place-items-start" >
-        
-        <div className="w-[30px] h-[30px] rounded-full flex place-items-end place-content-end">
-            <img className="rounded-full h-full  w-full object-cover" src={chatImg} alt="" />
-        </div> 
-
-        {selectedMatch == '' ? (
-            <p className="select-none"><strong>{savedDestination.destinations[0]?.location.split(',')[0]}</strong></p>
-        ) : (
-            <p className="select-none"><strong>{selectedMatch}</strong></p>
-        )}
-
-    </div>
-
-</div>
-
-<p className="px-4 text-muted-foreground font-bold">All Matches</p>
-
-<div className="w-full h-[50%]  no-scrollbar overflow-y-scroll">
-
-    {savedDestination.destinations.map((dest: DestinationItem) => {
-        const { cityAndCountry } = extractMatchInfo(dest.location);
-        return (
-            <>
-            <div onClick={() => handleCityMatch(cityAndCountry, dest.illustration ?? '')} className="w-full relative h-max select-none hover:bg-gray-200 px-4 py-1 rounded-xl hover:scale-[102%] flex flex-col gap-[15px] overflow-hidden place-items-start">
-                <div className="w-full  h-max cursor-pointer relative flex flex-col place-items-start place-content-center" 
-                // style={{ backgroundImage: `url(${dest.illustration})`, backgroundRepeat: 'no-repeat', backgroundSize: 'fill', backgroundPosition: 'center' }}
-                key={dest.id}>
-                    <div className="w-full mr-3 flex gap-1 place-items-center place-content-center justify-between">
-                        
-                        <div className="w-max flex gap-2 place-items-center place-content-center">
-                            <div className="w-[30px] h-[30px] rounded-full flex place-items-end place-content-end">
-                                <img className="rounded-full h-full  w-full object-cover" src={dest.illustration} alt="" />
-                            </div>
-                            <h3 className="text-[14px] p-2 rounded-full w-max">{cityAndCountry.split(',')[0]}</h3>
-                        </div>
-
-                        <p className="text-[10px] p-2 flex flex-col rounded-full font-bold w-max h-max">
-                            <span className="text-green-500 text-[15px]">{dest.rating}% </span>
-                            Match!
-                        </p>
-
-                    </div>
-                </div>
-            </div>
-            </>
-        );
-    })}
-
-</div>
-
-</div> */}
