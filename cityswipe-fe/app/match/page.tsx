@@ -10,6 +10,7 @@ import { useEffect } from "react";
 import { useSavedDestinationContext } from "../../context/savedDestinationContext";
 import { Button } from "@/components/ui/button";
 import Header from "../cs-componets/header";
+import { createClient } from "pexels";
 
 const Match = () => {
   // "game" is the list of games 
@@ -42,13 +43,35 @@ const Match = () => {
     },
   };
 
-
+  // const testPexelsAPI = async () => {
+  //   const client = createClient('8U6Se7vVT3H9tx1KPZAQTkDUSW0IKi3ldgBTVyh3W9NFF7roIpZxktzY');
+  //   const searchQuery = 'Tokyo, Japan landscape';
+  //   try {
+  //     const response = await client.photos.search({ query: `${searchQuery}`, per_page: 1 });
+  //     console.log("pexels query", searchQuery);
+  //     if ('photos' in response && response.photos.length > 0) {
+  //       const illustration = response.photos[0].src.landscape;
+  //       console.log(searchQuery, "illustration URL:", illustration);
+  //     } else {
+  //       console.log("No photos found for the query.");
+  //     }
+  //   } catch (error) {
+  //     console.error(`Error in fetching photo for ${searchQuery}:`, error);
+  //   }
+  // };
 
 
   return (
     <>
     <Header />
       <main className="min-h-screen h-full mx-auto bg-gameSwipe-neutral">
+        
+        {/* img debug
+        <button className="absolute top-[50%] left-10 bg-red-500 text-white px-4 rounded-md z-[100]" onClick={testPexelsAPI}>
+          test
+        </button> */}
+
+
         <AnimatePresence mode="wait">
           {!isCardStockEmpty ? (
             <motion.div

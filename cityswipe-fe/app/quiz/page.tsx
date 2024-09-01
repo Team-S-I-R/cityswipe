@@ -116,40 +116,49 @@ export default function QuizClient({clerkdata} : any) {
         }
         let count = 1;
     
-        const generatedDestinations = await Promise.all(
-            textContent.trim().split('\n').map(async destination => {
-                const match = destination.match(/^(.*), ([A-Za-z\s]+) (\d+)%$/);
-    
-                if (match) {
-                    const [, city, country, score] = match;
-    
-                    // ANCHOR Fetch image for the current city-country pair
-                    const client = createClient('8U6Se7vVT3H9tx1KPZAQTkDUSW0IKi3ldgBTVyh3W9NFF7roIpZxktzY');
-                    let illustration = '';
-    
-                    try {
-                        const response = await client.photos.search({ query: `${city}, ${country}`, per_page: 1 });
-                        if ('photos' in response && response.photos.length > 0) {
-                            illustration = response.photos[0].src.landscape;
-                        }
-                    } catch (error) {
-                        console.error(`Error in fetching photo for ${city}, ${country}:`, error);
+        // added a delay because I noticed we get rate limited by the API easily.
+        // because of this delay this gives us freedom to add either an add or just a better loading state.
+        const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+        const generatedDestinations = [];
+        const destinations = textContent.trim().split('\n');
+
+        for (const destination of destinations) {
+            const match = destination.match(/^(.*), ([A-Za-z\s]+) (\d+)%$/);
+
+            if (match) {
+                const [, city, country, score] = match;
+
+                // ANCHOR Fetch image for the current city-country pair
+                const client = createClient('8U6Se7vVT3H9tx1KPZAQTkDUSW0IKi3ldgBTVyh3W9NFF7roIpZxktzY');
+                let illustration = '';
+
+                const searchQuery = `${city}, landscape`;
+                try {
+                    const response = await client.photos.search({ query: `${searchQuery}`, per_page: 1 });
+                    if ('photos' in response && response.photos.length > 0) {
+                        illustration = response.photos[0].src.landscape;
+                        console.log("pexals query (quiz.tsx)", searchQuery, "illustration (quiz.tsx)", illustration);
                     }
-    
-                    return {
-                        id: count++,
-                        location: `${city}, ${country}`.trim(),
-                        rating: parseFloat(score),
-                        illustration: illustration,
-                        description: "",
-                    };
-                } else {
-                    return null;
+                } catch (error) {
+                    console.error(`Error in fetching photo for ${city}, ${country}:`, error);
                 }
-            })
-        );
+
+                generatedDestinations.push({
+                    id: count++,
+                    location: `${city}, ${country}`.trim(),
+                    rating: parseFloat(score),
+                    illustration: illustration,
+                    description: "",
+                });
+
+                // Delay to ensure only 10 requests per second
+                await delay(100);
+            }
+        }
     
         const validDestinations = generatedDestinations.filter(destination => destination !== null);
+        
         setDestinations(validDestinations);
         await setDestinationSet({
             id: 1,
@@ -157,6 +166,7 @@ export default function QuizClient({clerkdata} : any) {
         });
     
         setLoadingMatches(false);
+
         router.push('/match');
     };
 

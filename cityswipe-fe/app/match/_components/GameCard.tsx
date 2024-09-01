@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, Dispatch, SetStateAction } from "react";
+import { useState, Dispatch, SetStateAction, useEffect } from "react";
 import Image from "next/image";
 import placeholderImg from'../../assets/imgs/white.png'
 
@@ -117,7 +117,10 @@ const GameCard = ({
     }));
   });
 
-  console.log("data",  data.illustration);
+  useEffect(() => {
+    console.log("img data from GameCard.tsx",  data.illustration);
+  }, [data.illustration]);
+
 
 
   return (
@@ -171,16 +174,16 @@ const GameCard = ({
             />
           )}
    
-          <Image
+          {/* <Image
             priority
             className='absolute rounded w-full h-full object-cover object-center'
             // src={data.illustration || placeholderImg}
             // src={pimage}
-            src=""
+            src={placeholderImg}
             fill
             sizes={`(max-width: 768px) 100vw, 250px`}
             alt="car"
-          />
+          /> */}
 
         </div>
       {/* images end */}
