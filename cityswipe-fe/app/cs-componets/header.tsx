@@ -238,8 +238,8 @@ import clogo from '../assets/imgs/path6.png'
           <>
             <Link href="/">
             <div className="flex gap-2 place-items-center place-content-center">
-                <img src={clogo.src} className="w-max h-[10px] mt-1"/>
-                {/* <h1 className="select-none text-[15px] ">Cityswipe</h1>  */}
+                {/* <img src={clogo.src} className="w-max h-[10px] mt-1"/> */}
+                <h1 className="select-none text-[15px] ">Cityswipe</h1> 
             </div>
             </Link>
 

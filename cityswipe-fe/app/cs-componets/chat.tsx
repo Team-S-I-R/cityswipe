@@ -61,7 +61,10 @@ export default function Chat() {
     // import saved global state city
 
     return (
-        <div className="relative flex text-[14px] flex-col place-content-center place-items-center w-full h-full">
+
+        <>
+        
+        <div className="relative hidden sm:flex text-[14px] flex-col place-content-center place-items-center w-full h-full">
             <div className="absolute border-b border-primary/20 top-0 w-full h-[6%] flex justify-between place-items-center px-5">
                 
                 {selectedMatch == '' ? (
@@ -145,5 +148,95 @@ export default function Chat() {
 
             </div>
         </div>
+
+        {/*  mobile */}
+        <div className="relative text-[12px] flex sm:hidden  flex-col place-content-center place-items-center w-full h-full">
+           
+            <div className="absolute border-b border-primary/20 top-0 w-full h-[6%] flex place-content-center place-items-center px-5">
+                
+                {selectedMatch == '' ? (
+                    <h2 className="select-none">You have matched with <strong>{savedDestination.destinations[0]?.location}</strong>!</h2>
+                ) : (
+                    <h2 className="select-none">You matched with <strong>{selectedMatch}</strong>!</h2>
+                )}
+            </div>
+
+
+
+            {conversation.length < 1 && (
+                <>
+
+                    <div className="flex flex-col select-none gap-2 place-items-center">
+
+                        <div className="w-[80px] h-[80px] rounded-full">
+                            <img className="object-cover w-full h-full rounded-full" src={chatImg} alt="" />
+                        </div>
+
+                        {selectedMatch == '' ? (
+                            <>
+                            <p className="text-center">You matched with <strong>{savedDestination.destinations[0]?.location}</strong>!</p>
+                            <p className="text-center">Ask {savedDestination.destinations[0]?.location} anything you would like to know</p>
+                            </>
+                        ) : (    
+                            <>
+                            <p className="text-center">You matched with <strong>{selectedMatch}</strong>!</p>
+                            <p className="text-center">Ask {selectedMatch} anything you would like to know</p>
+                            </>
+                        )}
+
+                    </div>
+                    
+                </>
+            )}
+  
+
+
+            {conversation.length > 0 && (
+                <>
+                    <div id="chat-container" className=" flex flex-col place-items-center h-[80vh] overflow-y-scroll ">
+                        {conversation.map((message, index) => (
+                            <div className={`w-[90%] m-2 rounded-md p-2  ${message.role === 'user' ? 'bg-cyan-300' : 'bg-green-300'}`} key={index}>
+                                <span className="font-bold">
+                                    {message.role}:
+                                </span>
+                                <span> </span>
+                                <span>
+                                     {message.content}
+                                </span>
+                            </div>
+                        ))}
+                    </div>
+                </>
+            )}
+
+            <div className="absolute  flex justify-center px-5 gap-3 place-items-center bottom-0 w-full h-[9vh]">
+            <div className=" py-1 flex gap-4 outline outline-primary/10 rounded-lg  px-4 w-full">
+                <Input
+                value={input}
+                onChange={(event) => {
+                    setInput(event.target.value);
+                }}
+                onKeyPress={(event) => {
+                    if (event.key === 'Enter') {
+                    startChat();
+                    }
+                }}
+                className="outline-none border-0 focus:ring-0 focus-visible:ring-0 h-[35px]"
+                autoFocus
+                />
+            <button
+                className="scale-[80%] hover:scale-[95%] bg-gradient-to-t from-cyan-500 to-green-400 p-2 rounded-full"
+                onClick={() => startChat()}
+            >
+                <ArrowUp className="text-white" size={20} />
+            </button>
+
+            </div>
+
+            </div>
+        </div>
+        </>
+
+        
     )
 }
