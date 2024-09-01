@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, Dispatch, SetStateAction } from "react";
+import { useState, Dispatch, SetStateAction, useEffect } from "react";
 import Image from "next/image";
 import placeholderImg from "../../assets/imgs/white.png";
 
@@ -24,6 +24,7 @@ import { Button } from "@/components/ui/button";
 import { useCitySwipe } from "@/app/citySwipeContext";
 import handleResponse from "../_utils/handleResponse";
 import pimage from "../../assets/imgs/destination-img-1.jpg";
+import { Dot, Frown, Laugh, MapPin } from "lucide-react";
 
 // import SvgIconScoreLeaf from "@/components/svg/score-leaf.svg";
 
@@ -55,12 +56,20 @@ const DestinationCard = ({
 
   const [destinationSet, setDestinationSet] = useDestinationSetContext();
   const [savedDestination, setSavedDestination] = useSavedDestinationContext();
+  const [lenofDestinationSet, setLenofDestinationSet] = useState(0);
+  const [showPros, setShowPros] = useState(false);
+  const [showCons, setShowCons] = useState(false);
+  const [showFullDescription, setShowFullDescription] = useState(true);
+
   const { cards } = destinationSet;
 
   // const cardsAmount = games[game.id]?.cards.length; //fix
-  console.log(cards.length);
-  // console.log(destinationSet[0].length)
   let cardsAmount = cards.length; //fix
+  
+  // fix for counting number of cards left display
+  useEffect(() => {
+    setLenofDestinationSet(cardsAmount);
+  }, []);
 
   const [imgLoadingComplete, setImgLoadingComplete] = useState(false);
   // const hasScoreIncreased = previousScore !== score;
@@ -115,8 +124,23 @@ const DestinationCard = ({
     }));
   });
 
-  console.log("data", data.illustration);
-  console.log("data", illustration);
+  const showBioHandler = () => {
+    setShowFullDescription(!showFullDescription);
+    setShowPros(false)
+    setShowCons(false)
+  };
+
+  const showProsHandler = () => {
+    setShowPros(!showPros)
+    setShowFullDescription(false)
+    setShowCons(false)
+  };
+
+  const showConsHandler = () => {
+    setShowCons(!showCons)
+    setShowFullDescription(false)
+    setShowPros(false)
+  };
 
   return (
     <>
@@ -125,7 +149,7 @@ const DestinationCard = ({
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 5 }}
         id={`cardDrivenWrapper-${id}`}
-        className="absolute flex flex-row bg-white z-10 rounded-xl text-center w-full sm:w-[800px] h-full sm:h-[500px] pointer-events-none text-black top-[8%] shadow-card select-none transform translate-x-1/2 translate-y-1/2"
+        className="w-[600px] h-[600px] absolute !cursor-default p-4 gap-4 flex flex-row shadow-lg bg-white z-10 rounded-xl text-center  pointer-events-none text-black top-[8%] select-none transform translate-x-1/2 translate-y-1/2"
         style={{
           y: drivenY,
           rotate: drivenRotation,
@@ -135,84 +159,163 @@ const DestinationCard = ({
         {/* inside of card  */}
         <div
           id="illustration"
-          className="w-[62.5%] h-full rounded-xl relative overflow-hidden z-10 flex flex-col"
+          className="w-full h-full rounded-xl relative overflow-hidden z-10 flex flex-col"
         >
-          {/* 1 out of whatever card youre on */}
-          <div
-            id="metrics"
-            className="relative z-[2] flex w-full justify-between items-baseline"
-          >
-            {/* number of cards out of 50 */}
-            <div className="text-white p-4 bg-gradient-to-b from-black via-black to-transparent rounded-xl w-full flex place-content-start">
-              <span className="text-[30px] sm:text-[40px] leading-none">
-                {id}
-              </span>
-              <span className="text-[20px] ml-1">
-                /<span className="ml-[2px] text-[15px]">{cardsAmount}</span>
-              </span>
-            </div>
+
+          <div className="flex flex-col place-items-center w-full relative h-[70%]">
+        
+              {/* ANCHOR NAME 1 out of whatever card youre on */}
+              <div
+                id="metrics"
+                className="relative p-4 z-[2] flex place-items-center place-content-center w-full justify-between items-baseline"
+              >
+
+                <p id="location" className="text-[25px] font-bold w-max h-max">
+                  {city}
+                </p>
+
+                {/* number of cards out of 50 */}
+                <div className="rounded-xl bg-gradient-to-t from-cyan-400 to-green-400 px-3 w-max h-max">
+                  <span className="text-[15px]">
+                    {id}
+                  </span>
+                  <span className="">
+                    /<span className="">{lenofDestinationSet}</span>
+                  </span>
+                </div>
+
+              </div>
+
+              {/* ANCHOR the image of match */}
+              <div className="w-[95%] rounded-lg relative h-full bg-gray-400">
+                {illustration.length > 10 && (
+                  <Image
+                    priority
+                    className="rounded w-full absolute h-full object-cover"
+                    // src={data.illustration || placeholderImg}
+                    src={illustration}
+                    fill
+                    // sizes={`(max-width: 268px) 100vw, 250px`}
+                    alt="car"
+                  />
+              )}
+              </div>
+          
           </div>
 
-          {/* the name of match */}
-          <div
+
+          {/* ANCHOR bottom left of card */}
+          <div className="h-[30%] p-4 w-full  z-[2]  flex flex-col gap-2 leading-tight justify-evenly"
             id="locationWrapper"
-            className="mt-2 h-[30%] bg-gradient-to-t from-black via-black to-transparent w-full rounded absolute bottom-0 p-4 z-[2] text-white flex flex-col gap-2 place-items-start leading-tight"
           >
-            <p id="location" className="text-[20px] sm:text-[30px]">
-              {city}, {country}
-            </p>
-            <p>{description}</p>
+              {/* ANCHOR location/full */}
+              <div className="w-max h-max flex gap-2 place-items-center place-content-center">
+                <MapPin size={15} className="text-muted-foreground"/> 
+                <p id="location" className="text-[15px] text-muted-foreground w-max h-max">
+                  {city}, {country}
+                </p>
+              </div>  
+ 
+              {/* ANCHOR bio/description */}
+              <div className="h-max text-left line-clamp-2 overflow-hidden no-scrollbar pointer-events-auto w-full">
+                    <p>{description}</p>
+              </div>
+
+              {/* ANCHOR Pros and Cons */}
+              <div className="w-max h-max">
+            
+                  <div className="pointer-events-auto text-[12px] flex gap-4 place-items-center place-content-center">
+                    
+                    <button onClick={showBioHandler} className="font-bold w-max flex place-items-center gap-2 shadow-lg  px-3 py-2 rounded-lg">
+                      Full Bio
+                    </button>
+                    
+                    <button onClick={showProsHandler} className="font-bold w-max flex place-items-center gap-2 bg-gradient-to-t from-cyan-400/30 to-green-400/30 text-green-400 hover:text-white hover:from-cyan-400 hover:to-green-400 px-3 py-2 rounded-lg">
+                      <Laugh size={20} className=""/>
+                      Pros
+                    </button>
+                    
+                    <button onClick={showConsHandler} className="font-bold w-max flex place-items-center gap-2 bg-gradient-to-t from-red-400/30 to-orange-400/30 text-red-400 hover:text-white hover:from-red-400 hover:to-orange-400 px-3 py-2 rounded-lg">
+                      <Frown size={20} className=""/>
+                      Cons
+                    </button>
+                  
+                  </div>
+
+              </div>
+        
           </div>
 
-          {/* the image on the card */}
-          {illustration.length > 10 && (
-            <Image
-              priority
-              className="absolute rounded w-full h-full pt-2.5 object-cover object-center"
-              // src={data.illustration || placeholderImg}
-              src={illustration}
-              fill
-              sizes={`(max-width: 768px) 100vw, 250px`}
-              alt="car"
-            />
-          )}
 
-          {/* <Image
-            priority
-            className="absolute rounded w-full h-full object-cover object-center"
-            // src={data.illustration || placeholderImg}
-            // src={pimage}
-            src=""
-            fill
-            sizes={`(max-width: 768px) 100vw, 250px`}
-            alt="car"
-          /> */}
+
         </div>
         {/* images end */}
-        <div
+
+        {/* info */}
+        <motion.div
           id="info"
-          className="w-[38.5%] h-full rounded-xl relative overflow-hidden z-10"
+          className=" w-[300px] h-full rounded-xl top-0 overflow-hidden z-10"
         >
           <div
             id="benefitsWrapper"
-            className="h-full w-full rounded p-4 z-[2] text-black flex flex-col gap-2 place-items-start leading-tight"
+            className="h-full w-full text-left rounded p-4 z-[2] text-black flex flex-col gap-2 place-items-start leading-tight"
           >
-            <p id="pros" className="text-[20px] sm:text-[30px]">
-              Pros
-            </p>
-            {pros.slice(0, 5).map((pro) => {
-              return <p>- {pro}</p>;
-            })}
-            <div className="w-full absolute top-1/2 flex flex-col gap-2 place-items-start">
-              <p id="pros" className="text-[20px] sm:text-[30px] ">
-                Cons
-              </p>
-              {cons.slice(0, 5).map((con) => {
-                return <p>- {con}</p>;
-              })}
-            </div>
+    
+            {/* the description will be shown by default */}
+            {showFullDescription === false && showPros === false && showCons === false && (
+                <>
+                <p id="description" className="text-[15px] font-bold">
+                  Bio
+                </p>
+
+                <p className="w-full h-[1px] bg-gray-200"></p>
+                <p className="text-[15px] text-muted-foreground">{description}</p>
+              </>
+            )}
+
+            {showFullDescription && (
+              <>
+                <p id="description" className="text-[15px] font-bold">
+                  Bio
+                </p>
+
+                <p className="w-full h-[1px] bg-gray-200"></p>
+                <p className="text-[15px] text-muted-foreground">{description}</p>
+              </>
+            )}
+
+            {showPros && (
+              <>
+                <p id="pros" className="text-[15px] font-bold">
+                  Pros
+                </p>
+                <p className="w-full h-[1px] bg-gray-200"></p>
+                {pros.slice(0, 5).map((pro) => {
+                  return <p className="text-[15px] flex gap-2"><Dot/> {pro}</p>;
+                })}
+              </>
+            )}
+
+            {showCons && (
+              <>
+                <p id="cons" className="text-[15px] font-bold">
+                  Cons
+                </p>
+                <p className="w-full h-[1px] bg-gray-200"></p>
+                {cons.slice(0, 5).map((con) => {
+                  return <p className="text-[15px] flex gap-2"><Dot/> {con}</p>;
+                })}
+              </>
+            )}
+
           </div>
-        </div>
+
+          {/* branding */}
+          <p className="absolute bottom-10 text-muted-foreground right-10 text-[8px]">
+            Cityswipe
+          </p>
+        </motion.div>
+
       </motion.div>
 
       <motion.div

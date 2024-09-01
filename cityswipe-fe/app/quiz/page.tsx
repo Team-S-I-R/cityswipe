@@ -137,20 +137,18 @@ export default function QuizClient({clerkdata} : any) {
         for await (const delta of readStreamableValue(newMessage)) {
             textContent += delta;
         }
+
         let count = 1;
-    
+        console.log("textContent (quiz.tsx)", textContent);
         // added a delay because I noticed we get rate limited by the API easily.
         // because of this delay this gives us freedom to add either an add or just a better loading state.
         const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
         const generatedDestinations = [];
-        const destinations = textContent.trim().split('\n');
+        const destinations = JSON.parse(textContent);
 
         for (const destination of destinations) {
-            const match = destination.match(/^(.*), ([A-Za-z\s]+) (\d+)%$/);
-
-            if (match) {
-                const [, city, country, score] = match;
+            const { city, country, compatibility, description, pros, cons, } = destination;
 
                 // ANCHOR Fetch image for the current city-country pair
                 const client = createClient('8U6Se7vVT3H9tx1KPZAQTkDUSW0IKi3ldgBTVyh3W9NFF7roIpZxktzY');
@@ -171,23 +169,21 @@ export default function QuizClient({clerkdata} : any) {
                     id: count++,
                     city: city.trim(),
                     country: country.trim(),
-                    compatibility: parseFloat(score),
-                    location: `${city}, ${country}`.trim(),
-                    rating: parseFloat(score),
+                    compatibility: parseFloat(compatibility),
                     illustration: illustration,
-                    description: "",
-                    pros: [],
-                    cons: [],
+                    description: description.trim(),
+                    pros: pros,
+                    cons: cons,
                 });
 
                 // Delay to ensure only 10 requests per second
                 await delay(100);
-            }
         }
     
         const validDestinations = generatedDestinations.filter(destination => destination !== null);
         
         setDestinations(validDestinations);
+        
         await setDestinationSet({
             id: 1,
             cards: validDestinations.reverse(),
@@ -205,7 +201,6 @@ export default function QuizClient({clerkdata} : any) {
             setResponses([]);
         }
     
-    console.log('userdata', userdata);
 
     return (
         <>
