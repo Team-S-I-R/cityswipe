@@ -8,13 +8,13 @@ import { IsDragOffBoundary } from "@/lib/destinationSet.type";
 const actionPropsMatrix = {
   left: {
     ariaLabel: "Swipe Left",
-    bgColorClass: "bg-gradient-to-t from-pink-500 to-red-400",
+    bgColorClass: "bg-gradient-to-t from-red-400/30 to-orange-400/30 text-red-400 hover:text-white hover:from-red-400 hover:to-orange-400",
     icon: BadIcon,
     iconBaseColorClass: "text-white",
   },
   right: {
     ariaLabel: "Swipe Right",
-    bgColorClass: "bg-gradient-to-t from-cyan-500 to-green-400",
+    bgColorClass: "bg-gradient-to-t from-cyan-400/30 to-green-400/30 text-green-400 hover:text-white hover:from-cyan-400 hover:to-green-400",
     icon: GoodIcon,
     iconBaseColorClass: "text-white",
   },

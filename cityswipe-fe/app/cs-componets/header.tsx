@@ -157,7 +157,7 @@ import clogo from '../assets/imgs/path6.png'
         initial={{ opacity: 0, y: 100 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1.5 }}
-        className="flex sm:hidden absolute z-[20] top-10 px-8 w-full place-items-center place-content-center justify-between">
+        className="flex sm:hidden absolute z-[20] top-5 px-8 w-full place-items-center place-content-center justify-between">
         
           <>
             <Link href="/">

@@ -126,7 +126,7 @@ const DestinationCards = () => {
 
       <div
         id="gameUIWrapper"
-        className="flex flex-col place-content-center place-items-center gap-6 w-full h-full relative z-10"
+        className="flex flex-col place-content-center place-items-center gap-3 w-full h-full relative z-10"
       >
         <div
           id="cardsWrapper"
@@ -164,54 +164,59 @@ const DestinationCards = () => {
           </AnimatePresence>
         </div>
 
-        <div
-          id="actions"
-          className="flex items-center justify-center w-max h-max gap-4 relative z-10"
-        >
-          <motion.div
-            initial={{ opacity: 0, y: 1000 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 2 }}
+        <div className="w-full flex flex-col h-max gap-4 place-items-center">
+
+          <div
+            id="actions"
+            className="flex items-center justify-center w-max h-max gap-4 relative z-10"
           >
-            <DestinationActionBtn
-              direction="left"
-              ariaLabel="swipe left"
-              scale={cardDrivenProps.buttonScaleBadAnswer}
-              isDragOffBoundary={isDragOffBoundary}
-              onClick={() => handleActionBtnOnClick("left")}
-            />
-          </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 1000 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 2 }}
+            >
+              <DestinationActionBtn
+                direction="left"
+                ariaLabel="swipe left"
+                scale={cardDrivenProps.buttonScaleBadAnswer}
+                isDragOffBoundary={isDragOffBoundary}
+                onClick={() => handleActionBtnOnClick("left")}
+              />
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 1000 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 2 }}
+            >
+              <DestinationActionBtn
+                direction="right"
+                ariaLabel="swipe right"
+                scale={cardDrivenProps.buttonScaleGoodAnswer}
+                isDragOffBoundary={isDragOffBoundary}
+                onClick={() => handleActionBtnOnClick("right")}
+              />
+            </motion.div>
+          </div>
 
           <motion.div
             initial={{ opacity: 0, y: 1000 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 2 }}
+            transition={{ duration: 4 }}
           >
-            <DestinationActionBtn
-              direction="right"
-              ariaLabel="swipe right"
-              scale={cardDrivenProps.buttonScaleGoodAnswer}
-              isDragOffBoundary={isDragOffBoundary}
-              onClick={() => handleActionBtnOnClick("right")}
-            />
+            <Link
+              id="destinations_button"
+              className="flex items-center justify-center w-max gap-4 relative z-10 h-max"
+              href="/explore"
+            >
+              <Button className="text-[12px] bg-gradient-to-t from-cyan-500 to-green-400 select-none w-max">
+                See Save Destinations
+              </Button>
+            </Link>
           </motion.div>
+
         </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 1000 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 4 }}
-        >
-          <Link
-            id="destinations_button"
-            className="flex items-center justify-center w-max gap-4 relative z-10 h-max"
-            href="/explore"
-          >
-            <Button className="text-[12px] bg-gradient-to-t from-cyan-500 to-green-400 select-none w-max">
-              See Save Destinations
-            </Button>
-          </Link>
-        </motion.div>
       </div>
     </motion.div>
   );
