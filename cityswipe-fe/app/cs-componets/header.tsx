@@ -115,33 +115,30 @@ import clogo from '../assets/imgs/path6.png'
             </div>
             </Link>
 
-            <div className="flex gap-4 place-items-center place-content-center text-[12px]">
-              
-              <Link href="/match">
-                <button className="shadow-md hover:shadow-lg hover:scale-[97%] px-4 py-2 rounded-lg">Match</button>
-              </Link>
-
-              <Link href="/explore">
-                <button className="shadow-md hover:shadow-lg hover:scale-[97%] px-4 py-2 rounded-lg">Chat</button>
-              </Link>
-            </div>
-
             <div className="flex text-[12px] select-none gap-4 place-items-center place-content-center">
 
                 <SignedOut>
 
-        
-              <Link href="/sign-in">
-                <button className="shadow-md hover:shadow-lg hover:scale-[97%] px-4 py-2 rounded-lg">Log In</button>
-              </Link>
-              <Link href="/sign-up">
-                <button className="shadow-md px-4 py-2 hover:shadow-lg hover:scale-[97%] rounded-lg text-white bg-gradient-to-t from-cyan-500 to-green-400">Sign Up</button>
-              </Link>
-              
-                
+                  <Link href="/sign-in">
+                    <button className="shadow-md hover:shadow-lg hover:scale-[97%] px-4 py-2 rounded-lg">Log In</button>
+                  </Link>
+                  <Link href="/sign-up">
+                    <button className="shadow-md px-4 py-2 hover:shadow-lg hover:scale-[97%] rounded-lg text-white bg-gradient-to-t from-cyan-500 to-green-400">Sign Up</button>
+                  </Link>
+                              
                 </SignedOut>
                 
                 <SignedIn>
+
+                <div className="flex place-items-center place-content-center text-[12px]">
+                  <Link href="/match">
+                    <button className="text-muted-foreground hover:text-black hover:scale-[97%] px-4 py-2 rounded-lg">Match</button>
+                  </Link>
+
+                  <Link href="/explore">
+                    <button className="text-muted-foreground hover:text-black hover:scale-[97%] px-4 py-2 rounded-lg">Chat</button>
+                  </Link>
+              </div>
                 
                   <UserButton />
                 

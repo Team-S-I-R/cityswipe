@@ -5,7 +5,7 @@ import { useCitySwipe } from '../citySwipeContext';
 import React, { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import quizQuestions from "../quiz-questions/questions";
-import { generateCityBio, streamConversation, Message, submitFormResponse } from "../actions";
+import { generateCityBio, streamConversation, Message, submitFormResponse, addQuestions } from "../actions";
 import { readStreamableValue } from "ai/rsc";
 import { useRouter } from 'next/navigation';
 import { useFormState, useFormStatus } from "react-dom";
@@ -25,17 +25,10 @@ export default function QuizClient({clerkdata} : any) {
     // Responses for debuggin!
     const [responses, setResponses] = useState<string[]>(["United States", "Luxury", "English", "Yes", "Summer", "Warm", "Beach", "Sprinting, Hiking, Camping, Swimming, Drawing", "Vegan", "Street food", "No", "No"]);
     const questionKeys = Object.keys(quizQuestions);
-    const [updateHeart, setUpdateHeart] = useState(false);
     const [destinations, setDestinations] = useState<any[]>([]);
-    const [conversation, setConversation] = useState<Message[]>([]);
-    const [input, setInput] = useState<string>("");
     const [destinationSet, setDestinationSet] = useDestinationSetContext();
     const router = useRouter();
     const [loadingMatches, setLoadingMatches] = useState(false);
-    // for pexals
-    const [ pexalsPhoto, setPexalsPhoto ] = useState<string>(''); 
-    const [cityCountryQuery, setCityCountryQuery] = useState<string>("");
-    const {photoUrl, setPhotoUrl} = useCitySwipe();
     
     // sets user data
     const { userdata, setUserData } = useCitySwipe();
@@ -185,6 +178,9 @@ export default function QuizClient({clerkdata} : any) {
             cards: validDestinations.reverse(),
         });
     
+
+        await addQuestions(responses)
+
         setLoadingMatches(false);
 
         const endTime = performance.now(); // End tracking time
@@ -194,11 +190,12 @@ export default function QuizClient({clerkdata} : any) {
     };
 
     // ANCHOR Resetting the quiz {
-        const handleHomeFunction = () => {
-            setCurrentQuestionIndex(0);
-            router.push('/');
-            setResponses([]);
-        }
+    const handleHomeFunction = () => {
+        setCurrentQuestionIndex(0);
+        router.push('/');
+        setResponses([]);
+    }
+
     
 
     return (

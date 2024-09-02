@@ -144,7 +144,7 @@ export async function getConversationHistory(city: string) {
 
 
 
-// form stuff
+// waiting list form stuff
 
 const generateRandomId = () => {
   return Math.random().toString(36).substring(2, 10);
@@ -195,6 +195,29 @@ export async function submitFormResponse(formData: FormData, formState: FormStat
   }
 }
 
+// adding questions to database
+export async function addQuestions(questions: any) {
+
+  const user = await currentUser();
+
+  await prisma?.quizAnswer.create({
+    data: {
+      a1: questions?.[0],
+      a2: questions?.[1],
+      a3: questions?.[2],
+      a4: questions?.[3],
+      a5: questions?.[4],
+      a6: questions?.[5],
+      a7: questions?.[6],
+      a8: questions?.[7],
+      a9: questions?.[8],
+      a10: questions?.[9],
+      a11: questions?.[10],
+      a12: questions?.[11],
+      userId: user?.id,
+    },
+  })
+}
 
 // adding matches to database
 export async function addMatch(savedDestination: any) {
