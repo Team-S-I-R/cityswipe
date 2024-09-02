@@ -37,9 +37,31 @@ async function fetchUserMatches() {
     return matches
 }
 
+async function fetchQuestions() {
+    const clerkuser = await currentUser();
+
+    if (!clerkuser) {
+        redirect("/sign-in");
+    }
+
+    let questions = await prisma?.quizAnswer.findMany({
+        where: {
+            userId: clerkuser?.id
+        }
+    })
+
+    if (questions.length < 1) {
+        redirect("/quiz");
+    }
+
+    return questions
+}
+
 export default async function ExploreServer() {
     const data = await fetchUserData();
     const matches = await fetchUserMatches();
+    const questions = await fetchQuestions();
+    
     console.log("server user matches: ", matches)
     return (
         <main className="w-screen h-screen overflow-y-hidden">

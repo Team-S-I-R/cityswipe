@@ -56,24 +56,22 @@ const DestinationCard = ({
 
   const [destinationSet, setDestinationSet] = useDestinationSetContext();
   const [savedDestination, setSavedDestination] = useSavedDestinationContext();
-  const [lenofDestinationSet, setLenofDestinationSet] = useState(0);
   const [showPros, setShowPros] = useState(false);
   const [showCons, setShowCons] = useState(false);
   const [showFullDescription, setShowFullDescription] = useState(true);
-
+  
   const [showMobilePro, setShowMobilePro] = useState(false);
   const [showMobileCon, setShowMobileCon] = useState(false);
   const [showMobileDescription, setShowMobileDescription] = useState(false);
-
+  
   const { cards } = destinationSet;
-
+  
   // const cardsAmount = games[game.id]?.cards.length; //fix
   let cardsAmount = cards.length; //fix
+  const [lenofDestinationSet, setLenofDestinationSet] = useState(cardsAmount);
   
   // fix for counting number of cards left display
-  useEffect(() => {
-    setLenofDestinationSet?.(cardsAmount);
-  }, [cardsAmount]);
+
 
   const [imgLoadingComplete, setImgLoadingComplete] = useState(false);
   // const hasScoreIncreased = previousScore !== score;
@@ -175,7 +173,7 @@ const DestinationCard = ({
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 5 }}
         id={`cardDrivenWrapper-${id}`}
-        className="sm:w-[600px] sm:h-[600px] hidden sm:flex absolute !cursor-default p-4 gap-4 flex-row shadow-lg bg-white z-10 rounded-xl text-center  pointer-events-none text-black top-[8%] select-none transform translate-x-1/2 translate-y-1/2"
+        className="sm:w-[600px] md:h-[500px] hidden sm:flex absolute !cursor-default p-4 gap-4 flex-row shadow-lg bg-white z-10 rounded-xl text-center  pointer-events-none text-black top-[8%] select-none transform translate-x-1/2 translate-y-1/2"
         style={{
           y: drivenY,
           rotate: drivenRotation,

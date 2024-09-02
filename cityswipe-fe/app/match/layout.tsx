@@ -49,9 +49,31 @@ async function fetchData() {
   return user;
 }
 
+// this makes sure the user has answered at least one question from the quiz
+async function fetchQuestions() {
+    const clerkuser = await currentUser();
+
+    if (!clerkuser) {
+        redirect("/sign-in");
+    }
+
+    let questions = await prisma?.quizAnswer.findMany({
+        where: {
+            userId: clerkuser?.id
+        }
+    })
+
+    if (questions.length < 1) {
+        redirect("/quiz");
+    }
+
+    return questions
+}
+
 export default async function MatchServer() {
   
   const data = await fetchData();
+  const questions = await fetchQuestions();
 
   return (
     

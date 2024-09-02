@@ -140,7 +140,7 @@ const DestinationCards = () => {
                 <motion.div
                   key={`card-${i}`}
                   id={`card-${card.id}`}
-                  className={`w-full absolute top-[5%] h-[calc(100%-15%)] sm:min-h-[600px] flex place-content-center place-items-center z-10`}
+                  className={`w-full absolute top-[5%] h-[calc(100%-15%)] md:min-h-[500px] flex place-content-center place-items-center z-10`}
                   variants={cardVariants}
                   initial="remainings"
                   animate={
