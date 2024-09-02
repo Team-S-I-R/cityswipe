@@ -198,25 +198,32 @@ export async function submitFormResponse(formData: FormData, formState: FormStat
 // adding questions to database
 export async function addQuestions(questions: any) {
 
+  let count = 0
+
   const user = await currentUser();
 
-  await prisma?.quizAnswer.create({
-    data: {
-      a1: questions?.[0],
-      a2: questions?.[1],
-      a3: questions?.[2],
-      a4: questions?.[3],
-      a5: questions?.[4],
-      a6: questions?.[5],
-      a7: questions?.[6],
-      a8: questions?.[7],
-      a9: questions?.[8],
-      a10: questions?.[9],
-      a11: questions?.[10],
-      a12: questions?.[11],
-      userId: user?.id,
-    },
-  })
+  // ensure this is only run once
+  if (count < 1) {
+    await prisma?.quizAnswer.create({
+      data: {
+        a1: questions?.[0],
+        a2: questions?.[1],
+        a3: questions?.[2],
+        a4: questions?.[3],
+        a5: questions?.[4],
+        a6: questions?.[5],
+        a7: questions?.[6],
+        a8: questions?.[7],
+        a9: questions?.[8],
+        a10: questions?.[9],
+        a11: questions?.[10],
+        a12: questions?.[11],
+        userId: user?.id,
+      },
+    })
+
+    count += 1
+  }
 }
 
 // adding matches to database
