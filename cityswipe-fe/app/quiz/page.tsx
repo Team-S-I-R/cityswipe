@@ -142,7 +142,7 @@ export default function QuizClient({clerkdata} : any) {
         console.log("textContent (quiz.tsx)", textContent);
         // added a delay because I noticed we get rate limited by the API easily.
         // because of this delay this gives us freedom to add either an add or just a better loading state.
-        const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+        // const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
         const generatedDestinations = [];
         const destinations = JSON.parse(textContent);
@@ -175,9 +175,6 @@ export default function QuizClient({clerkdata} : any) {
                     pros: pros,
                     cons: cons,
                 });
-
-                // Delay to ensure only 10 requests per second
-                await delay(100);
         }
     
         const validDestinations = generatedDestinations.filter(destination => destination !== null);
