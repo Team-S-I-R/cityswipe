@@ -17,6 +17,10 @@ import {
 import { useEffect } from "react";
 import { UserButton } from "@clerk/nextjs";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image"
+import placeholderimg from '../assets/imgs/white.png'
+
+
 
 export default function Sidebar( {clerkdata} : any) {
 
@@ -111,7 +115,7 @@ export default function Sidebar( {clerkdata} : any) {
                     <div className="bg-gray-200 place-items-center px-4 mt-3 w-full flex gap-8 relative h-max select-none py-4 rounded-xl overflow-hidden place-items-start" >
                         
                         <div className="w-[30px] h-[30px] rounded-full flex place-items-end place-content-end">
-                            <img className="rounded-full h-full  w-full object-cover" src={chatImg} alt="" />
+                            <Image className="rounded-full h-full  w-full object-cover" src={chatImg || placeholderimg} alt="" />
                         </div> 
 
                         {selectedMatch == '' ? (
@@ -143,7 +147,7 @@ export default function Sidebar( {clerkdata} : any) {
                                         <div className="w-max flex gap-2 place-items-center place-content-center">
                                             <div className="w-[30px] h-[30px] rounded-full flex place-items-end place-content-end">
                                                 {/* <div className="absolute z-[-1] bg-gradient-to-r from-white via-white to-transparent w-full h-full"></div> */}
-                                                <img className="rounded-full h-full  w-full object-cover" src={dest.illustration} alt="" />
+                                                <Image className="rounded-full h-full  w-full object-cover" src={dest.illustration} alt="" />
                                             </div>
                                             <h3 className="text-[14px] p-2 rounded-full w-max">{dest.city}</h3>
                                         </div>
@@ -241,7 +245,7 @@ export default function Sidebar( {clerkdata} : any) {
                         <div className="bg-gray-200 place-items-center px-4 mt-3 w-full flex gap-8 relative h-max select-none py-4 rounded-xl overflow-hidden place-items-start" >
                             
                             <div className="w-[30px] h-[30px] rounded-full flex place-items-end place-content-end">
-                                <img className="rounded-full h-full  w-full object-cover" src={chatImg} alt="" />
+                                <Image className="rounded-full h-full  w-full object-cover" src={chatImg || placeholderimg} alt="" />
                             </div> 
 
                             {selectedMatch == '' ? (
@@ -269,7 +273,7 @@ export default function Sidebar( {clerkdata} : any) {
                                             
                                             <div className="w-max flex gap-2 place-items-center place-content-center">
                                                 <div className="w-[30px] h-[30px] rounded-full flex place-items-end place-content-end">
-                                                    <img className="rounded-full h-full  w-full object-cover" src={dest.illustration} alt="" />
+                                                    <Image className="rounded-full h-full  w-full object-cover" src={dest.illustration} alt="" />
                                                 </div>
                                                 <h3 className="text-[14px] p-2 rounded-full w-max">{dest.city}</h3>
                                             </div>

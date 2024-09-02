@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { X } from "lucide-react"
 import { useCitySwipe } from "../citySwipeContext";
+import Image from "next/image"
 import { useState } from "react";
 import { streamConversation, getConversationHistory, Message, streamFlirtatiousConversation } from "../actions";
 import { useEffect } from "react";
@@ -11,6 +12,7 @@ import { readStreamableValue } from "ai/rsc";
 import { ArrowUp } from "lucide-react";
 import { savedDestination } from "../../api/savedDestination.api";
 import { DestinationItem } from "@/lib/destination.type";
+import placeholderimg from '../assets/imgs/white.png'
 export default function Chat() {
 
     const [conversation, setConversation] = useState<Message[]>([]);
@@ -68,7 +70,7 @@ export default function Chat() {
             <div className="absolute border-b border-primary/20 top-0 w-full h-[6%] flex justify-between place-items-center px-5">
                 
                 {selectedMatch == '' ? (
-                    <h2 className="select-none">You have matched with <strong>{savedDestination.destinations[0]?.location}</strong>!</h2>
+                    <h2 className="select-none">You have matched with <strong>{savedDestination.destinations[0]?.city}</strong>!</h2>
                 ) : (
                     <h2 className="select-none">You matched with <strong>{selectedMatch}</strong>!</h2>
                 )}
@@ -82,13 +84,13 @@ export default function Chat() {
                     <div className="flex flex-col select-none gap-2 place-items-center">
 
                         <div className="w-[80px] h-[80px] rounded-full">
-                            <img className="object-cover w-full h-full rounded-full" src={chatImg} alt="" />
+                            <Image className="object-cover w-full h-full rounded-full" src={chatImg || placeholderimg} alt="" />
                         </div>
 
                         {selectedMatch == '' ? (
                             <>
-                            <p className="text-center">You matched with <strong>{savedDestination.destinations[0]?.location}</strong>!</p>
-                            <p className="text-center">Ask {savedDestination.destinations[0]?.location} anything you would like to know</p>
+                            <p className="text-center">You matched with <strong>{savedDestination.destinations[0]?.city}</strong>!</p>
+                            <p className="text-center">Ask {savedDestination.destinations[0]?.city} anything you would like to know</p>
                             </>
                         ) : (    
                             <>
@@ -155,7 +157,7 @@ export default function Chat() {
             <div className="absolute border-b border-primary/20 top-0 w-full h-[6%] flex place-content-center place-items-center px-5">
                 
                 {selectedMatch == '' ? (
-                    <h2 className="select-none">You have matched with <strong>{savedDestination.destinations[0]?.location}</strong>!</h2>
+                    <h2 className="select-none">You have matched with <strong>{savedDestination.destinations[0]?.city}</strong>!</h2>
                 ) : (
                     <h2 className="select-none">You matched with <strong>{selectedMatch}</strong>!</h2>
                 )}
@@ -169,13 +171,13 @@ export default function Chat() {
                     <div className="flex flex-col select-none gap-2 place-items-center">
 
                         <div className="w-[80px] h-[80px] rounded-full">
-                            <img className="object-cover w-full h-full rounded-full" src={chatImg} alt="" />
+                            <Image className="object-cover w-full h-full rounded-full" src={chatImg || placeholderimg} alt="" />
                         </div>
 
                         {selectedMatch == '' ? (
                             <>
-                            <p className="text-center">You matched with <strong>{savedDestination.destinations[0]?.location}</strong>!</p>
-                            <p className="text-center">Ask {savedDestination.destinations[0]?.location} anything you would like to know</p>
+                            <p className="text-center">You matched with <strong>{savedDestination.destinations[0]?.city}</strong>!</p>
+                            <p className="text-center">Ask {savedDestination.destinations[0]?.city} anything you would like to know</p>
                             </>
                         ) : (    
                             <>

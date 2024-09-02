@@ -73,7 +73,7 @@ const DestinationCard = ({
   // fix for counting number of cards left display
   useEffect(() => {
     setLenofDestinationSet(cardsAmount);
-  }, []);
+  }, [cardsAmount]);
 
   const [imgLoadingComplete, setImgLoadingComplete] = useState(false);
   // const hasScoreIncreased = previousScore !== score;
@@ -316,8 +316,8 @@ const DestinationCard = ({
                   Pros
                 </p>
                 <p className="w-full h-[1px] bg-gray-200"></p>
-                {pros.slice(0, 5).map((pro) => {
-                  return <p className="text-[15px] flex gap-2"><Dot/> {pro}</p>;
+                {pros.slice(0, 5).map((pro, index) => {
+                  return <p key={index} className="text-[15px] flex gap-2"><Dot/> {pro}</p>;
                 })}
               </>
             )}
@@ -328,8 +328,8 @@ const DestinationCard = ({
                   Cons
                 </p>
                 <p className="w-full h-[1px] bg-gray-200"></p>
-                {cons.slice(0, 5).map((con) => {
-                  return <p className="text-[15px] flex gap-2"><Dot/> {con}</p>;
+                {cons.slice(0, 5).map((con, index) => {
+                  return <p key={index} className="text-[15px] flex gap-2"><Dot/> {con}</p>;
                 })}
               </>
             )}
@@ -425,8 +425,8 @@ const DestinationCard = ({
                           Pros
                         </p>
                          <p className="w-full h-[1px] bg-gray-200"></p>
-                          {pros.slice(0, 5).map((pro) => {
-                            return <p className="text-[15px] flex gap-2"><Dot/> {pro}</p>;
+                          {pros.slice(0, 5).map((pro, index) => {
+                            return <p key={index} className="text-[15px] flex gap-2"><Dot/> {pro}</p>;
                           })}
                       </div>
                      </div>
@@ -441,8 +441,8 @@ const DestinationCard = ({
                           Cons
                         </p>
                         <p className="w-full h-[1px] bg-gray-200"></p>
-                          {cons.slice(0, 5).map((con) => {
-                            return <p className="text-[15px] flex gap-2"><Dot/> {con}</p>;
+                          {cons.slice(0, 5).map((con, index) => {
+                            return <p key={index} className="text-[15px] flex gap-2"><Dot/> {con}</p>;
                           })}
                       </div>
                      </div>
