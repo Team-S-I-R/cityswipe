@@ -3,6 +3,7 @@ import Explore from './page';
 import prisma from "@/lib/db";
 import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from 'next/navigation';
+import { revalidatePath } from 'next/cache';
 
 async function fetchUserData() {
     const clerkuser = await currentUser();
@@ -49,6 +50,12 @@ async function fetchQuestions() {
             userId: clerkuser?.id
         }
     })
+
+    revalidatePath('/');
+    revalidatePath('/quiz');
+    revalidatePath('/match');
+    revalidatePath('/explore');
+
 
     if (questions.length < 1) {
         redirect("/quiz");

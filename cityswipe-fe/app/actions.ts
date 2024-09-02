@@ -242,7 +242,7 @@ export async function addMatch(savedDestination: any) {
   }
 
   // this is the last destination we then just add this to the database
-  const destination: Destination = savedDestination?.destinations[savedDestination?.destinations.length - 1];
+  const destination: Destination = savedDestination?.destinations[savedDestination?.destinations?.length - 1];
 
   console.log("destination: ", destination);
 

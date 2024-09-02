@@ -73,7 +73,7 @@ const DestinationCards = () => {
       });
       
       // server action that adds a match to the database
-      addMatch({ updatedDestinations });
+      addMatch({ destinations: updatedDestinations });
     }
 
     
