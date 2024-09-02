@@ -202,8 +202,15 @@ export async function addQuestions(questions: any) {
 
   const user = await currentUser();
 
+  const quizResponseCount = await prisma?.quizAnswer.findMany({
+    where: {
+      userId: user?.id
+    }
+  });
+
+
   // ensure this is only run once
-  if (count < 1) {
+  if (count < 1 && quizResponseCount.length < 1) { {
     await prisma?.quizAnswer.create({
       data: {
         a1: questions?.[0],
@@ -224,6 +231,7 @@ export async function addQuestions(questions: any) {
 
     count += 1
   }
+}
 }
 
 // adding matches to database
