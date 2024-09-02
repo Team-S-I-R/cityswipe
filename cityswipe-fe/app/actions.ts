@@ -6,6 +6,7 @@ import { createStreamableValue } from "ai/rsc";
 import prisma from "@/lib/db";
 import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
+import { currentUser } from "@clerk/nextjs/server";
 
 export interface Message {
   role: "user" | "assistant";
@@ -196,18 +197,48 @@ export async function submitFormResponse(formData: FormData, formState: FormStat
 
 
 // adding matches to database
-export async function addMatch( savedDestination: any, userdata: any) {
-  // Add the destinations to prisma
-  //  await prisma?.match.create({
-  //     data: {
-  //         MatchTitle: savedDestination?.destinations[0]?.location,
-  //         MatchPercent: savedDestination?.destinations[0]?.rating as number,
-  //         userId: userdata?.id
-  //     },
-  // });
+export async function addMatch(savedDestination: any) {
 
-  console.log("server savedDestination: ", savedDestination)
-  console.log("server userdata: ", userdata)
+  const user = await currentUser();
+  
+  interface Destination {
+    city: string;
+    country: string;
+    description: string;
+    illustration: string;
+    pros: string[];
+    cons: string[];
+    compatibility: number;
+  }
+
+  // this is the last destination we then just add this to the database
+  const destination: Destination = savedDestination?.destinations[savedDestination?.destinations.length - 1];
+
+  console.log("destination: ", destination);
+
+    await prisma?.match.create({
+      data: {
+        city: destination?.city,
+        country: destination?.country,
+        description: destination?.description,
+        illustration: destination?.illustration,
+        pros: Array.isArray(destination?.pros) ? destination?.pros.map(String) : [],
+        cons: Array.isArray(destination?.cons) ? destination?.cons.map(String) : [],
+        compatibility: destination?.compatibility,
+        userId: user?.id,
+      },
+    });
 }
+export async function deleteMatch(id: string) {
 
+  await prisma?.match.delete({
+    where: {
+      id: id,
+    },
+  });
+
+  revalidatePath('/explore');
+  revalidatePath('/');
+
+}
 

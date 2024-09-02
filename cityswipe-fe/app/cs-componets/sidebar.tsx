@@ -1,7 +1,7 @@
 'use client'
 
 import { useCitySwipe } from "../citySwipeContext";
-import { ChevronDown, Home, MessageCircleMore, Settings } from "lucide-react";
+import { ChevronDown, EllipsisVertical, Home, MessageCircleMore, Settings } from "lucide-react";
 import { MessageCircleHeart } from "lucide-react";
 import { House } from "lucide-react";
 import Link from "next/link";
@@ -14,15 +14,22 @@ import {
   import { useRouter } from "next/navigation";
   import { savedDestination } from "../../api/savedDestination.api";
   import { DestinationItem } from "@/lib/destination.type";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { UserButton } from "@clerk/nextjs";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image"
 import placeholderimg from '../assets/imgs/white.png'
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+  } from "@/components/ui/popover"
+import { Input } from "@/components/ui/input";
+import { deleteMatch } from "../actions";
+import { useFormStatus } from "react-dom";
 
 
-
-export default function Sidebar( {clerkdata} : any) {
+export default function Sidebar( {clerkdata, matches} : any,) {
 
     const { isStarted, setIsStarted } = useCitySwipe();
     const { isChatting, setIsChatting } = useCitySwipe();
@@ -32,31 +39,27 @@ export default function Sidebar( {clerkdata} : any) {
     const { clearConversation, setClearConversation } = useCitySwipe();
     const { photoUrl, setPhotoUrl } = useCitySwipe();
     const { chatImg, setChatImg } = useCitySwipe();
-    const { firstMatch, setFirstMatch } = useCitySwipe();
+    const { usermatches, setUserMatches } = useCitySwipe();
+    const [avatar, setAvatar] = useState<string>('');
+
+
+
     useEffect(() => {
-        setSelectedMatch?.(selectedMatch?.split(',')[0] as string)
-        setChatImg?.(savedDestination?.destinations[0]?.illustration as string)
-        console.log(selectedMatch)
-        console.log(savedDestination)
-    }, [selectedMatch, savedDestination])
+        setChatImg?.(usermatches?.[0]?.illustration);
+        setSelectedMatch?.(usermatches?.[0]?.city as string)
+    }, [])
+
+
+    console.log("matches: ", usermatches?.[0]?.illustration)
     
     const router = useRouter();
 
-    const extractMatchInfo = (matchString: string) => {
-        const cityAndCountry = matchString;
-        // const ratingPercentage = parseInt(rating.replace('%', ''));
-        return { cityAndCountry };
-    };
-
-    const handleSetChatAvatar = (img: string) => {
-        setChatImg?.(img);
-    }
 
     // make globe state for selected city match
     const handleCityMatch = (city: string, img: string) => {
         setSelectedMatch?.(city);
-        handleSetChatAvatar(img);
-        setClearConversation?.(1)
+        setChatImg?.(img);
+        // setClearConversation?.(1)
     }
 
     const handleChatting = () => {
@@ -69,16 +72,28 @@ export default function Sidebar( {clerkdata} : any) {
         setIsMatching?.(true);
     }
  
-    const reload = () => {
-        setTimeout(() => {
-            window.location.reload();
-        }, 300);
-    }
-
     const variants = {
         open: { opacity: 1, x: 0 },
         closed: { opacity: 0, x: "-100%" },
     }
+
+
+    const DeleteButton = () => {
+        const status = useFormStatus();
+        
+        if (status.pending != true) {
+          return (
+            <button className="bg-gradient-to-t from-red-400/30 to-orange-400/30 text-red-400 hover:text-white hover:from-red-400 hover:to-orange-400 px-3 py-2 rounded-lg">Yes, delete this match.</button> 
+        )
+        }
+    
+        if (status.pending === true) {
+          return (
+            <button className="bg-gradient-to-t from-red-400/30 to-orange-400/30 text-red-400 hover:text-white hover:from-red-400 hover:to-orange-400 px-3 py-2 rounded-lg">Deleting...</button> 
+        )
+        }
+      }
+
 
     
     return (
@@ -115,11 +130,11 @@ export default function Sidebar( {clerkdata} : any) {
                     <div className="bg-gray-200 place-items-center px-4 mt-3 w-full flex gap-8 relative h-max select-none py-4 rounded-xl overflow-hidden place-items-start" >
                         
                         <div className="w-[30px] h-[30px] rounded-full flex place-items-end place-content-end">
-                            <Image className="rounded-full h-full  w-full object-cover" src={chatImg || placeholderimg} alt="" />
+                                <Image className="rounded-full h-full  w-full object-cover" src={chatImg ? chatImg : placeholderimg} sizes="100%" width={30} height={30} alt="" />           
                         </div> 
 
                         {selectedMatch == '' ? (
-                            <p className="select-none"><strong>{savedDestination.destinations[0]?.city}</strong></p>
+                            <p className="select-none"><strong>{usermatches?.[0]?.city}</strong></p>
                         ) : (
                             <p className="select-none"><strong>{selectedMatch}</strong></p>
                         )}
@@ -135,30 +150,52 @@ export default function Sidebar( {clerkdata} : any) {
                 {/* mapped destinations */}
                 <div className="w-full h-[50%]  no-scrollbar overflow-y-scroll">
 
-                    {savedDestination.destinations.map((dest: DestinationItem) => {
+                    {usermatches?.map((dest: DestinationItem, index: number) => {
                         return (
                             <>
-                            <div onClick={() => handleCityMatch(dest.city, dest.illustration ?? '')} className="w-full relative h-max select-none hover:bg-gray-200 px-4 py-1 rounded-xl hover:scale-[102%] flex flex-col gap-[15px] overflow-hidden place-items-start">
-                                <div className="w-full  h-max cursor-pointer relative flex flex-col place-items-start place-content-center" 
-                                // style={{ backgroundImage: `url(${dest.illustration})`, backgroundRepeat: 'no-repeat', backgroundSize: 'fill', backgroundPosition: 'center' }}
-                                key={dest.id}>
-                                    <div className="w-full mr-3 flex gap-1 place-items-center place-content-center justify-between">
-                                        
-                                        <div className="w-max flex gap-2 place-items-center place-content-center">
-                                            <div className="w-[30px] h-[30px] rounded-full flex place-items-end place-content-end">
-                                                {/* <div className="absolute z-[-1] bg-gradient-to-r from-white via-white to-transparent w-full h-full"></div> */}
-                                                <Image className="rounded-full h-full  w-full object-cover" src={dest.illustration} alt="" />
-                                            </div>
-                                            <h3 className="text-[14px] p-2 rounded-full w-max">{dest.city}</h3>
-                                        </div>
+                            <div className="w-full flex gap-2 place-items-center place-content-center">
 
-                                        <p className="text-[10px] p-2 flex flex-col rounded-full font-bold w-max h-max">
-                                            <span className="text-green-500 text-[15px]">{dest.compatibility}% </span>
-                                            Match!
-                                        </p>
-                
+                                <div key={index} onClick={() => handleCityMatch(dest.city, dest.illustration)} className="w-full relative h-max select-none flex hover:bg-gray-200 px-4 py-1 rounded-xl hover:scale-[102%] gap-[15px] overflow-hidden place-items-start">
+                                    <div className="w-full  h-max cursor-pointer relative flex flex-col place-items-start place-content-center" 
+                                    // style={{ backgroundImage: `url(${dest.illustration})`, backgroundRepeat: 'no-repeat', backgroundSize: 'fill', backgroundPosition: 'center' }}
+                                    key={dest.id}>
+                                        <div className="w-full mr-3 flex gap-1 place-items-center place-content-center justify-between">
+                                            
+                                            <div className="w-max flex gap-2 place-items-center place-content-center">
+                                                <div className="w-[30px] h-[30px] rounded-full flex place-items-end place-content-end">
+                                                    {/* <div className="absolute z-[-1] bg-gradient-to-r from-white via-white to-transparent w-full h-full"></div> */}
+                                                    <Image className="rounded-full h-full  w-full object-cover" src={dest.illustration} sizes="100%" width={30} height={30} alt="" />
+                                                </div>
+                                                <h3 className="text-[14px] p-2 rounded-full w-max">{dest.city}</h3>
+                                            </div>
+
+                                            <p className="text-[10px] p-2 flex flex-col rounded-full font-bold w-max h-max">
+                                                <span className="text-green-500 text-[15px]">{dest.compatibility}% </span>
+                                                Match!
+                                            </p>
+                    
+                                        </div>
                                     </div>
                                 </div>
+
+                                <Popover>
+                                    <PopoverTrigger>
+                                        <div className="hover:cursor-pointer hover:bg-gray-200 py-2 px-1 rounded-lg">
+                                            <EllipsisVertical size={15} />
+                                        </div>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-max flex place-items-center place-content-center flex-col gap-4">
+                                        <div className="flex w-full place-items-center place-content-center flex-col">
+                                            <p className="text-[12px] text-muted-foreground">Deleting a match can NOT be undone.</p>
+                                            <p className="text-[12px] text-muted-foreground">Are you sure?</p>
+                                        </div>
+                                        <form action={() => deleteMatch(String(dest.id))} className="w-max flex place-items-center place-content-center">
+                                            <Input type="hidden" name="id" value={dest.id} />
+                                            <DeleteButton />
+                                        </form>
+                                    </PopoverContent>
+                                </Popover>
+                            
                             </div>
                             </>
                         );
@@ -245,7 +282,7 @@ export default function Sidebar( {clerkdata} : any) {
                         <div className="bg-gray-200 place-items-center px-4 mt-3 w-full flex gap-8 relative h-max select-none py-4 rounded-xl overflow-hidden place-items-start" >
                             
                             <div className="w-[30px] h-[30px] rounded-full flex place-items-end place-content-end">
-                                <Image className="rounded-full h-full  w-full object-cover" src={chatImg || placeholderimg} alt="" />
+                                <Image className="rounded-full h-full  w-full object-cover" src={chatImg || placeholderimg} sizes="100%"  width={30} height={30} alt="" />
                             </div> 
 
                             {selectedMatch == '' ? (
@@ -265,7 +302,7 @@ export default function Sidebar( {clerkdata} : any) {
                         {savedDestination.destinations.map((dest: DestinationItem) => {
                             return (
                                 <>
-                                <div onClick={() => handleCityMatch(dest.city, dest.illustration ?? '')} className="w-full relative h-max select-none hover:bg-gray-200 px-4 py-1 rounded-xl hover:scale-[102%] flex flex-col gap-[15px] overflow-hidden place-items-start">
+                                <div onClick={() => handleCityMatch(dest.city, dest.illustration ?? '', )} className="w-full relative h-max select-none hover:bg-gray-200 px-4 py-1 rounded-xl hover:scale-[102%] flex flex-col gap-[15px] overflow-hidden place-items-start">
                                     <div className="w-full  h-max cursor-pointer relative flex flex-col place-items-start place-content-center" 
                                     // style={{ backgroundImage: `url(${dest.illustration})`, backgroundRepeat: 'no-repeat', backgroundSize: 'fill', backgroundPosition: 'center' }}
                                     key={dest.id}>
@@ -273,7 +310,7 @@ export default function Sidebar( {clerkdata} : any) {
                                             
                                             <div className="w-max flex gap-2 place-items-center place-content-center">
                                                 <div className="w-[30px] h-[30px] rounded-full flex place-items-end place-content-end">
-                                                    <Image className="rounded-full h-full  w-full object-cover" src={dest.illustration} alt="" />
+                                                    <Image className="rounded-full h-full  w-full object-cover" src={dest.illustration} sizes="100%" width={30} height={30} alt="" />
                                                 </div>
                                                 <h3 className="text-[14px] p-2 rounded-full w-max">{dest.city}</h3>
                                             </div>

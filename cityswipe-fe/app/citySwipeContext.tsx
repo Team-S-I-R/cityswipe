@@ -10,6 +10,7 @@ interface CitySwipeContextType {
   firstMatch?: string;
   isSidebarOpen: boolean;
   userdata?: any;
+  usermatches?: any
   photoUrl?: string[];
   chatImg?: string;
   selectedMatch?: string;
@@ -19,6 +20,7 @@ interface CitySwipeContextType {
   setMessage: React.Dispatch<React.SetStateAction<any>>
   setIsStarted: (value: boolean) => void;
   setUserData?: (value: any) => void;
+  setUserMatches?: (value: any) => void;
   setIsSidebarOpen: (value: boolean) => void;
   setPhotoUrl?: React.Dispatch<React.SetStateAction<string[]>>;  // Updated type
   setChatImg?: (value: string) => void;
@@ -37,6 +39,7 @@ export const CitySwipeProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [photoUrl, setPhotoUrl] = useState<string[]>([]);
   const [userdata, setUserData] = useState<any>({});
+  const [usermatches, setUserMatches] = useState<any>([]);
   const [chatImg, setChatImg] = useState<string>('');
   const [selectedMatch, setSelectedMatch] = useState<string>('');
   const [firstMatch, setFirstMatch] = useState<string>('');
@@ -51,6 +54,7 @@ export const CitySwipeProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       photoUrl,
       chatImg,
       userdata,
+      usermatches,
       isSidebarOpen,
       isMatching,
       selectedMatch,
@@ -62,6 +66,7 @@ export const CitySwipeProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       setPhotoUrl,
       setIsSidebarOpen,
       setUserData,
+      setUserMatches,
       setChatImg,
       setIsChatting,
       setIsMatching,

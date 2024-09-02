@@ -72,7 +72,7 @@ const DestinationCard = ({
   
   // fix for counting number of cards left display
   useEffect(() => {
-    setLenofDestinationSet(cardsAmount);
+    setLenofDestinationSet?.(cardsAmount);
   }, [cardsAmount]);
 
   const [imgLoadingComplete, setImgLoadingComplete] = useState(false);

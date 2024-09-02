@@ -45,8 +45,13 @@ model Subscription {
 
 model Match {
   id              String   @id @default(uuid())
-  MatchTitle      String
-  MatchPercent    Int
+  city            String
+  country         String
+  compatibility   Float
+  illustration    String
+  description     String
+  pros            String[]
+  cons            String[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
