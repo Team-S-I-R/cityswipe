@@ -24,7 +24,10 @@ export default async function RootLayout({
   const destinationSet = await getDestinationSet(0);
   const savedDestination = await getDestination();
   return (
-    <ClerkProvider>
+    <ClerkProvider
+    signInFallbackRedirectUrl={"/quiz"}
+    signUpFallbackRedirectUrl={"/quiz"}
+    >
       <html lang="en" className="overflow-hidden">
         <body className={`${inter.className}`}>
         <Analytics />
