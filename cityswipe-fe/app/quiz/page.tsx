@@ -21,9 +21,9 @@ export default function QuizClient({clerkdata} : any) {
 
     const { isStarted, setIsStarted } = useCitySwipe();
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-    // const [responses, setResponses] = useState<string[]>([]);
+    const [responses, setResponses] = useState<string[]>([]);
     // Responses for debuggin!
-    const [responses, setResponses] = useState<string[]>(["United States", "Luxury", "English", "Yes", "Summer", "Warm", "Beach", "Sprinting, Hiking, Camping, Swimming, Drawing", "Vegan", "Street food", "No", "No"]);
+    // const [responses, setResponses] = useState<string[]>(["United States", "Luxury", "English", "Yes", "Summer", "Warm", "Beach", "Sprinting, Hiking, Camping, Swimming, Drawing", "Vegan", "Street food", "No", "No"]);
     const questionKeys = Object.keys(quizQuestions);
     const [updateHeart, setUpdateHeart] = useState(false);
     const [destinations, setDestinations] = useState<any[]>([]);
@@ -94,10 +94,11 @@ export default function QuizClient({clerkdata} : any) {
 
     // ANCHOR Handles quiz submission and setting data like images, bio, matches, etc.
     const handleGemini = async () => {
+        const startTime = performance.now(); // Start tracking time
         setLoadingMatches(true);
         // console.log(`responses`);
         const prompt = 
-        `Based on the following travel preferences, generate a list of exactly 30 travel destinations formatted as json with values City, Country, Compatibility Percentage(based on the user preferences provided), a brief description of the city, the pros (based on the user preferences), the cons (based on the user preferences). Example format:
+        `Based on the following travel preferences, generate a list of exactly 8 travel destinations formatted as json with values City, Country, Compatibility Percentage(based on the user preferences provided), a brief description of the city, the pros (based on the user preferences), the cons (based on the user preferences). Example format:
         [
             {
                 "id": 0
@@ -117,7 +118,7 @@ export default function QuizClient({clerkdata} : any) {
                 "pros": ["Beautiful architecture", "Delicious food", "Romantic atmosphere", "Art and fashion", "Historical sites", "Cultural attractions", "Entertainment options", "Museums", "Restaurants", "Parks"],
                 "cons": ["Expensive", "Crowded", "Language barrier", "Lack of green spaces", "High cost of living", "Long working hours", "Traffic congestion", "Limited public transportation", "Limited public transportation"],
             },
-                ... 28 more of the same format
+                ... 6 more of the same format
         ]
 
         Make sure the compatibility percentage is a number between 0 and 100. 
@@ -139,7 +140,6 @@ export default function QuizClient({clerkdata} : any) {
         }
 
         let count = 1;
-        console.log("textContent (quiz.tsx)", textContent);
         // added a delay because I noticed we get rate limited by the API easily.
         // because of this delay this gives us freedom to add either an add or just a better loading state.
         // const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
@@ -159,7 +159,6 @@ export default function QuizClient({clerkdata} : any) {
                     const response = await client.photos.search({ query: `${searchQuery}`, per_page: 1 });
                     if ('photos' in response && response.photos.length > 0) {
                         illustration = response.photos[0].src.landscape;
-                        console.log("pexals query (quiz.tsx)", searchQuery, "illustration (quiz.tsx)", illustration);
                     }
                 } catch (error) {
                     console.error(`Error in fetching photo for ${city}, ${country}:`, error);
@@ -187,6 +186,9 @@ export default function QuizClient({clerkdata} : any) {
         });
     
         setLoadingMatches(false);
+
+        const endTime = performance.now(); // End tracking time
+        console.log(`handleGemini took ${endTime - startTime} milliseconds`);
 
         router.push('/match');
     };

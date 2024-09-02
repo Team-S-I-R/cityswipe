@@ -221,7 +221,7 @@ const DestinationCard = ({
                     // src={data.illustration || placeholderImg}
                     src={illustration}
                     fill
-                    // sizes={`(max-width: 268px) 100vw, 250px`}
+                    sizes="100%"
                     alt="car"
                   />
               )}
@@ -399,7 +399,7 @@ const DestinationCard = ({
                           // src={data.illustration || placeholderImg}
                           src={illustration}
                           fill
-                          // sizes={`(max-width: 268px) 100vw, 250px`}
+                          sizes="100%"
                           alt="car"
                         />
                       )}
