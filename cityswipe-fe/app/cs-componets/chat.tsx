@@ -14,6 +14,7 @@ import { savedDestination } from "../../api/savedDestination.api";
 import { DestinationItem } from "@/lib/destination.type";
 import placeholderimg from '../assets/imgs/white.png'
 import { motion } from "framer-motion";
+
 export default function Chat({matches}: any) {
 
     const [conversation, setConversation] = useState<Message[]>([]);

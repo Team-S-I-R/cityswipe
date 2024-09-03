@@ -15,6 +15,7 @@ import { Description } from "@radix-ui/react-dialog";
 import { createClient } from 'pexels';
 import { AnimatePresence, motion } from 'framer-motion'
 import Header from "../cs-componets/header";
+import { useToast } from "../../hooks/use-toast"
 
 
 export default function QuizClient({clerkdata} : any) {
@@ -29,7 +30,8 @@ export default function QuizClient({clerkdata} : any) {
     const [destinationSet, setDestinationSet] = useDestinationSetContext();
     const router = useRouter();
     const [loadingMatches, setLoadingMatches] = useState(false);
-    
+    const { toast } = useToast()
+
     // sets user data
     const { userdata, setUserData } = useCitySwipe();
     useEffect(() => {
@@ -119,6 +121,7 @@ export default function QuizClient({clerkdata} : any) {
         Every key in the JSON string is enclosed in double quotes ("key").
         The values are correctly formatted (e.g., strings should be in double quotes, numbers should not).
         There are no trailing commas after the last property of each object or array.
+        DO NOT ADD ANY MARKDOWN, CODE BLOCKS OR FORMATTING BESIDES THE EXAMPLE JSON FORMAT.
 
         Make sure the compatibility percentage is a number between 0 and 100. 
         Do not include formatting or code blocks, follow example. 
@@ -144,55 +147,66 @@ export default function QuizClient({clerkdata} : any) {
         // const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
         const generatedDestinations = [];
-        const destinations = JSON.parse(textContent);
-
-        for (const destination of destinations) {
-            const { city, country, compatibility, description, pros, cons, } = destination;
-
-                // ANCHOR Fetch image for the current city-country pair
-                const client = createClient('8U6Se7vVT3H9tx1KPZAQTkDUSW0IKi3ldgBTVyh3W9NFF7roIpZxktzY');
-                let illustration = '';
-
-                const searchQuery = `${city}, landscape`;
-                try {
-                    const response = await client.photos.search({ query: `${searchQuery}`, per_page: 1 });
-                    if ('photos' in response && response.photos.length > 0) {
-                        illustration = response.photos[0].src.landscape;
+        
+        try {
+            
+            const destinations = JSON.parse(textContent);
+            for (const destination of destinations) {
+                const { city, country, compatibility, description, pros, cons, } = destination;
+    
+                    // ANCHOR Fetch image for the current city-country pair
+                    const client = createClient('8U6Se7vVT3H9tx1KPZAQTkDUSW0IKi3ldgBTVyh3W9NFF7roIpZxktzY');
+                    let illustration = '';
+    
+                    const searchQuery = `${city}, landscape`;
+                    try {
+                        const response = await client.photos.search({ query: `${searchQuery}`, per_page: 1 });
+                        if ('photos' in response && response.photos.length > 0) {
+                            illustration = response.photos[0].src.landscape;
+                        }
+                    } catch (error) {
+                        console.error(`Error in fetching photo for ${city}, ${country}:`, error);
                     }
-                } catch (error) {
-                    console.error(`Error in fetching photo for ${city}, ${country}:`, error);
-                }
+    
+                    generatedDestinations.push({
+                        id: count++,
+                        city: city.trim(),
+                        country: country.trim(),
+                        compatibility: parseFloat(compatibility),
+                        illustration: illustration,
+                        description: description.trim(),
+                        pros: pros,
+                        cons: cons,
+                    });
+            }
+        
+            const validDestinations = generatedDestinations.filter(destination => destination !== null);
+            
+            setDestinations(validDestinations);
+            
+            await setDestinationSet({
+                id: 1,
+                cards: validDestinations.reverse(),
+            });
+        
+    
+            await addQuestions(responses)
+    
+            setLoadingMatches(false);
+    
+            const endTime = performance.now(); // End tracking time
+            console.log(`handleGemini took ${endTime - startTime} milliseconds`);
+    
+            router.push('/match');
+        
+        } catch (error) {
+            
+            setLoadingMatches(false);
+            toast({ title: 'Error. Please try submitting again!', description: 'We encountered an error. Please try submitting again.', itemID: 'error' });
 
-                generatedDestinations.push({
-                    id: count++,
-                    city: city.trim(),
-                    country: country.trim(),
-                    compatibility: parseFloat(compatibility),
-                    illustration: illustration,
-                    description: description.trim(),
-                    pros: pros,
-                    cons: cons,
-                });
         }
-    
-        const validDestinations = generatedDestinations.filter(destination => destination !== null);
-        
-        setDestinations(validDestinations);
-        
-        await setDestinationSet({
-            id: 1,
-            cards: validDestinations.reverse(),
-        });
-    
 
-        await addQuestions(responses)
 
-        setLoadingMatches(false);
-
-        const endTime = performance.now(); // End tracking time
-        console.log(`handleGemini took ${endTime - startTime} milliseconds`);
-
-        router.push('/match');
     };
 
     // ANCHOR Resetting the quiz {
