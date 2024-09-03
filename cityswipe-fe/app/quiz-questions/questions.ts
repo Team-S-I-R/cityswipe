@@ -1,4 +1,4 @@
-const oldQuizQuestions = {
+const oldquizQuestions = {
   question1: "Where are you currently living?",
   question2: "Are you looking for luxury, mid-range, or budget destinations?",
   question3: "Which language(s) do you speak fluently?",
@@ -17,62 +17,67 @@ const quizQuestions = [
   {
     id: 1,
     question: "Where are you currently living?",
-    answerOptions: ["custom"],
+    answerOptions: ["other"],
   },
   {
     id: 2,
-    question: "Are you looking for luxury, mid-range, or budget destinations?",
-    answerOptions: ["custom"],
+    question: "What is your travel Budget?",
+    answerOptions: ["low", "moderate", "luxury", "other"],
   },
   {
     id: 3,
-    question: "Which language(s) do you speak fluently?",
-    answerOptions: ["custom"],
+    question: "How far are you willing to travel?",
+    answerOptions: ["within the country", "neighbouring countries", "long road trip", "international travel", "other"],
   },
   {
     id: 4,
-    question: "Are you open to traveling to a country where the primary language is different from your native language?",
-    answerOptions: ["custom"],
+    question: "What are your accomodation preferences?",
+    answerOptions: ["hotels", "resorts", "hostels", "Airbnb", "camping", "other"],
   },
   {
     id: 5,
-    question: "Which season would you prefer to travel in?",
-    answerOptions: ["custom"],
+    question: "Which language(s) do you speak fluently?",
+    answerOptions: ["other"],
   },
   {
     id: 6,
-    question: "Which climate preference do you have: warm, cold, or temperate?",
-    answerOptions: ["custom"],
+    question: "Are you comfortable navigating places where your primary language is not widely spoken?",
+    answerOptions: ["yes", "no"],
   },
   {
     id: 7,
-    question: "What type of destination appeals to you the most: beach, mountain, or city?",
-    answerOptions: ["custom"],
+    question: "What kind of climate do you prefer?  warm, cold, or temperate?",
+    answerOptions: ["warm", "cold", "mild", "tropical", "other"],
   },
   {
     id: 8,
-    question: "List some of your favorite activities that you enjoy doing in your free time.",
-    answerOptions: ["custom"],
+    question: "What type of landscapes appeals to you?",
+    answerOptions: ["city", "beaches", "mountains", "countrysides", "other"],
   },
   {
     id: 9,
-    question: "Do you have any dietary restrictions or preferences?",
-    answerOptions: ["custom"],
+    question: "What type of outdoor activities are you looking for?",
+    answerOptions: ["none in particular", "sports", "extreme sports", "cultural landmarks", "museums","other"],
   },
   {
     id: 10,
-    question: "Are you interested in trying local cuisine, fine dining, or street food?",
-    answerOptions: ["custom"],
+    question: "What type of urban activities are you looking for?",
+    answerOptions: ["none in particular", "shopping", "dining", "nightlife", "quiet environment", "other"],
   },
   {
-    id: 11,
-    question: "Are you looking for destinations with specific activities, health facilities, or services?",
-    answerOptions: ["custom"],
+    id:11,
+    question: "Do you have any dietary restrictions or preferences?",
+    answerOptions: ["vegetarian", "vegan", "Halal", "Kosher","other"],
   },
   {
     id: 12,
-    question: "Are you comfortable traveling to a country where open recreational drug use is allowed?",
-    answerOptions: ["custom"],
+    question: "What are your dining prefererences?",
+    answerOptions: ["none in particular", "local cuisine", "fine dining", "street food", "other"],
+  },
+  {
+    id: 13,
+    question: "Are you looking for anything in particular?/Additional information",
+    answerOptions: ["other"],
   },
 ];
 

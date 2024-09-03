@@ -21,10 +21,11 @@ export default function QuizClient({clerkdata} : any) {
 
     const { isStarted, setIsStarted } = useCitySwipe();
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-    const [responses, setResponses] = useState<string[]>([]);
+    // const [responses, setResponses] = useState<string[]>([]);
     // Responses for debuggin!
-    // const [responses, setResponses] = useState<string[]>(["United States", "Luxury", "English", "Yes", "Summer", "Warm", "Beach", "Sprinting, Hiking, Camping, Swimming, Drawing", "Vegan", "Street food", "No", "No"]);
+    const [responses, setResponses] = useState<string[]>(["United States", "Luxury", "English", "Yes", "Summer", "Warm", "Beach", "Sprinting, Hiking, Camping, Swimming, Drawing", "Vegan", "Street food", "No", "No"]);
     const questionKeys = Object.keys(quizQuestions);
+    const currentQuestion = quizQuestions[currentQuestionIndex];
     const [destinations, setDestinations] = useState<any[]>([]);
     const [destinationSet, setDestinationSet] = useDestinationSetContext();
     const router = useRouter();
@@ -49,7 +50,7 @@ export default function QuizClient({clerkdata} : any) {
     const handleKeyDown = (event: KeyboardEvent) => {
         if (event.key === 'ArrowDown') {
             setCurrentQuestionIndex((prevIndex) => 
-                Math.min(prevIndex + 1, questionKeys.length - 1)
+                Math.min(prevIndex + 1, quizQuestions.length - 1)
         );
     } else if (event.key === 'ArrowUp') {
         setCurrentQuestionIndex((prevIndex) => 
@@ -60,7 +61,7 @@ export default function QuizClient({clerkdata} : any) {
 
     const handleNext = () => {
         setCurrentQuestionIndex((prevIndex) => 
-            Math.min(prevIndex + 1, questionKeys.length - 1)
+            Math.min(prevIndex + 1, quizQuestions.length - 1)
         );
     };
 
@@ -87,7 +88,6 @@ export default function QuizClient({clerkdata} : any) {
 
     // ANCHOR Handles quiz submission and setting data like images, bio, matches, etc.
     const handleGemini = async () => {
-        const startTime = performance.now(); // Start tracking time
         setLoadingMatches(true);
         // console.log(`responses`);
         const prompt = 
@@ -137,45 +137,74 @@ export default function QuizClient({clerkdata} : any) {
         // because of this delay this gives us freedom to add either an add or just a better loading state.
         // const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-        const generatedDestinations = [];
-        const destinations = JSON.parse(textContent);
+        const startTime = performance.now(); // Start tracking time
 
-        for (const destination of destinations) {
-            const { city, country, compatibility, description, pros, cons, } = destination;
+        // console.log(textContent)
+        let data = JSON.parse(textContent)
+        // Add illustration
+        for (var i in data) {
+            // ANCHOR Fetch image for the current city-country pair
+            const client = createClient('8U6Se7vVT3H9tx1KPZAQTkDUSW0IKi3ldgBTVyh3W9NFF7roIpZxktzY');
+            let illustration = '';
 
-                // ANCHOR Fetch image for the current city-country pair
-                const client = createClient('8U6Se7vVT3H9tx1KPZAQTkDUSW0IKi3ldgBTVyh3W9NFF7roIpZxktzY');
-                let illustration = '';
-
-                const searchQuery = `${city}, landscape`;
-                try {
-                    const response = await client.photos.search({ query: `${searchQuery}`, per_page: 1 });
-                    if ('photos' in response && response.photos.length > 0) {
-                        illustration = response.photos[0].src.landscape;
-                    }
-                } catch (error) {
-                    console.error(`Error in fetching photo for ${city}, ${country}:`, error);
+            try {
+                const response = await client.photos.search({ query: `${data[i].city}, ${data[i].country}`, per_page: 1 });
+                if ('photos' in response && response.photos.length > 0) {
+                    illustration = response.photos[0].src.landscape;
                 }
-
-                generatedDestinations.push({
-                    id: count++,
-                    city: city.trim(),
-                    country: country.trim(),
-                    compatibility: parseFloat(compatibility),
-                    illustration: illustration,
-                    description: description.trim(),
-                    pros: pros,
-                    cons: cons,
-                });
+            } catch (error) {
+                console.error(`Error in fetching photo for ${data[i].city}, ${data[i].country}:`, error);
+            }
+            data[i].illustration = illustration
         }
+
+        // console.log(data) // formatted data
+
+        // const generatedDestinations = [];
+        // const destinations = JSON.parse(textContent);
+
+        // for (const destination of destinations) {
+        //     const { city, country, compatibility, description, pros, cons, } = destination;
+
+        //         // ANCHOR Fetch image for the current city-country pair
+        //         const client = createClient('8U6Se7vVT3H9tx1KPZAQTkDUSW0IKi3ldgBTVyh3W9NFF7roIpZxktzY');
+        //         let illustration = '';
+
+        //         const searchQuery = `${city}, landscape`;
+        //         try {
+        //             const response = await client.photos.search({ query: `${searchQuery}`, per_page: 1 });
+        //             if ('photos' in response && response.photos.length > 0) {
+        //                 illustration = response.photos[0].src.landscape;
+        //             }
+        //         } catch (error) {
+        //             console.error(`Error in fetching photo for ${city}, ${country}:`, error);
+        //         }
+
+        //         generatedDestinations.push({
+        //             id: count++,
+        //             city: city.trim(),
+        //             country: country.trim(),
+        //             compatibility: parseFloat(compatibility),
+        //             illustration: illustration,
+        //             description: description.trim(),
+        //             pros: pros,
+        //             cons: cons,
+        //         });
+        // }
     
-        const validDestinations = generatedDestinations.filter(destination => destination !== null);
+        // const validDestinations = generatedDestinations.filter(destination => destination !== null);
         
-        setDestinations(validDestinations);
+        // setDestinations(validDestinations);
         
+        // await setDestinationSet({
+        //     id: 1,
+        //     cards: validDestinations.reverse(),
+        // });
+
+        setDestinations(data);
         await setDestinationSet({
             id: 1,
-            cards: validDestinations.reverse(),
+            cards: data.reverse(),
         });
     
 
@@ -213,9 +242,22 @@ export default function QuizClient({clerkdata} : any) {
 
                             <h1 className="w-full w-md text-muted-foreground sm:text-left text-center place-content-center text-[15px]">Hi {userdata?.name?.split(' ')[0]}, Take the Cityswipe quiz to find your perfect destination!</h1>
 
-                            <p className="text-3xl text-center sm:text-left sm:text-[44px] w-full font-bold">{quizQuestions[questionKeys[currentQuestionIndex] as keyof typeof quizQuestions]}</p>
+                            <p className="text-3xl text-center sm:text-left sm:text-[44px] w-full font-bold">{currentQuestion.question}</p>
                             
                             <div className="hidden sm:flex w-full gap-6">
+                                {currentQuestion.answerOptions.map((answer, i) => {
+                                    return(
+                                        <Input 
+                                            key={`response-option-${i}`}
+                                            id={`response-option-${i}`}
+                                            type="text" 
+                                            className="w-full" 
+                                            autoComplete="off"
+                                            value={answer}
+                                            onChange={handleInputChange}
+                                        />
+                                    );
+                                })}
                                 {responses[currentQuestionIndex]?.length > 1 && 
                                 <Button className="hover:scale-[95%] text-[12px] p-0 m-0 select-none bg-transparent hover:bg-transparent text-primary hover:opacity-80 flex place-self-start" onClick={handlePrevious} disabled={currentQuestionIndex === 0}>Back</Button>
                                 }
@@ -260,7 +302,7 @@ export default function QuizClient({clerkdata} : any) {
 
                         </div>
 
-                    {currentQuestionIndex === questionKeys.length - 1 && loadingMatches &&
+                    {currentQuestionIndex === quizQuestions.length - 1 && loadingMatches &&
                     <>
                         <div className="absolute w-full h-max flex place-items-center place-content-center">
                             <span className="text-[12px] animate-pulse">Your matches are loading...</span>
@@ -269,7 +311,7 @@ export default function QuizClient({clerkdata} : any) {
                     }
 
 
-                    {currentQuestionIndex === questionKeys.length - 1 &&
+                    {currentQuestionIndex === quizQuestions.length - 1 &&
                     <>
                         <div className="flex place-self-center">
                             <Button onClick={() => {handleGemini()}} className="hover:scale-[95%] text-[12px] bg-gradient-to-t from-cyan-500 to-green-400 select-none w-max">Find Your Match!</Button>
