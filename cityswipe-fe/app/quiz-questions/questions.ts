@@ -17,27 +17,27 @@ const quizQuestions = [
   {
     id: 1,
     question: "Where are you currently living?",
-    answerOptions: ["other"],
+    answerOptions: [],
   },
   {
     id: 2,
     question: "What is your travel Budget?",
-    answerOptions: ["low", "moderate", "luxury", "other"],
+    answerOptions: ["low", "moderate", "luxury"],
   },
   {
     id: 3,
     question: "How far are you willing to travel?",
-    answerOptions: ["within the country", "neighbouring countries", "long road trip", "international travel", "other"],
+    answerOptions: ["within the country", "neighbouring countries", "long road trip", "international travel"],
   },
   {
     id: 4,
     question: "What are your accomodation preferences?",
-    answerOptions: ["hotels", "resorts", "hostels", "Airbnb", "camping", "other"],
+    answerOptions: ["hotels", "resorts", "hostels", "Airbnb", "camping"],
   },
   {
     id: 5,
     question: "Which language(s) do you speak fluently?",
-    answerOptions: ["other"],
+    answerOptions: [],
   },
   {
     id: 6,
@@ -47,37 +47,37 @@ const quizQuestions = [
   {
     id: 7,
     question: "What kind of climate do you prefer?  warm, cold, or temperate?",
-    answerOptions: ["warm", "cold", "mild", "tropical", "other"],
+    answerOptions: ["warm", "cold", "mild", "tropical"],
   },
   {
     id: 8,
     question: "What type of landscapes appeals to you?",
-    answerOptions: ["city", "beaches", "mountains", "countrysides", "other"],
+    answerOptions: ["city", "beaches", "mountains", "countrysides"],
   },
   {
     id: 9,
     question: "What type of outdoor activities are you looking for?",
-    answerOptions: ["none in particular", "sports", "extreme sports", "cultural landmarks", "museums","other"],
+    answerOptions: ["none in particular", "sports", "extreme sports", "cultural landmarks", "museums"],
   },
   {
     id: 10,
     question: "What type of urban activities are you looking for?",
-    answerOptions: ["none in particular", "shopping", "dining", "nightlife", "quiet environment", "other"],
+    answerOptions: ["none in particular", "shopping", "dining", "nightlife", "quiet environment"],
   },
   {
     id:11,
     question: "Do you have any dietary restrictions or preferences?",
-    answerOptions: ["vegetarian", "vegan", "Halal", "Kosher","other"],
+    answerOptions: ["vegetarian", "vegan", "Halal", "Kosher"],
   },
   {
     id: 12,
     question: "What are your dining prefererences?",
-    answerOptions: ["none in particular", "local cuisine", "fine dining", "street food", "other"],
+    answerOptions: ["none in particular", "local cuisine", "fine dining", "street food"],
   },
   {
     id: 13,
     question: "Are you looking for anything in particular?/Additional information",
-    answerOptions: ["other"],
+    answerOptions: [],
   },
 ];
 
