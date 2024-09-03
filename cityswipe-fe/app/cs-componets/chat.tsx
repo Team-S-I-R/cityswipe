@@ -132,7 +132,7 @@ export default function Chat({matches}: any) {
                 <>
                     <div id="chat-container" className=" flex flex-col w-[70%] h-[80vh] no-scrollbar overflow-y-scroll ">
                         {conversation.map((message, index) => (
-                            <div className={`min-w-[20%] max-w-[70%] h-max flex place-items-center ${message.role === 'user' ? 'place-self-end' : 'place-self-start'}`}>
+                            <div key={index} className={`min-w-[20%] max-w-[70%] h-max flex place-items-center ${message.role === 'user' ? 'place-self-end' : 'place-self-start'}`}>
                                 {message.role === 'assistant' && (
                                     <Image src={chatImg || placeholderimg} sizes="100%" width={30} height={30} className="object-cover w-[30px] h-[30px] rounded-full" alt="" />
                                 )}
@@ -230,7 +230,7 @@ export default function Chat({matches}: any) {
                 <>
                     <div id="chat-container" className=" flex flex-col w-[90%] h-[80vh] no-scrollbar overflow-y-scroll ">
                         {conversation.map((message, index) => (
-                            <div className={`min-w-[20%] max-w-[70%] h-max flex ${message.role === 'user' ? 'place-self-end' : 'place-self-start'}`}>
+                            <div key={index} className={`min-w-[20%] max-w-[70%] h-max flex ${message.role === 'user' ? 'place-self-end' : 'place-self-start'}`}>
                                 {message.role === 'assistant' && (
                                     <Image src={chatImg || placeholderimg} sizes="100%" width={30} height={30} className="object-cover w-[30px] h-[30px] rounded-full" alt="" />
                                 )}
