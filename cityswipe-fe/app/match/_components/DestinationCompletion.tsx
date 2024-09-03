@@ -57,7 +57,7 @@ const DestinationCompletion = () => {
           You have added {memoizedStats.current.destination_count} destinations to you saved locations.
         </p>
           
-          <Link href="/chat">
+          <Link href="/explore">
             <button className="bg-gradient-to-t from-cyan-500 to-green-400 text-white hover:opacity-90 font-bold py-2 px-4 rounded mt-8">Chat with my matches!</button>
           </Link>
         
