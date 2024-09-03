@@ -114,6 +114,12 @@ export default function QuizClient({clerkdata} : any) {
                 ... 6 more of the same format
         ]
 
+        Here are tips you must follow when generating this content. THis is important because we will be using JSON.parse to parse this data so it is important to follow this format and to create NO ERRORS.
+        
+        Every key in the JSON string is enclosed in double quotes ("key").
+        The values are correctly formatted (e.g., strings should be in double quotes, numbers should not).
+        There are no trailing commas after the last property of each object or array.
+
         Make sure the compatibility percentage is a number between 0 and 100. 
         Do not include formatting or code blocks, follow example. 
         Corelate all the data when making decisions. 
