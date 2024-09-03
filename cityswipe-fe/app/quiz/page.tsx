@@ -316,7 +316,7 @@ export default function QuizClient({ clerkdata }: any) {
                 className="w-full text-base"
                 autoComplete="off"
                 value={sanitizeText(otherString[currentQuestionIndex] || "")}
-                placeholder="other / additional info"
+                placeholder={currentQuestion.additionalStringPlaceholder}
                 onChange={handleInputChange}
               />
             </div>
