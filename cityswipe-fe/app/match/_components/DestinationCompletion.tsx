@@ -12,6 +12,7 @@ import { savedDestination as initialDestination } from "../../../api/savedDestin
 import { useSavedDestinationContext } from "../../../context/savedDestinationContext";
 import { useDestinationSetContext } from "../../../context/destinationSetContext";
 import { getInitialSet } from "@/api/destinationSets.api";
+import Link from "next/link";
 
 const DestinationCompletion = () => {
   const [destinationSet, setDestinationSet] = useDestinationSetContext();
@@ -55,6 +56,11 @@ const DestinationCompletion = () => {
         <p className="text-2xl font-acuminMedium  text-gray-800/70 z-10">
           You have added {memoizedStats.current.destination_count} destinations to you saved locations.
         </p>
+          
+          <Link href="/chat">
+            <button className="bg-gradient-to-t from-cyan-500 to-green-400 text-white hover:opacity-90 font-bold py-2 px-4 rounded mt-8">Chat with my matches!</button>
+          </Link>
+        
         {/* <motion.div className="mt-8" whileTap={{ scale: 0.9 }}>
           <Button
             onClick={() => handleReplay()}

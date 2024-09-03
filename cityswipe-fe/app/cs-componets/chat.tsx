@@ -19,6 +19,7 @@ export default function Chat({matches}: any) {
     const [input, setInput] = useState<string>("");
     const { selectedMatch, setSelectedMatch } = useCitySwipe();
     const { clearConversation, setClearConversation } = useCitySwipe();
+    const { userdata, setUserData } = useCitySwipe();
     const { usermatches, setUserMatches } = useCitySwipe();
     const {chatImg, setChatImg} = useCitySwipe();
 
@@ -30,9 +31,10 @@ export default function Chat({matches}: any) {
     });
 
 
-    // useEffect(() => {
-    //     setUserMatches?.(matches)
-    // }, [matches])
+    useEffect(() => {
+        setConversation([]);
+        setClearConversation?.(0);
+    }, [selectedMatch])
     
 
     const startChat = async () => {
@@ -79,7 +81,7 @@ export default function Chat({matches}: any) {
             {conversation.length < 1 && (
                 <>
 
-                    <div className="flex flex-col select-none gap-2 place-items-center">
+                    <div className="flex flex-col select-none gap-2 place-items-center w-[70%]">
 
                         <div className="w-[80px] h-[80px] rounded-full">
                             <Image className="object-cover w-full h-full rounded-full" src={chatImg || placeholderimg} sizes="100%" width={30} height={30} alt="" />
@@ -106,16 +108,21 @@ export default function Chat({matches}: any) {
 
             {conversation.length > 0 && (
                 <>
-                    <div id="chat-container" className=" flex flex-col place-items-center h-[80vh] overflow-y-scroll ">
+                    <div id="chat-container" className=" flex flex-col w-[70%] h-[80vh] no-scrollbar overflow-y-scroll ">
                         {conversation.map((message, index) => (
-                            <div className={`w-[90%] m-2 rounded-md p-2  ${message.role === 'user' ? 'bg-cyan-300' : 'bg-green-300'}`} key={index}>
-                                <span className="font-bold">
-                                    {message.role}:
-                                </span>
-                                <span> </span>
-                                <span>
-                                     {message.content}
-                                </span>
+                            <div className={`min-w-[20%] max-w-[70%] h-max flex ${message.role === 'user' ? 'place-self-end' : 'place-self-start'}`}>
+                                <div 
+                                    className={`w-full m-2 rounded-md p-2 ${message.role === 'user' ? 'bg-cyan-300' : 'bg-green-300'}`} 
+                                    key={index}
+                                >
+                                    <span className="font-bold w-max">
+                                        {message.role === 'user' ? `${userdata?.name.split(' ')[0]}` : message.role}:
+                                    </span>
+                                    <span> </span>
+                                    <span className="w-max">
+                                        {message.content}
+                                    </span>
+                                </div>
                             </div>
                         ))}
                     </div>
@@ -193,16 +200,21 @@ export default function Chat({matches}: any) {
 
             {conversation.length > 0 && (
                 <>
-                    <div id="chat-container" className=" flex flex-col place-items-center h-[80vh] overflow-y-scroll ">
+                    <div id="chat-container" className=" flex flex-col w-[90%] h-[80vh] no-scrollbar overflow-y-scroll ">
                         {conversation.map((message, index) => (
-                            <div className={`w-[90%] m-2 rounded-md p-2  ${message.role === 'user' ? 'bg-cyan-300' : 'bg-green-300'}`} key={index}>
-                                <span className="font-bold">
-                                    {message.role}:
-                                </span>
-                                <span> </span>
-                                <span>
-                                     {message.content}
-                                </span>
+                            <div className={`min-w-[20%] max-w-[70%] h-max flex ${message.role === 'user' ? 'place-self-end' : 'place-self-start'}`}>
+                                <div 
+                                    className={`w-full m-2 rounded-md p-2 ${message.role === 'user' ? 'bg-cyan-300' : 'bg-green-300'}`} 
+                                    key={index}
+                                >
+                                    <span className="font-bold w-max">
+                                        {message.role === 'user' ? `${userdata?.name.split(' ')[0]}` : message.role}:
+                                    </span>
+                                    <span> </span>
+                                    <span className="w-max">
+                                        {message.content}
+                                    </span>
+                                </div>
                             </div>
                         ))}
                     </div>
