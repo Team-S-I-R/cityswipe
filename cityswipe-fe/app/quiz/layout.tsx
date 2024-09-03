@@ -20,6 +20,7 @@ async function fetchData() {
             ]
         },
     });
+    
 
     // create user in database if not exists or update missing fields
     if (!user) {
@@ -29,6 +30,7 @@ async function fetchData() {
                 name: clerkuser.fullName || "",
                 email: clerkuser.emailAddresses[0]?.emailAddress || "",
                 username: clerkuser.username || "",
+                profileImg: clerkuser.imageUrl || "",
             },
         });
     } else {
@@ -46,6 +48,7 @@ async function fetchData() {
     }
 
     return user;
+
 }
 
 export default async function QuizServer() {

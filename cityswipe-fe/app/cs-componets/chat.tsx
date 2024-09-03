@@ -231,18 +231,24 @@ export default function Chat({matches}: any) {
                     <div id="chat-container" className=" flex flex-col w-[90%] h-[80vh] no-scrollbar overflow-y-scroll ">
                         {conversation.map((message, index) => (
                             <div className={`min-w-[20%] max-w-[70%] h-max flex ${message.role === 'user' ? 'place-self-end' : 'place-self-start'}`}>
+                                {message.role === 'assistant' && (
+                                    <Image src={chatImg || placeholderimg} sizes="100%" width={30} height={30} className="object-cover w-[30px] h-[30px] rounded-full" alt="" />
+                                )}
                                 <div 
                                     className={`w-full m-2 rounded-md p-2 ${message.role === 'user' ? 'bg-cyan-300' : 'bg-green-300'}`} 
                                     key={index}
                                 >
                                     <span className="font-bold w-max">
-                                        {message.role === 'user' ? `${userdata?.name.split(' ')[0]}` : message.role}:
+                                        {message.role === 'user' ? `${userdata?.name.split(' ')[0]}` : `${selectedMatch}`}:
                                     </span>
                                     <span> </span>
                                     <span className="w-max">
                                         {message.content}
                                     </span>
                                 </div>
+                                {message.role === 'user' && (
+                                    <Image src={userdata?.profileImg || placeholderimg} sizes="100%" width={30} height={30} className="object-cover w-[30px] h-[30px] rounded-full" alt="" />
+                                )}
                             </div>
                         ))}
                     </div>

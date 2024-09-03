@@ -8,7 +8,12 @@ const nextConfig = {
             port: '',
             pathname: '/photos/**',
           },
-          
+          {
+            protocol: 'https',
+            hostname: 'img.clerk.com',
+            port: '',
+            pathname: '/**',
+          },
         ],
       },
 };
