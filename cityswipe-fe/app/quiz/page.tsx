@@ -123,6 +123,7 @@ export default function QuizClient({ clerkdata }: any) {
   // ANCHOR Handles quiz submission and setting data like images, bio, matches, etc.
   const handleGemini = async () => {
     setLoadingMatches(true);
+    const startTime = performance.now(); // Start tracking time
     // console.log(`responses`);
     const prompt = `Based on the following travel preferences, generate a list of exactly 8 travel destinations formatted as json with values City, Country, Compatibility Percentage(based on the user preferences provided), a brief description of the city, the pros (based on the user preferences), the cons (based on the user preferences). Example format:
         [
@@ -172,83 +173,82 @@ export default function QuizClient({ clerkdata }: any) {
     // because of this delay this gives us freedom to add either an add or just a better loading state.
     // const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-    const startTime = performance.now(); // Start tracking time
 
     // console.log(textContent)
-    let data = JSON.parse(textContent);
+    // let data = JSON.parse(textContent);
     // Add illustration
-    for (var i in data) {
-      // ANCHOR Fetch image for the current city-country pair
-      const client = createClient(
-        "8U6Se7vVT3H9tx1KPZAQTkDUSW0IKi3ldgBTVyh3W9NFF7roIpZxktzY"
-      );
-      let illustration = "";
+    // for (var i in data) {
+    //   // ANCHOR Fetch image for the current city-country pair
+    //   const client = createClient(
+    //     "8U6Se7vVT3H9tx1KPZAQTkDUSW0IKi3ldgBTVyh3W9NFF7roIpZxktzY"
+    //   );
+    //   let illustration = "";
 
-      try {
-        const response = await client.photos.search({
-          query: `${data[i].city}, ${data[i].country}`,
-          per_page: 1,
-        });
-        if ("photos" in response && response.photos.length > 0) {
-          illustration = response.photos[0].src.landscape;
-        }
-      } catch (error) {
-        console.error(
-          `Error in fetching photo for ${data[i].city}, ${data[i].country}:`,
-          error
-        );
-      }
-      data[i].illustration = illustration;
-    }
+    //   try {
+    //     const response = await client.photos.search({
+    //       query: `${data[i].city}, ${data[i].country}`,
+    //       per_page: 1,
+    //     });
+    //     if ("photos" in response && response.photos.length > 0) {
+    //       illustration = response.photos[0].src.landscape;
+    //     }
+    //   } catch (error) {
+    //     console.error(
+    //       `Error in fetching photo for ${data[i].city}, ${data[i].country}:`,
+    //       error
+    //     );
+    //   }
+    //   data[i].illustration = illustration;
+    // }
 
     // console.log(data) // formatted data
 
-    // const generatedDestinations = [];
-    // const destinations = JSON.parse(textContent);
+    const generatedDestinations = [];
+    const destinations = JSON.parse(textContent);
 
-    // for (const destination of destinations) {
-    //     const { city, country, compatibility, description, pros, cons, } = destination;
+    for (const destination of destinations) {
+        const { city, country, compatibility, description, pros, cons, } = destination;
 
-    //         // ANCHOR Fetch image for the current city-country pair
-    //         const client = createClient('8U6Se7vVT3H9tx1KPZAQTkDUSW0IKi3ldgBTVyh3W9NFF7roIpZxktzY');
-    //         let illustration = '';
+            // ANCHOR Fetch image for the current city-country pair
+            const client = createClient('8U6Se7vVT3H9tx1KPZAQTkDUSW0IKi3ldgBTVyh3W9NFF7roIpZxktzY');
+            let illustration = '';
 
-    //         const searchQuery = `${city}, landscape`;
-    //         try {
-    //             const response = await client.photos.search({ query: `${searchQuery}`, per_page: 1 });
-    //             if ('photos' in response && response.photos.length > 0) {
-    //                 illustration = response.photos[0].src.landscape;
-    //             }
-    //         } catch (error) {
-    //             console.error(`Error in fetching photo for ${city}, ${country}:`, error);
-    //         }
+            const searchQuery = `${city}, landscape`;
+            try {
+                const response = await client.photos.search({ query: `${searchQuery}`, per_page: 1 });
+                if ('photos' in response && response.photos.length > 0) {
+                    illustration = response.photos[0].src.landscape;
+                }
+            } catch (error) {
+                console.error(`Error in fetching photo for ${city}, ${country}:`, error);
+            }
 
-    //         generatedDestinations.push({
-    //             id: count++,
-    //             city: city.trim(),
-    //             country: country.trim(),
-    //             compatibility: parseFloat(compatibility),
-    //             illustration: illustration,
-    //             description: description.trim(),
-    //             pros: pros,
-    //             cons: cons,
-    //         });
-    // }
+            generatedDestinations.push({
+                id: count++,
+                city: city.trim(),
+                country: country.trim(),
+                compatibility: parseFloat(compatibility),
+                illustration: illustration,
+                description: description.trim(),
+                pros: pros,
+                cons: cons,
+            });
+    }
 
-    // const validDestinations = generatedDestinations.filter(destination => destination !== null);
+    const validDestinations = generatedDestinations.filter(destination => destination !== null);
 
-    // setDestinations(validDestinations);
+    setDestinations(validDestinations);
 
-    // await setDestinationSet({
-    //     id: 1,
-    //     cards: validDestinations.reverse(),
-    // });
-
-    setDestinations(data);
     await setDestinationSet({
-      id: 1,
-      cards: data.reverse(),
+        id: 1,
+        cards: validDestinations.reverse(),
     });
+
+    // setDestinations(data);
+    // await setDestinationSet({
+    //   id: 1,
+    //   cards: data.reverse(),
+    // });
 
     await addQuestions(otherString);
 
