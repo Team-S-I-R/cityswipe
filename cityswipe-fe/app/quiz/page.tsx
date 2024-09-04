@@ -27,7 +27,7 @@ import { number } from "zod";
 export default function QuizClient({ clerkdata }: any) {
   const { isStarted, setIsStarted } = useCitySwipe();
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [otherString, setOtherString] = useState<string[]>(Array(13).fill(''));
+  const [otherString, setOtherString] = useState<string[]>(Array(13).fill(""));
   const [responses, setResponses] = useState<string[]>([]);
   // Responses for debuggin!
   // const [otherString, setOtherString] = useState<string[]>([
@@ -77,22 +77,25 @@ export default function QuizClient({ clerkdata }: any) {
 
   const handleNext = () => {
     const newResponses = [...responses];
-    let newStr = ""
-    let toggle = document.getElementById("toggle-group")
+    let newStr = "";
+    let toggle = document.getElementById("toggle-group");
     // console.log("Here");
     if (toggle) {
       for (let i = 0; i < toggle.children.length; i++) {
-        let child = toggle.children[i]
+        let child = toggle.children[i];
         // console.log(child?.ariaPressed);
         // console.log(child.innerHTML);
-        child?.ariaPressed == "true" && (newStr = newStr.concat(child.innerHTML) + ". ")
+        child?.ariaPressed == "true" &&
+          (newStr = newStr.concat(child.innerHTML) + ". ");
       }
     }
-    newResponses[currentQuestionIndex] = newStr + otherString[currentQuestionIndex]
-    newResponses[currentQuestionIndex] == "" && (newResponses[currentQuestionIndex] = "any")
-    console.log(newResponses[currentQuestionIndex])
+    newResponses[currentQuestionIndex] =
+      newStr + otherString[currentQuestionIndex];
+    newResponses[currentQuestionIndex] == "" &&
+      (newResponses[currentQuestionIndex] = "any");
+    console.log(newResponses[currentQuestionIndex]);
     setResponses(newResponses);
-    
+
     setCurrentQuestionIndex((prevIndex) =>
       Math.min(prevIndex + 1, quizQuestions.length - 1)
     );
@@ -262,7 +265,7 @@ export default function QuizClient({ clerkdata }: any) {
     setCurrentQuestionIndex(0);
     router.push("/");
     setResponses([]);
-    setOtherString([])
+    setOtherString([]);
   };
 
   return (
@@ -274,9 +277,13 @@ export default function QuizClient({ clerkdata }: any) {
         animate={{ opacity: 1 }}
         transition={{ duration: 1.75 }}
         id="question-container"
-        className="w-full px-14 bg-red-500 rounded-t-xl shadow-2xl absolute bottom-0 h-full bg-white text-[12px] gap-6 flex flex-col place-items-start place-content-center"
+        className="w-full px-4 sm:px-80 rounded-t-xl shadow-2xl absolute bottom-0 h-full bg-white text-[12px] gap-6 flex flex-col place-items-start place-content-center"
       >
-        <div className="flex flex-col w-full place-items-start px-8 gap-5">
+        <div
+          className={`flex flex-col w-full place-items-start px-8 gap-5 ${
+            loadingMatches ? "blur-sm" : "blur-0"
+          }`}
+        >
           <h1 className="w-full w-md text-muted-foreground sm:text-left text-center place-content-center text-[15px]">
             Hi {userdata?.name?.split(" ")[0]}, Take the Cityswipe quiz to find
             your perfect destination!
@@ -291,14 +298,14 @@ export default function QuizClient({ clerkdata }: any) {
             <ToggleGroup
               id="toggle-group"
               type="multiple"
-              className="flex flex-col"
+              className="flex flex-col w-full sm:w-auto"
             >
               {currentQuestion.answerOptions.map((answer, i) => {
                 return (
                   <ToggleGroupItem
                     key={`response-option-${i}`}
                     id={`response-option-${i}`}
-                    className="w-full text-lg"
+                    className="w-full text-lg sm:text-xl"
                     variant="outline"
                     value={answer}
                     size="lg"
@@ -309,11 +316,11 @@ export default function QuizClient({ clerkdata }: any) {
               })}
             </ToggleGroup>
 
-            <div className="hidden sm:flex w-full pt-0">
+            <div className="flex sm:flex w-full pt-0">
               <Input
                 id="response-input"
                 type="text"
-                className="w-full text-base"
+                className="w-full text-sm text-center sm:text-left sm:text-lg"
                 autoComplete="off"
                 value={sanitizeText(otherString[currentQuestionIndex] || "")}
                 placeholder={currentQuestion.additionalStringPlaceholder}
@@ -322,10 +329,10 @@ export default function QuizClient({ clerkdata }: any) {
             </div>
           </div>
 
-          <div className="flex flex-row gap-2">
+          <div className="flex flex-row gap-2 w-full sm:w-auto">
             {currentQuestionIndex > 0 && (
               <Button
-                className="hover:scale-[95%] text-[14px] text-white hover:opacity-80 flex place-self-start h-11"
+                className="hover:scale-[95%] text-[14px] text-white hover:opacity-80 flex place-self-start h-11 w-full sm:w-auto"
                 // variant="outline"
                 onClick={handlePrevious}
                 disabled={currentQuestionIndex === 0}
@@ -333,81 +340,44 @@ export default function QuizClient({ clerkdata }: any) {
                 Back
               </Button>
             )}
-            {
-              currentQuestionIndex < quizQuestions.length-1 && <Button
-                className="hover:scale-[95%] text-[14px] bg-gradient-to-t from-cyan-500 to-green-400  select-none"
+            {currentQuestionIndex < quizQuestions.length - 1 && (
+              <Button
+                className="hover:scale-[95%] text-[14px] bg-gradient-to-t from-cyan-500 to-green-400  select-none w-full sm:w-auto"
                 onClick={handleNext}
                 size="lg"
               >
                 Next
               </Button>
-            }
+            )}
           </div>
 
-          {/* mobile */}
-          <div className="flex sm:hidden w-full flex-col gap-6 place-content-center place-items-center">
-            <Input
-              id="response-input"
-              type="text"
-              className="w-[80%]"
-              autoComplete="off"
-              value={sanitizeText(otherString[currentQuestionIndex] || "")}
-              onChange={handleInputChange}
-            />
-            <div className="flex w-full gap-6 justify-center">
-              {otherString[currentQuestionIndex]?.length > 1 && (
+          {currentQuestionIndex === quizQuestions.length - 1 && (
+            <>
+              <div className="flex place-self-center w-full px-8 place-items-center place-content-center">
                 <Button
-                  className="hover:scale-[95%] text-[12px] px-0 m-0 select-none bg-transparent hover:bg-transparent text-primary hover:opacity-80 flex place-self-start"
-                  onClick={handlePrevious}
-                  disabled={currentQuestionIndex === 0}
+                  size="lg"
+                  onClick={() => {
+                    handleGemini();
+                  }}
+                  className="hover:scale-[95%] text-[14px] w-full sm:w-auto bg-gradient-to-t from-cyan-500 to-green-400 select-none "
                 >
-                  Back
+                  Find Your Match!
                 </Button>
-              )}
-              {otherString[currentQuestionIndex]?.length > 1 && (
-                <Button
-                  className="hover:scale-[95%] text-[12px] bg-gradient-to-t from-cyan-500 to-green-400  select-none"
-                  onClick={handleNext}
-                >
-                  Next
-                </Button>
-              )}
-            </div>
-          </div>
-
-          {/* <button
-            className=" w-max underline h-5 absolute bottom-10 right-10 bg-transparent hover:bg-transparent text-primary hover:opacity-80 z-10"
-            onClick={() => handleHomeFunction()}
-          >
-            Go back
-          </button> */}
+              </div>
+            </>
+          )}
         </div>
 
         {currentQuestionIndex === quizQuestions.length - 1 &&
           loadingMatches && (
             <>
-              <div className="absolute w-full h-max flex place-items-center place-content-center">
-                <span className="text-[12px] animate-pulse">
-                  Your matches are loading...
+              <div className="absolute w-full h-max self-center flex place-items-center place-content-center">
+                <span className="text-[22px] sm:text-[26px] animate-pulse font-bold text-center">
+                  Scouring the globe for your destinations...
                 </span>
               </div>
             </>
           )}
-
-        {currentQuestionIndex === quizQuestions.length - 1 && (
-          <>
-            <div className="flex place-self-center">
-              <Button
-                onClick={() => {
-                  handleGemini();
-                }}
-                className="hover:scale-[95%] text-[12px] bg-gradient-to-t from-cyan-500 to-green-400 select-none w-max"
-              >
-                Find Your Match!
-              </Button>
-            </div>
-          </>
-        )}
       </motion.div>
     </>
   );
