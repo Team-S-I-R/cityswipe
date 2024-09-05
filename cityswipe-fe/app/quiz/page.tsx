@@ -227,7 +227,7 @@ export default function QuizClient({clerkdata} : any) {
                      initial = {{opacity: 0}}
                      animate = {{opacity: 1}}
                      transition = {{duration: 1.75}}
-                    id="question-container" className="w-full px-8 bg-red-500 rounded-t-xl shadow-2xl absolute bottom-0 h-full  bg-white text-[12px] h-64 gap-6 flex flex-col place-items-start place-content-center">
+                    id="question-container" className="w-full px-8 bg-red-500 rounded-t-xl shadow-2xl absolute bottom-0 h-[100dvh]  bg-white text-[12px] gap-6 flex flex-col place-items-start place-content-center">
                         
                         <div className="flex flex-col w-full place-items-start px-8  gap-6">
 

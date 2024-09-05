@@ -17,52 +17,18 @@ import { motion } from "framer-motion";
 import {
   SignInButton,
   SignedIn,
+  SignOutButton,
   SignUpButton,
   SignedOut,
   UserButton
 } from '@clerk/nextjs'
 import clogo from '../assets/imgs/path6.png'
-
+import { MenuIcon, X } from "lucide-react";
+import { useState } from "react";
+ 
   export default function Header() {
-    const { isStarted } = useCitySwipe();
-    const components: { title: string; href: string; description: string }[] = [
-        {
-          title: "Alert Dialog",
-          href: "/docs/primitives/alert-dialog",
-          description:
-            "A modal dialog that interrupts the user with important content and expects a response.",
-        },
-        {
-          title: "Hover Card",
-          href: "/docs/primitives/hover-card",
-          description:
-            "For sighted users to preview content available behind a link.",
-        },
-        {
-          title: "Progress",
-          href: "/docs/primitives/progress",
-          description:
-            "Displays an indicator showing the completion progress of a task, typically displayed as a progress bar.",
-        },
-        {
-          title: "Scroll-area",
-          href: "/docs/primitives/scroll-area",
-          description: "Visually or semantically separates content.",
-        },
-        {
-          title: "Tabs",
-          href: "/docs/primitives/tabs",
-          description:
-            "A set of layered sections of content—known as tab panels—that are displayed one at a time.",
-        },
-        {
-          title: "Tooltip",
-          href: "/docs/primitives/tooltip",
-          description:
-            "A popup that displays information related to an element when the element receives keyboard focus or the mouse hovers over it.",
-        },
-      ]
 
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
     const SubmitButton = () => {
       const status = useFormStatus();
@@ -96,6 +62,8 @@ import clogo from '../assets/imgs/path6.png'
     const reload = () => {
       window.location.reload();
     }
+
+
 
     return (
         <>    
@@ -164,30 +132,110 @@ import clogo from '../assets/imgs/path6.png'
             </div>
             </Link>
 
-            {/* <div className="flex text-[12px] select-none gap-4 place-items-center place-content-center">
+            <div >
+              <MenuIcon className="cursor-pointer" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} /> 
+            </div>
 
-                <SignedOut>
 
-        
-              <Link href="/sign-in">
-                <button className="shadow-md hover:shadow-lg hover:scale-[97%] px-4 py-2 rounded-lg">Log In</button>
-              </Link>
-              <Link href="/sign-up">
-                <button className="shadow-md px-4 py-2 hover:shadow-lg hover:scale-[97%] rounded-lg text-white bg-gradient-to-t from-cyan-500 to-green-400">Sign Up</button>
-              </Link>
-              
-                
-                </SignedOut>
-                
-                <SignedIn>
-                
-                  <UserButton />
-                
-                </SignedIn>
-            </div> */}
+
             </>
         
         </motion.div>  
+
+        {mobileMenuOpen && (
+          <>
+          <div className="px-8 py-[20.5px] w-[100dvw] flex gap-5 flex-col justify-between right-0 top-0 h-[100dvh] bg-white absolute z-[20]">
+            
+            <div className="flex w-full justify-between" >
+              <span>
+                <h1 className="select-none text-[15px] ">Cityswipe</h1> 
+              </span>
+              <X  className="cursor-pointer" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} /> 
+            </div>
+
+            <div className="w-full h-[1px] bg-gray-500"></div>
+
+            <div className="h-full flex flex-col w-full justify-between">
+               
+               {/* the menu items start here */}
+
+                  <SignedIn>
+                  
+                    <div className="flex w-[100%] flex-col">
+                      <Link href="/">
+                        <button className="w-full flex place-items-start text-muted-foreground hover:text-black py-2 rounded-lg">Home</button>
+                      </Link>
+                      <Link href="/explore">
+                        <button className="w-full flex place-items-start text-muted-foreground hover:text-black py-2 rounded-lg">Chat</button>
+                      </Link>
+                      <Link href="/quiz">
+                        <button className="w-full flex place-items-start text-muted-foreground hover:text-black py-2 rounded-lg">Quiz</button>
+                      </Link>
+                      <Link href="/match">
+                        <button className="w-full flex place-items-start text-muted-foreground hover:text-black py-2 rounded-lg">Match</button>
+                      </Link>
+                    </div>
+
+                   
+                    <div className="w-full py-2 h-max flex flex-col gap-2">
+                  
+                        <div className="w-full flex place-content-center text-muted-foreground shadow-md px-4 py-2 my-2 hover:shadow-lg rounded-lg text-white bg-gradient-to-t from-cyan-500 to-green-400">
+                          <SignOutButton />
+                        </div>
+
+                        <div className="w-full h-[1px] bg-gray-500"></div>
+
+                        <div className="flex w-[100%] py-4 flex-col">
+                            <span className="text-[12px] text-muted-foreground">Cityswipe 2024</span>
+                        </div>
+
+                    </div>
+
+
+                  </SignedIn>
+
+
+                  <SignedOut>
+                  
+                  <div className="flex w-[100%] flex-col">
+                    <Link href="/">
+                      <button className="w-full flex place-items-start text-muted-foreground hover:text-black py-2 rounded-lg">Home</button>
+                    </Link>
+                  </div>
+
+                 
+                  <div className="w-full py-2 h-max flex flex-col gap-2">
+                
+                      <div className="w-full flex place-items-start text-muted-foreground hover:text-black py-2 rounded-lg">
+                        <Link className="w-full" href="/sign-in">
+                          <button className="shadow-md w-full hover:shadow-lg  px-4 py-2 rounded-lg">Log In</button>
+                         </Link>
+                      </div>
+                      <div className="w-full flex place-items-start text-muted-foreground hover:text-black py-2 rounded-lg">
+                        <Link className="w-full" href="/sign-up">
+                          <button className="shadow-md w-full px-4 py-2 hover:shadow-lg rounded-lg text-white bg-gradient-to-t from-cyan-500 to-green-400">Sign Up</button>
+                        </Link>
+                      </div>
+
+                      <div className="w-full h-[1px] bg-gray-500"></div>
+
+                      <div className="flex w-[100%] py-4 flex-col">
+                          <span className="text-[12px] text-muted-foreground">Cityswipe 2024</span>
+                      </div>
+
+                  </div>
+
+
+                </SignedOut>
+
+
+                {/* the menu items end here */}
+
+            </div>
+          
+          </div>
+          </>
+        )}
           
         </>
     )

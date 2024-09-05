@@ -31,7 +31,7 @@ export default function Explore({clerkdata, matches}: any) {
             {usermatches.length > 0 && (
                 <>
                     {/* lg desktop */}
-                    <main className="hidden lg:flex w-full h-full overflow-hidden">
+                    <main className="hidden lg:flex w-[100dvw] h-[100dvh] overflow-hidden">
                         <ResizablePanelGroup
                             direction="horizontal"
                             className="rounded-lg border"
@@ -53,7 +53,7 @@ export default function Explore({clerkdata, matches}: any) {
                     </main>
 
                     {/* md desktop */}
-                    <main className="hidden md:flex lg:hidden w-full h-full overflow-hidden">
+                    <main className="hidden md:flex lg:hidden w-[100dvw] h-[100dvh] overflow-hidden">
                         <ResizablePanelGroup
                             direction="horizontal"
                             className="rounded-lg border"
@@ -75,7 +75,7 @@ export default function Explore({clerkdata, matches}: any) {
                     </main>
 
                     {/* mobile */}
-                    <main className="flex md:hidden w-full h-full overflow-hidden">
+                    <main className="flex md:hidden w-[100dvw] h-[100dvh] overflow-hidden">
                         <Sidebar clerkdata={userdata}/>
                         <div className="flex w-full h-full items-center justify-center relative">
                             <Chat/>
@@ -88,7 +88,7 @@ export default function Explore({clerkdata, matches}: any) {
             {usermatches.length < 1 && (
                 <>
                     {/* lg desktop */}
-                    <main className="hidden lg:flex w-full h-full overflow-hidden">
+                    <main className="hidden lg:flex w-[100dvw] h-[100dvh] overflow-hidden">
                         <ResizablePanelGroup
                             direction="horizontal"
                             className="rounded-lg border"
@@ -110,7 +110,7 @@ export default function Explore({clerkdata, matches}: any) {
                     </main>
 
                     {/* md desktop */}
-                    <main className="hidden md:flex lg:hidden w-full h-full overflow-hidden">
+                    <main className="hidden md:flex lg:hidden w-[100dvw] h-[100dvh] overflow-hidden">
                         <ResizablePanelGroup
                             direction="horizontal"
                             className="rounded-lg border"
@@ -132,7 +132,7 @@ export default function Explore({clerkdata, matches}: any) {
                     </main>
 
                     {/* mobile */}
-                    <main className="flex md:hidden w-full h-full overflow-hidden">
+                    <main className="flex md:hidden w-[100dvw] h-[100dvh] overflow-hidden">
                         <Sidebar clerkdata={userdata}/>
                         <div className="flex w-full h-full items-center justify-center relative">
                             <Chat/>
