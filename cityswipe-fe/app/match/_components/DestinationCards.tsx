@@ -1,19 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
+
 import { useEffect, useState } from "react";
 import Link from "next/link";
-
 import { motion, AnimatePresence } from "framer-motion";
-import { X } from "lucide-react";
 import { DestinationCard } from ".";
 import { DestinationActionBtn } from ".";
-
-// import { BgPattern } from "@/components/ui";
 import { useDestinationSetContext } from "../../../context/destinationSetContext";
-// import { useUserContext } from "@/store/userContext";
-// import { themeColors } from "@/lib/theme";
-// import handleScore from "../_utils/handleScore";
-
 import {
   CardSwipeDirection,
   IsDragOffBoundary,
@@ -21,7 +14,6 @@ import {
 import { useSavedDestinationContext } from "../../../context/savedDestinationContext";
 import handleResponse from "../_utils/handleResponse";
 import { Button } from "@/components/ui/button";
-import prisma from "@/lib/db";
 import { useCitySwipe } from "@/app/citySwipeContext";
 import { addMatch } from "@/app/actions";
 
@@ -37,20 +29,17 @@ const initialDrivenProps = {
 };
 
 const DestinationCards = () => {
-  const {userdata, setUserData} = useCitySwipe()
+  const { userdata, setUserData } = useCitySwipe();
   const [destinationSet, setDestinationSet] = useDestinationSetContext();
   const [savedDestination, setSavedDestination] = useSavedDestinationContext();
-
   // const { score } = user;
   const { cards } = destinationSet;
   const { destinations } = savedDestination;
-
   const [direction, setDirection] = useState<CardSwipeDirection | "">("");
   const [isDragOffBoundary, setIsDragOffBoundary] =
     useState<IsDragOffBoundary>(null);
   const [cardDrivenProps, setCardDrivenProps] = useState(initialDrivenProps);
   const [isDragging, setIsDragging] = useState(false);
-
   const handleActionBtnOnClick = (btn: CardSwipeDirection) => {
     setDirection(btn);
   };
@@ -65,18 +54,19 @@ const DestinationCards = () => {
     }
 
     if (direction === "right") {
-      
       // This updates the destinations array with the new destinations after a right swipe
-      const updatedDestinations = handleResponse({ direction, cards, destinations });
+      const updatedDestinations = handleResponse({
+        direction,
+        cards,
+        destinations,
+      });
       setSavedDestination({
         destinations: updatedDestinations,
       });
-      
+
       // server action that adds a match to the database
       addMatch({ destinations: updatedDestinations });
     }
-
-    
 
     setDirection("");
   }, [direction]);
@@ -165,7 +155,6 @@ const DestinationCards = () => {
         </div>
 
         <div className="w-full flex flex-col h-max gap-4 place-items-center">
-
           <div
             id="actions"
             className="flex items-center justify-center w-max h-max gap-4 relative z-10"
@@ -214,9 +203,7 @@ const DestinationCards = () => {
               </Button>
             </Link>
           </motion.div>
-
         </div>
-
       </div>
     </motion.div>
   );

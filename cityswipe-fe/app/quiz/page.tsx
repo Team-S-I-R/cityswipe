@@ -185,7 +185,7 @@ export default function QuizClient({ clerkdata }: any) {
             const client = createClient('8U6Se7vVT3H9tx1KPZAQTkDUSW0IKi3ldgBTVyh3W9NFF7roIpZxktzY');
             let illustration = '';
 
-            const searchQuery = `${city}, landscape, without women`;
+            const searchQuery = `${city}, landscape`;
             try {
                 const response = await client.photos.search({ query: `${searchQuery}`, per_page: 1 });
                 if ('photos' in response && response.photos.length > 0) {
