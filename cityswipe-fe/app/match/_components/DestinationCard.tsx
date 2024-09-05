@@ -2,31 +2,17 @@
 
 import { useState, Dispatch, SetStateAction, useEffect } from "react";
 import Image from "next/image";
-import placeholderImg from "../../assets/imgs/white.png";
-
 import { useMediaQuery } from "usehooks-ts";
-
 import {
   motion,
   useMotionValue,
   useTransform,
   useMotionValueEvent,
 } from "framer-motion";
-
-import { destinationSets } from "../../../api/destinationSets.api";
 import { useDestinationSetContext } from "../../../context/destinationSetContext";
-
 import { type Destination } from "@/lib/destinationSet.type";
 import { useSavedDestinationContext } from "../../../context/savedDestinationContext";
-import { DestinationItem } from "@/lib/destination.type";
-import { createClient } from "pexels";
-import { Button } from "@/components/ui/button";
-import { useCitySwipe } from "@/app/citySwipeContext";
-import handleResponse from "../_utils/handleResponse";
-import pimage from "../../assets/imgs/destination-img-1.jpg";
 import { Dot, Frown, Laugh, MapPin } from "lucide-react";
-
-// import SvgIconScoreLeaf from "@/components/svg/score-leaf.svg";
 
 type Props = {
   id?: number;
@@ -66,31 +52,13 @@ const DestinationCard = ({
   
   const { cards } = destinationSet;
   
-  // const cardsAmount = games[game.id]?.cards.length; //fix
   let cardsAmount = cards.length; //fix
   const [lenofDestinationSet, setLenofDestinationSet] = useState(cardsAmount);
-  
-  // fix for counting number of cards left display
-
-
   const [imgLoadingComplete, setImgLoadingComplete] = useState(false);
-  // const hasScoreIncreased = previousScore !== score;
-
   const { city, country, illustration, description, pros, cons } = data;
   const x = useMotionValue(0);
   const isMobile = useMediaQuery("(max-width: 768px)");
-
-  const scoreVariants = {
-    initial: {
-      y: 0,
-    },
-    pop: {
-      y: [0, -15, -20, -15, 0],
-    },
-  };
-
   const offsetBoundary = 150;
-
   const inputX = [offsetBoundary * -1, 0, offsetBoundary];
   const outputX = [-200, 0, 200];
   const outputY = [50, 0, 50];

@@ -1,16 +1,13 @@
 "use client";
+
 import { motion, AnimatePresence, cubicBezier } from "framer-motion";
 import { DestinationCompletion, DestinationCards } from "./_components";
-
-
 import { savedDestination as initialDestination } from "../../api/savedDestination.api";
 import { getInitialSet } from "../../api/destinationSets.api";
 import { useDestinationSetContext } from "../../context/destinationSetContext";
 import { useEffect } from "react";
 import { useSavedDestinationContext } from "../../context/savedDestinationContext";
-import { Button } from "@/components/ui/button";
 import Header from "../cs-componets/header";
-import { createClient } from "pexels";
 
 const Match = () => {
   // "destination" is the list of destinations 
