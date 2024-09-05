@@ -231,7 +231,7 @@ export default function Sidebar( {clerkdata, matches} : any,) {
         {/* mobile */}
         <div className="w-[50px] z-[100] relative h-full bg-gray-100 py-3 flex md:hidden flex-col place-items-center place-content justify-between" > 
 
-            <div className="cursor-pointer p-3" onMouseEnter={() => setIsSidebarOpen?.(!isSidebarOpen)}>
+            <div className="cursor-pointer p-2 w-max h-max" onClick={() => setIsSidebarOpen?.(!isSidebarOpen)}>
                 {isSidebarOpen ? <ChevronDown className="rotate-90"/> : <ChevronDown className="-rotate-90"/> }
             </div>
 
