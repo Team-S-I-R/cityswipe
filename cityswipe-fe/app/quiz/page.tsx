@@ -33,15 +33,16 @@ export default function QuizClient({ clerkdata }: any) {
   // const [otherString, setOtherString] = useState<string[]>([
   //   "United States",
   //   "Luxury",
-  //   "English",
-  //   "Yes",
-  //   "Summer",
-  //   "Warm",
-  //   "Beach",
+  //   "international",
+  //   "any",
+  //   "english",
+  //   "yes",
+  //   "warm",
+  //   "mountains",
   //   "Sprinting, Hiking, Camping, Swimming, Drawing",
-  //   "Vegan",
+  //   "shopping",
+  //   "halal",
   //   "Street food",
-  //   "No",
   //   "No",
   // ]);
   const questionKeys = Object.keys(quizQuestions);
@@ -92,7 +93,7 @@ export default function QuizClient({ clerkdata }: any) {
     newResponses[currentQuestionIndex] =
       newStr + otherString[currentQuestionIndex];
     newResponses[currentQuestionIndex] == "" &&
-      (newResponses[currentQuestionIndex] = "any");
+      (newResponses[currentQuestionIndex] = currentQuestion.defaultValue);
     console.log(newResponses[currentQuestionIndex]);
     setResponses(newResponses);
 
@@ -151,7 +152,7 @@ export default function QuizClient({ clerkdata }: any) {
         Make sure the compatibility percentage is a number between 0 and 100. 
         Do not include formatting or code blocks, follow example. 
         Corelate all the data when making decisions. 
-        Questions are answered by the user in order of listing as follows: home country, luxury mid range or budget places, languages spoken, comfortable in country with unknown language or no, proffered season, proffered temperature, beach mountain or city, 5 favorite activities, dietary restrictions and preferences, local food fine dining or street, proffered activities and facilities, comfortable in country with recreational drug use or not. 
+        Questions are answered by the user in order of listing as follows: home country, travel budget, distance their prefer to travel, accomodation preferences, fluently spoken languages, comfort navigating places where your primary language is not widely spoken, preferred climate/temperature, preferred landscape, interested outdoor activities, interested urban activities, dietary restrictions, dining preferences, particular interests/additional requirements. 
         
         Here are the user preference answers in order:\n\n${responses.join(
           "\n"
@@ -174,35 +175,6 @@ export default function QuizClient({ clerkdata }: any) {
     // const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 
-    // console.log(textContent)
-    // let data = JSON.parse(textContent);
-    // Add illustration
-    // for (var i in data) {
-    //   // ANCHOR Fetch image for the current city-country pair
-    //   const client = createClient(
-    //     "8U6Se7vVT3H9tx1KPZAQTkDUSW0IKi3ldgBTVyh3W9NFF7roIpZxktzY"
-    //   );
-    //   let illustration = "";
-
-    //   try {
-    //     const response = await client.photos.search({
-    //       query: `${data[i].city}, ${data[i].country}`,
-    //       per_page: 1,
-    //     });
-    //     if ("photos" in response && response.photos.length > 0) {
-    //       illustration = response.photos[0].src.landscape;
-    //     }
-    //   } catch (error) {
-    //     console.error(
-    //       `Error in fetching photo for ${data[i].city}, ${data[i].country}:`,
-    //       error
-    //     );
-    //   }
-    //   data[i].illustration = illustration;
-    // }
-
-    // console.log(data) // formatted data
-
     const generatedDestinations = [];
     const destinations = JSON.parse(textContent);
 
@@ -213,7 +185,7 @@ export default function QuizClient({ clerkdata }: any) {
             const client = createClient('8U6Se7vVT3H9tx1KPZAQTkDUSW0IKi3ldgBTVyh3W9NFF7roIpZxktzY');
             let illustration = '';
 
-            const searchQuery = `${city}, landscape`;
+            const searchQuery = `${city}, landscape, without women`;
             try {
                 const response = await client.photos.search({ query: `${searchQuery}`, per_page: 1 });
                 if ('photos' in response && response.photos.length > 0) {
@@ -243,12 +215,6 @@ export default function QuizClient({ clerkdata }: any) {
         id: 1,
         cards: validDestinations.reverse(),
     });
-
-    // setDestinations(data);
-    // await setDestinationSet({
-    //   id: 1,
-    //   cards: data.reverse(),
-    // });
 
     await addQuestions(otherString);
 
@@ -284,20 +250,24 @@ export default function QuizClient({ clerkdata }: any) {
             loadingMatches ? "blur-sm" : "blur-0"
           }`}
         >
-          <h1 className="w-full w-md text-muted-foreground sm:text-left text-center place-content-center text-[15px]">
+          {currentQuestionIndex == 0 && <h1 className="w-full w-md text-muted-foreground sm:text-left text-center place-content-center text-[15px]">
             Hi {userdata?.name?.split(" ")[0]}, Take the Cityswipe quiz to find
             your perfect destination!
-          </h1>
+          </h1>}
 
-          <p className="text-3xl text-center sm:text-left sm:text-[44px] w-full font-bold pb-8">
+          <p className="text-3xl text-center sm:text-left sm:text-[44px] w-full font-bold">
             {currentQuestion.question}
           </p>
 
+          {currentQuestion.infoText != "" && <h1 className=" w-full w-md text-muted-foreground sm:text-left text-center place-content-center text-[15px]">
+            {currentQuestion.infoText}
+          </h1>}
+
           {/* Answer Options */}
-          <div className="flex flex-col w-full place-items-start gap-3">
-            <ToggleGroup
+          <div className="flex flex-col w-full place-items-start gap-3 pt-8">
+            {currentQuestion.selectionType != "text" && (<ToggleGroup
               id="toggle-group"
-              type="multiple"
+              type={currentQuestion.selectionType as "multiple" | "single"}
               className="flex flex-col w-full sm:w-auto"
             >
               {currentQuestion.answerOptions.map((answer, i) => {
@@ -314,7 +284,7 @@ export default function QuizClient({ clerkdata }: any) {
                   </ToggleGroupItem>
                 );
               })}
-            </ToggleGroup>
+            </ToggleGroup>)}
 
             <div className="flex sm:flex w-full pt-0">
               <Input
