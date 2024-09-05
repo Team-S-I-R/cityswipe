@@ -77,7 +77,7 @@ export default function Explore({clerkdata, matches}: any) {
                     {/* mobile */}
                     <main className="flex md:hidden w-[100dvw] h-[100dvh] overflow-hidden">
                         <Sidebar clerkdata={userdata}/>
-                        <div className="flex w-full h-full items-center justify-center relative">
+                        <div className="flex w-full h-[100dvh] items-center justify-center relative">
                             <Chat/>
                         </div>
                     </main>

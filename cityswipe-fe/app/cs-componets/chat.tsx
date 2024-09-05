@@ -69,7 +69,7 @@ export default function Chat({matches}: any) {
 
         <>
         
-        <div className="relative hidden sm:flex text-[14px] flex-col place-content-center place-items-center w-full h-full">
+        <div className="relative hidden sm:flex text-[14px] flex-col place-content-center place-items-center w-[100dvw] h-[100dvh]">
             <div className="absolute border-b border-primary/20 top-0 w-full h-[6%] flex justify-between place-items-center px-5">
                 
                 {selectedMatch == '' ? (
@@ -186,7 +186,7 @@ export default function Chat({matches}: any) {
         </div>
 
         {/*  mobile */}
-        <div className="relative text-[12px] flex sm:hidden  flex-col place-content-center place-items-center w-full h-full">
+        <div className="relative text-[12px] flex sm:hidden  flex-col place-content-center place-items-center w-full h-[100dvh]">
            
             <div className="absolute border-b border-primary/20 top-0 w-full h-[6%] flex place-content-center place-items-center px-5">
                 
