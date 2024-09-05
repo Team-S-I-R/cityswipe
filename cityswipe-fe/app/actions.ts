@@ -241,6 +241,7 @@ export async function addMatch(savedDestination: any) {
   
   interface Destination {
     city: string;
+    username: string;
     country: string;
     description: string;
     illustration: string;
@@ -257,6 +258,7 @@ export async function addMatch(savedDestination: any) {
     await prisma?.match.create({
       data: {
         city: destination?.city,
+        username: user?.username || "",
         country: destination?.country,
         description: destination?.description,
         illustration: destination?.illustration,

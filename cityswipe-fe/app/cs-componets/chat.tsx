@@ -13,6 +13,8 @@ import { ArrowUp } from "lucide-react";
 import { savedDestination } from "../../api/savedDestination.api";
 import { DestinationItem } from "@/lib/destination.type";
 import placeholderimg from '../assets/imgs/white.png'
+import { motion } from "framer-motion";
+
 export default function Chat({matches}: any) {
 
     const [conversation, setConversation] = useState<Message[]>([]);
@@ -22,6 +24,7 @@ export default function Chat({matches}: any) {
     const { userdata, setUserData } = useCitySwipe();
     const { usermatches, setUserMatches } = useCitySwipe();
     const {chatImg, setChatImg} = useCitySwipe();
+    console.log(userdata)
 
     useEffect(() => {
         if (clearConversation && clearConversation > 0) {
@@ -66,7 +69,7 @@ export default function Chat({matches}: any) {
 
         <>
         
-        <div className="relative hidden sm:flex text-[14px] flex-col place-content-center place-items-center w-full h-full">
+        <div className="relative hidden sm:flex text-[14px] flex-col place-content-center place-items-center w-[100dvw] h-[100dvh]">
             <div className="absolute border-b border-primary/20 top-0 w-full h-[6%] flex justify-between place-items-center px-5">
                 
                 {selectedMatch == '' ? (
@@ -83,19 +86,39 @@ export default function Chat({matches}: any) {
 
                     <div className="flex flex-col select-none gap-2 place-items-center w-[70%]">
 
-                        <div className="w-[80px] h-[80px] rounded-full">
+                        <motion.div 
+                        initial={{ opacity: 0, y: 100 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5 }}
+                        className="w-[80px] h-[80px] rounded-full">
                             <Image className="object-cover w-full h-full rounded-full" src={chatImg || placeholderimg} sizes="100%" width={30} height={30} alt="" />
-                        </div>
+                        </motion.div>
 
                         {selectedMatch == '' ? (
                             <>
-                            <p className="text-center">You matched with <strong>{usermatches?.[0]?.city}</strong>!</p>
-                            <p className="text-center">Ask {usermatches?.[0]?.city} anything you would like to know</p>
+                            <motion.p 
+                            initial={{ opacity: 0, y: 100 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.75 }}
+                            className="text-center">You matched with <strong>{usermatches?.[0]?.city}</strong>!</motion.p>
+                            <motion.p 
+                            initial={{ opacity: 0, y: 100 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 1 }}
+                            className="text-center">Ask {usermatches?.[0]?.city} anything you would like to know</motion.p>
                             </>
                         ) : (    
                             <>
-                            <p className="text-center">You matched with <strong>{selectedMatch}</strong>!</p>
-                            <p className="text-center">Ask {selectedMatch} anything you would like to know</p>
+                            <motion.p 
+                            initial={{ opacity: 0, y: 100 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.75 }}
+                            className="text-center">You matched with <strong>{selectedMatch}</strong>!</motion.p>
+                            <motion.p 
+                            initial={{ opacity: 0, y: 100 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 1 }}
+                            className="text-center">Ask {selectedMatch} anything you would like to know</motion.p>
                             </>
                         )}
 
@@ -110,21 +133,27 @@ export default function Chat({matches}: any) {
                 <>
                     <div id="chat-container" className=" flex flex-col w-[70%] h-[80vh] no-scrollbar overflow-y-scroll ">
                         {conversation.map((message, index) => (
-                            <div className={`min-w-[20%] max-w-[70%] h-max flex ${message.role === 'user' ? 'place-self-end' : 'place-self-start'}`}>
+                            <div key={index} className={`min-w-[20%] max-w-[70%] h-max flex place-items-center ${message.role === 'user' ? 'place-self-end' : 'place-self-start'}`}>
+                                {message.role === 'assistant' && (
+                                    <Image src={chatImg || placeholderimg} sizes="100%" width={30} height={30} className="object-cover w-[30px] h-[30px] rounded-full" alt="" />
+                                )}
                                 <div 
                                     className={`w-full m-2 rounded-md p-2 ${message.role === 'user' ? 'bg-cyan-300' : 'bg-green-300'}`} 
                                     key={index}
                                 >
                                     <span className="font-bold w-max">
-                                        {message.role === 'user' ? `${userdata?.name.split(' ')[0]}` : message.role}:
+                                        {message.role === 'user' ? `${userdata?.name.split(' ')[0]}` : `${selectedMatch}`}:
                                     </span>
                                     <span> </span>
                                     <span className="w-max">
                                         {message.content}
                                     </span>
                                 </div>
+                                {message.role === 'user' && (
+                                    <Image src={userdata?.profileImg || placeholderimg} sizes="100%" width={30} height={30} className="object-cover w-[30px] h-[30px] rounded-full" alt="" />
+                                )}
                             </div>
-                        ))}
+                        ))} 
                     </div>
                 </>
             )}
@@ -157,7 +186,7 @@ export default function Chat({matches}: any) {
         </div>
 
         {/*  mobile */}
-        <div className="relative text-[12px] flex sm:hidden  flex-col place-content-center place-items-center w-full h-full">
+        <div className="relative text-[12px] flex sm:hidden  flex-col place-content-center place-items-center w-full h-[100dvh]">
            
             <div className="absolute border-b border-primary/20 top-0 w-full h-[6%] flex place-content-center place-items-center px-5">
                 
@@ -202,19 +231,25 @@ export default function Chat({matches}: any) {
                 <>
                     <div id="chat-container" className=" flex flex-col w-[90%] h-[80vh] no-scrollbar overflow-y-scroll ">
                         {conversation.map((message, index) => (
-                            <div className={`min-w-[20%] max-w-[70%] h-max flex ${message.role === 'user' ? 'place-self-end' : 'place-self-start'}`}>
+                            <div key={index} className={`min-w-[20%] max-w-[70%] h-max flex ${message.role === 'user' ? 'place-self-end' : 'place-self-start'}`}>
+                                {message.role === 'assistant' && (
+                                    <Image src={chatImg || placeholderimg} sizes="100%" width={30} height={30} className="object-cover w-[30px] h-[30px] rounded-full" alt="" />
+                                )}
                                 <div 
                                     className={`w-full m-2 rounded-md p-2 ${message.role === 'user' ? 'bg-cyan-300' : 'bg-green-300'}`} 
                                     key={index}
                                 >
                                     <span className="font-bold w-max">
-                                        {message.role === 'user' ? `${userdata?.name.split(' ')[0]}` : message.role}:
+                                        {message.role === 'user' ? `${userdata?.name.split(' ')[0]}` : `${selectedMatch}`}:
                                     </span>
                                     <span> </span>
                                     <span className="w-max">
                                         {message.content}
                                     </span>
                                 </div>
+                                {message.role === 'user' && (
+                                    <Image src={userdata?.profileImg || placeholderimg} sizes="100%" width={30} height={30} className="object-cover w-[30px] h-[30px] rounded-full" alt="" />
+                                )}
                             </div>
                         ))}
                     </div>

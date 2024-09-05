@@ -22,6 +22,7 @@ import { Description } from "@radix-ui/react-dialog";
 import { createClient } from "pexels";
 import { AnimatePresence, motion } from "framer-motion";
 import Header from "../cs-componets/header";
+import { useToast } from "../../hooks/use-toast"
 import { number } from "zod";
 
 export default function QuizClient({ clerkdata }: any) {
@@ -51,7 +52,7 @@ export default function QuizClient({ clerkdata }: any) {
   const [destinationSet, setDestinationSet] = useDestinationSetContext();
   const router = useRouter();
   const [loadingMatches, setLoadingMatches] = useState(false);
-
+  const { toast } = useToast()
   // sets user data
   const { userdata, setUserData } = useCitySwipe();
   useEffect(() => {
@@ -149,6 +150,13 @@ export default function QuizClient({ clerkdata }: any) {
                 ... 6 more of the same format
         ]
 
+        Here are tips you must follow when generating this content. THis is important because we will be using JSON.parse to parse this data so it is important to follow this format and to create NO ERRORS.
+        
+        Every key in the JSON string is enclosed in double quotes ("key").
+        The values are correctly formatted (e.g., strings should be in double quotes, numbers should not).
+        There are no trailing commas after the last property of each object or array.
+        DO NOT ADD ANY MARKDOWN, CODE BLOCKS OR FORMATTING BESIDES THE EXAMPLE JSON FORMAT.
+
         Make sure the compatibility percentage is a number between 0 and 100. 
         Do not include formatting or code blocks, follow example. 
         Corelate all the data when making decisions. 
@@ -176,6 +184,7 @@ export default function QuizClient({ clerkdata }: any) {
 
 
     const generatedDestinations = [];
+    try {
     const destinations = JSON.parse(textContent);
 
     for (const destination of destinations) {
@@ -224,6 +233,12 @@ export default function QuizClient({ clerkdata }: any) {
     console.log(`handleGemini took ${endTime - startTime} milliseconds`);
 
     router.push("/match");
+  } catch (error) {
+            
+    setLoadingMatches(false);
+    toast({ title: 'Error. Please try submitting again!', description: 'We encountered an error. Please try submitting again.', itemID: 'error' });
+
+}
   };
 
   // ANCHOR Resetting the quiz {

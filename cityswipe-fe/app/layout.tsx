@@ -8,6 +8,7 @@ import SavedDestinationProvider from "../context/savedDestinationContext";
 import { getDestination } from "../api/savedDestination.api";
 import { Analytics } from '@vercel/analytics/react';
 import { ClerkProvider } from "@clerk/nextjs";
+import { Toaster } from "@/components/ui/toaster"
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -30,6 +31,7 @@ export default async function RootLayout({
     >
       <html lang="en" className="overflow-hidden">
         <body className={`${inter.className}`}>
+          <Toaster  />
         <Analytics />
           <CitySwipeProvider>
             <SavedDestinationProvider savedDestination={savedDestination}>
