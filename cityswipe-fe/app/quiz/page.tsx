@@ -283,14 +283,14 @@ export default function QuizClient({ clerkdata }: any) {
             {currentQuestion.selectionType != "text" && (<ToggleGroup
               id="toggle-group"
               type={currentQuestion.selectionType as "multiple" | "single"}
-              className="flex flex-col w-full sm:w-auto"
+              className="flex w-full sm:w-auto"
             >
               {currentQuestion.answerOptions.map((answer, i) => {
                 return (
                   <ToggleGroupItem
                     key={`response-option-${i}`}
                     id={`response-option-${i}`}
-                    className="w-full text-lg sm:text-xl"
+                    className="w-max text-[14px]"
                     variant="outline"
                     value={answer}
                     size="lg"

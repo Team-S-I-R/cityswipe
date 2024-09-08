@@ -25,7 +25,7 @@ const quizQuestions = [
   },
   {
     id: 2,
-    question: "What is your travel Budget?",
+    question: "What is your travel budget?",
     answerOptions: ["low", "moderate", "luxury"],
     additionalStringPlaceholder: "other / additional information",
     defaultValue: "any budget level",
@@ -124,7 +124,7 @@ const quizQuestions = [
   },
   {
     id: 13,
-    question: "Are you looking for anything in particular?/Additional information",
+    question: "Are you looking for anything in particular?/additional information",
     answerOptions: [],
     additionalStringPlaceholder: "other requirements/preferances for locations",
     defaultValue: "no additional information",
