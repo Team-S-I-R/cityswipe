@@ -31,7 +31,7 @@ export default function QuizClient({ clerkdata }: any) {
   const [otherString, setOtherString] = useState<string[]>(Array(13).fill(""));
   const [responses, setResponses] = useState<string[]>([]);
   // Responses for debuggin!
-  // const [otherString, setOtherString] = useState<string[]>([
+  // const [responses, setResponses] = useState<string[]>([
   //   "United States",
   //   "Luxury",
   //   "international",
@@ -56,11 +56,12 @@ export default function QuizClient({ clerkdata }: any) {
   const [answerIsSelected, setAnswerIsSelected] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
+  console.log("responses", responses);
+
   const answerSelect = (index : number) => {
     setAnswerIsSelected(!answerIsSelected);
     setSelectedIndex(index);
   };
-
 
   // sets user data
   const { userdata, setUserData } = useCitySwipe();
@@ -267,7 +268,7 @@ export default function QuizClient({ clerkdata }: any) {
         animate={{ opacity: 1 }}
         transition={{ duration: 1.75 }}
         id="question-container"
-        className="w-full px-4 sm:px-80 rounded-t-xl shadow-2xl absolute bottom-0 h-full bg-white text-[12px] gap-6 flex flex-col place-items-start place-content-center"
+        className="w-full px-4 lg:px-[150px] rounded-t-xl shadow-2xl absolute bottom-0 h-full bg-white text-[12px] gap-6 flex flex-col place-items-start place-content-center"
       >
         <div
           className={`flex flex-col w-full place-items-start px-8 gap-5 ${
