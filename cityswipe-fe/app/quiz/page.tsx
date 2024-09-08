@@ -53,6 +53,15 @@ export default function QuizClient({ clerkdata }: any) {
   const router = useRouter();
   const [loadingMatches, setLoadingMatches] = useState(false);
   const { toast } = useToast()
+  const [answerIsSelected, setAnswerIsSelected] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+
+  const answerSelect = (index : number) => {
+    setAnswerIsSelected(!answerIsSelected);
+    setSelectedIndex(index);
+  };
+
+
   // sets user data
   const { userdata, setUserData } = useCitySwipe();
   useEffect(() => {
@@ -290,8 +299,9 @@ export default function QuizClient({ clerkdata }: any) {
                   <ToggleGroupItem
                     key={`response-option-${i}`}
                     id={`response-option-${i}`}
-                    className="w-max text-[14px]"
+                    className={selectedIndex === i ? "bg-gradient-to-t from-cyan-500 to-green-400  text-white" : "text-muted-foreground"}
                     variant="outline"
+                    onClick={() => answerSelect(i)}
                     value={answer}
                     size="lg"
                   >
