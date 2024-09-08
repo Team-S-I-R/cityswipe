@@ -8,6 +8,9 @@ import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
 import { currentUser } from "@clerk/nextjs/server";
 
+
+// ANCHOR gemini stuff --------------------------------------------------------------------
+
 export interface Message {
   role: "user" | "assistant";
   content: string;
@@ -142,9 +145,7 @@ export async function getConversationHistory(city: string) {
 
 
 
-
-
-// waiting list form stuff
+// ANCHOR waiting list form stuff ----------------------------------------------------
 
 const generateRandomId = () => {
   return Math.random().toString(36).substring(2, 10);
@@ -195,7 +196,9 @@ export async function submitFormResponse(formData: FormData, formState: FormStat
   }
 }
 
-// adding questions to database
+
+
+// ANCHOR adding questions to database (supabase stuff) ------------------------------------
 export async function addQuestions(questions: any) {
 
   let count = 0
