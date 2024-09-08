@@ -141,7 +141,7 @@ const DestinationCard = ({
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 5 }}
         id={`cardDrivenWrapper-${id}`}
-        className="sm:w-[600px] md:h-[500px] hidden sm:flex absolute !cursor-default p-4 gap-4 flex-row shadow-lg bg-white z-10 rounded-xl text-center  pointer-events-none text-black top-[8%] select-none transform translate-x-1/2 translate-y-1/2"
+        className="sm:w-[900px] md:h-[660px] hidden sm:flex absolute !cursor-default p-4 gap-4 flex-row shadow-lg bg-white z-10 rounded-xl text-center  pointer-events-none text-black top-[8%] select-none transform translate-x-1/2 translate-y-1/2"
         style={{
           y: drivenY,
           rotate: drivenRotation,
@@ -209,7 +209,7 @@ const DestinationCard = ({
               </div>  
  
               {/* ANCHOR bio/description */}
-              <div className="h-max text-left line-clamp-2 overflow-hidden no-scrollbar pointer-events-auto w-full">
+              <div className="h-max text-left  overflow-hidden no-scrollbar pointer-events-auto w-full">
                     <p>{description}</p>
               </div>
 
@@ -218,7 +218,7 @@ const DestinationCard = ({
             
                   <div className="pointer-events-auto text-[12px] flex gap-4 place-items-center place-content-center">
                     
-                    <button onClick={showBioHandler} className="font-bold w-max flex place-items-center gap-2 shadow-lg  px-3 py-2 rounded-lg">
+                    {/* <button onClick={showBioHandler} className="font-bold w-max flex place-items-center gap-2 shadow-lg  px-3 py-2 rounded-lg">
                       Full Bio
                     </button>
                     
@@ -230,7 +230,7 @@ const DestinationCard = ({
                     <button onClick={showConsHandler} className="font-bold w-max flex place-items-center gap-2 bg-gradient-to-t from-red-400/30 to-orange-400/30 text-red-400 hover:text-white hover:from-red-400 hover:to-orange-400 px-3 py-2 rounded-lg">
                       <Frown size={20} className=""/>
                       Cons
-                    </button>
+                    </button> */}
                   
                   </div>
 
@@ -246,7 +246,7 @@ const DestinationCard = ({
         {/* info */}
         <motion.div
           id="info"
-          className=" w-[300px] h-full rounded-xl top-0 overflow-hidden z-10"
+          className=" w-[400px] h-full rounded-xl top-0 overflow-hidden z-10"
         >
           <div
             id="benefitsWrapper"
@@ -265,7 +265,7 @@ const DestinationCard = ({
               </>
             )}
 
-            {showFullDescription && (
+            {/* {showFullDescription && (
               <>
                 <p id="description" className="text-[15px] font-bold">
                   Bio
@@ -274,9 +274,10 @@ const DestinationCard = ({
                 <p className="w-full h-[1px] bg-gray-200"></p>
                 <p className="text-[15px] text-muted-foreground">{description}</p>
               </>
-            )}
+            )} */}
 
-            {showPros && (
+            <div className="flex flex-col w-full h-full place-content-evenly pb-4">
+            {(
               <>
                 <p id="pros" className="text-[15px] font-bold">
                   Pros
@@ -288,9 +289,9 @@ const DestinationCard = ({
               </>
             )}
 
-            {showCons && (
+            { (
               <>
-                <p id="cons" className="text-[15px] font-bold">
+                <p id="cons" className="text-[15px] font-bold pt-4">
                   Cons
                 </p>
                 <p className="w-full h-[1px] bg-gray-200"></p>
@@ -299,6 +300,7 @@ const DestinationCard = ({
                 })}
               </>
             )}
+            </div>
 
           </div>
 
