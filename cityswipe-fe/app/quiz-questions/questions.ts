@@ -35,7 +35,7 @@ const quizQuestions = [
   {
     id: 3,
     question: "How far are you willing to travel?",
-    answerOptions: ["within the country", "neighbouring countries", "long road trip", "international travel"],
+    answerOptions: ["within the country", "neighboring countries", "long road trip", "international travel"],
     additionalStringPlaceholder: "other / additional information",
     defaultValue: "any distance",
     selectionType: "multiple",
@@ -43,12 +43,12 @@ const quizQuestions = [
   },
   {
     id: 4,
-    question: "What are your accomodation preferences?",
+    question: "What are your accommodation preferences?",
     answerOptions: ["hotels", "resorts", "hostels", "Airbnb", "camping"],
     additionalStringPlaceholder: "other / additional information",
-    defaultValue: "any accomodation",
+    defaultValue: "any accommodation",
     selectionType: "multiple",
-    infoText: "skip for any accomodation",
+    infoText: "skip for any accommodation",
   },
   {
     id: 5,
@@ -115,7 +115,7 @@ const quizQuestions = [
   },
   {
     id: 12,
-    question: "What are your dining prefererences?",
+    question: "What are your dining preferences?",
     answerOptions: ["local cuisine", "fine dining", "street food"],
     additionalStringPlaceholder: "other / additional information",
     defaultValue: "none in particular",
@@ -126,7 +126,7 @@ const quizQuestions = [
     id: 13,
     question: "Are you looking for anything in particular?/additional information",
     answerOptions: [],
-    additionalStringPlaceholder: "other requirements/preferances for locations",
+    additionalStringPlaceholder: "other requirements / preferences for locations",
     defaultValue: "no additional information",
     selectionType: "text",
     infoText: "",

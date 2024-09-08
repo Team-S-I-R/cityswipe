@@ -305,7 +305,7 @@ export default function QuizClient({ clerkdata }: any) {
               <Input
                 id="response-input"
                 type="text"
-                className="w-full text-sm text-center sm:text-left sm:text-lg"
+                className="w-full text-sm text-center sm:text-left"
                 autoComplete="off"
                 value={sanitizeText(otherString[currentQuestionIndex] || "")}
                 placeholder={currentQuestion.additionalStringPlaceholder}
