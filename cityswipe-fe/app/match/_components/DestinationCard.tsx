@@ -139,7 +139,7 @@ const DestinationCard = ({
       <motion.div
         initial={{ opacity: 0, y: 1000 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 5 }}
+        transition={{ duration: 4 }}
         id={`cardDrivenWrapper-${id}`}
         className="sm:w-[900px] md:h-[660px] hidden sm:flex absolute !cursor-default p-4 gap-4 flex-row shadow-lg bg-white z-10 rounded-xl text-center  pointer-events-none text-black top-[8%] select-none transform translate-x-1/2 translate-y-1/2"
         style={{
