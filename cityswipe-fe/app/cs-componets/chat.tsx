@@ -139,16 +139,16 @@ export default function Chat({matches}: any) {
                             or
                         </motion.p>
 
-                        <div className="w-[90%] flex place-content-center h-max no-scrollbar overflow-x-scroll">
+                        <div className="w-full place-content-start lg:place-content-center flex h-max no-scrollbar  overflow-x-scroll">
 
                             <motion.div 
                             initial={{ opacity: 0, y: 100 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 1.5 }}
-                            className="w-max p-3 overflow-x-hidden h-max flex gap-2 ">
+                            className="p-3 w-max   h-max flex gap-2 ">
                                 <motion.div onClick={() => handleUserPrePrompt(preprompts[0].prompt + " " + selectedMatch + "?")} className="cursor-pointer hover:bg-gray-100/50 flex w-[150px] text-center p-3 rounded-sm place-items-center place-content-center outline outline-[1px] min-h-[80px] h-max">
                                     
-                                    <motion.div className="">
+                                    <motion.div className="w-max">
                                         <p>{preprompts[0].name}</p>
                                     </motion.div>
                                 
@@ -156,7 +156,7 @@ export default function Chat({matches}: any) {
                             
                                 <motion.div onClick={() => handleUserPrePrompt(preprompts[1].prompt + " " + selectedMatch + "?")} className="cursor-pointer hover:bg-gray-100/50 flex w-[150px] text-center p-3 rounded-sm place-items-center place-content-center outline outline-[1px] min-h-[80px] h-max">
                                     
-                                    <motion.div className="">
+                                    <motion.div className="w-max">
                                         <p>{preprompts[1].name}</p>
                                     </motion.div>
                                 
@@ -164,7 +164,7 @@ export default function Chat({matches}: any) {
 
                                 <motion.div onClick={() => handleUserPrePrompt(preprompts[2].prompt + " " + selectedMatch + "?")} className="cursor-pointer hover:bg-gray-100/50 flex w-[150px] text-center p-3 rounded-sm place-items-center place-content-center outline outline-[1px] min-h-[80px] h-max">
                                     
-                                    <motion.div className="">
+                                    <motion.div className="w-max">
                                         <p>{preprompts[2].name}</p>
                                     </motion.div>
                                 
@@ -272,6 +272,50 @@ export default function Chat({matches}: any) {
                             <p className="text-center">Ask {selectedMatch} anything you would like to know</p>
                             </>
                         )}
+
+                        <motion.p
+                        initial={{ opacity: 0, y: 100 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 1.25 }}
+                        className="text-muted-foreground"
+                        >
+                            or
+                        </motion.p>
+
+                        <div className="w-full place-content-start lg:place-content-center flex h-max no-scrollbar  overflow-x-scroll">
+
+                            <motion.div 
+                            initial={{ opacity: 0, y: 100 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 1.5 }}
+                            className="p-3 w-max   h-max flex gap-2 ">
+                                <motion.div onClick={() => handleUserPrePrompt(preprompts[0].prompt + " " + selectedMatch + "?")} className="cursor-pointer hover:bg-gray-100/50 flex w-[150px] text-center p-3 rounded-sm place-items-center place-content-center outline outline-[1px] min-h-[80px] h-max">
+                                    
+                                    <motion.div className="w-max">
+                                        <p>{preprompts[0].name}</p>
+                                    </motion.div>
+                                
+                                </motion.div>
+                            
+                                <motion.div onClick={() => handleUserPrePrompt(preprompts[1].prompt + " " + selectedMatch + "?")} className="cursor-pointer hover:bg-gray-100/50 flex w-[150px] text-center p-3 rounded-sm place-items-center place-content-center outline outline-[1px] min-h-[80px] h-max">
+                                    
+                                    <motion.div className="w-max">
+                                        <p>{preprompts[1].name}</p>
+                                    </motion.div>
+                                
+                                </motion.div>
+
+                                <motion.div onClick={() => handleUserPrePrompt(preprompts[2].prompt + " " + selectedMatch + "?")} className="cursor-pointer hover:bg-gray-100/50 flex w-[150px] text-center p-3 rounded-sm place-items-center place-content-center outline outline-[1px] min-h-[80px] h-max">
+                                    
+                                    <motion.div className="w-max">
+                                        <p>{preprompts[2].name}</p>
+                                    </motion.div>
+                                
+                                </motion.div>
+                            </motion.div>
+
+
+                        </div>
 
                     </div>
                     
