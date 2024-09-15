@@ -2,7 +2,7 @@ export const preprompts = [
    {
        id: 1,
        name: "Plan my dream trip",
-       prompt: "I want to plan my dream trip+. Can you help me with the best activities, accommodations, and ways to succeed?"
+       prompt: "I want to plan my dream trip+. Can you help me with the best activities, accommodations, and ways to succeed in"
    },
 
    {
