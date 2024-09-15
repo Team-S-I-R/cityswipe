@@ -14,6 +14,7 @@ import { savedDestination } from "../../api/savedDestination.api";
 import { DestinationItem } from "@/lib/destination.type";
 import placeholderimg from '../assets/imgs/white.png'
 import { motion } from "framer-motion";
+import { preprompts } from "./preprompts";
 
 export default function Chat({matches}: any) {
 
@@ -24,6 +25,8 @@ export default function Chat({matches}: any) {
     const { userdata, setUserData } = useCitySwipe();
     const { usermatches, setUserMatches } = useCitySwipe();
     const {chatImg, setChatImg} = useCitySwipe();
+    const [userPrePrompt, setUserPrePrompt] = useState<string>("");
+
     console.log(userdata)
 
     useEffect(() => {
@@ -32,7 +35,6 @@ export default function Chat({matches}: any) {
             setClearConversation?.(0);
         }
     });
-
 
     useEffect(() => {
         setConversation([]);
@@ -58,8 +60,14 @@ export default function Chat({matches}: any) {
             ]);
         }
 
+        console.log(textContent)
+
 
         setInput(""); // Clear the input field after submitting
+    }
+
+    const handleUserPrePrompt = (text: any) => {
+        setInput(text);
     }
     
     
@@ -121,6 +129,51 @@ export default function Chat({matches}: any) {
                             className="text-center">Ask {selectedMatch} anything you would like to know</motion.p>
                             </>
                         )}
+
+                        <motion.p
+                        initial={{ opacity: 0, y: 100 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 1.25 }}
+                        className="text-muted-foreground"
+                        >
+                            or
+                        </motion.p>
+
+                        <div className="w-[90%] flex place-content-center h-max no-scrollbar overflow-x-scroll">
+
+                            <motion.div 
+                            initial={{ opacity: 0, y: 100 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 1.5 }}
+                            className="w-max p-3 overflow-x-hidden h-max flex gap-2 ">
+                                <motion.div onClick={() => handleUserPrePrompt(preprompts[0].prompt)} className="cursor-pointer hover:bg-gray-100/50 flex w-[150px] text-center p-3 rounded-sm place-items-center place-content-center outline outline-[1px] min-h-[80px] h-max">
+                                    
+                                    <motion.div className="">
+                                        <p>{preprompts[0].name}</p>
+                                    </motion.div>
+                                
+                                </motion.div>
+                            
+                                <motion.div onClick={() => handleUserPrePrompt(preprompts[1].prompt)} className="cursor-pointer hover:bg-gray-100/50 flex w-[150px] text-center p-3 rounded-sm place-items-center place-content-center outline outline-[1px] min-h-[80px] h-max">
+                                    
+                                    <motion.div className="">
+                                        <p>{preprompts[1].name}</p>
+                                    </motion.div>
+                                
+                                </motion.div>
+
+                                <motion.div onClick={() => handleUserPrePrompt(preprompts[2].prompt)} className="cursor-pointer hover:bg-gray-100/50 flex w-[150px] text-center p-3 rounded-sm place-items-center place-content-center outline outline-[1px] min-h-[80px] h-max">
+                                    
+                                    <motion.div className="">
+                                        <p>{preprompts[2].name}</p>
+                                    </motion.div>
+                                
+                                </motion.div>
+                            </motion.div>
+
+
+                        </div>
+
 
                     </div>
                     

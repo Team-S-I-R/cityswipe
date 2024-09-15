@@ -25,6 +25,7 @@ import {
 import clogo from '../assets/imgs/path6.png'
 import { MenuIcon, X } from "lucide-react";
 import { useState } from "react";
+import useGSAP from '@gsap/react'
  
   export default function Header() {
 
