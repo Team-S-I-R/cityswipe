@@ -457,6 +457,20 @@ export default function Chat({matches}: any) {
 
                                     </div>
 
+                                    {message.role === 'assistant' && (
+                                        <>
+                                            <div className="w-full h-[1px] bg-gray-300"></div>
+                                            <div className="flex w-max gap-1 place-items-center place-content-center text-gray-300 hover:text-gray-800 cursor-pointer">
+                                                <Plus/>
+                                                <p>
+                                                    Add to itinerary
+                                                </p>
+
+                                            </div>
+                                        </>
+                                    )}
+
+
                                     {currentMessegeType === "itinerary" && message.role === 'assistant' && index === conversation.length - 1 && (
                                         <>
                                             <div className="w-[70%] py-4 flex flex-col pl-[4%] mt-3 h-max">

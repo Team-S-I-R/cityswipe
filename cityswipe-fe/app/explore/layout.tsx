@@ -72,7 +72,7 @@ export default async function ExploreServer() {
     console.log("server user matches: ", matches)
     return (
         <main className="w-screen h-screen overflow-y-hidden">
-            <Explore clerkdata={data} matches={matches} />
+            <Explore clerkdata={data} matches={matches} questions={questions} />
         </main>
     );
 }

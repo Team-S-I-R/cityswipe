@@ -220,14 +220,14 @@ export default function Sidebar( {clerkdata, matches} : any,) {
                     <Link href="/">
 
                         <div className="cursor-pointer text-[14px] w-full h-max flex place-items-center gap-3">
-                            <Home size={18} />
+                            <Home />
                             {/* <p className="font-bold">Home</p> */}
                         </div>
 
                     </Link>
                   
                     <div className="cursor-pointer text-[14px] w-max h-max flex place-items-center gap-3">
-                        <Settings size={18} />
+                        <Settings />
                         {/* <p className="font-bold">Home</p> */}
                     </div>           
 

@@ -12,12 +12,13 @@ import { useEffect, useState } from "react"
 import Itinerary from "../cs-componets/itinerary"
 import { motion, AnimatePresence } from "framer-motion"
 
-export default function Explore({clerkdata, matches}: any) {
+export default function Explore({clerkdata, matches, questions}: any) {
     
     const { isChatting } = useCitySwipe();
     const { isMatching } = useCitySwipe();
     const { userdata, setUserData } = useCitySwipe();
     const { usermatches, setUserMatches }  = useCitySwipe()
+    const { userquestions, setUserQuestions }  = useCitySwipe()
     const { isItineraryModalOpen, setIsItineraryModalOpen } = useCitySwipe();
     const { selectedMatch, setSelectedMatch } = useCitySwipe();
     const { chatImg, setChatImg } = useCitySwipe();
@@ -36,6 +37,12 @@ export default function Explore({clerkdata, matches}: any) {
         setUserData?.(clerkdata);
         setUserMatches?.(matches);
     }, [matches]);
+
+    useEffect(() => {
+        setUserQuestions?.(questions);
+    }, []);
+
+    console.log("server user questions: ", questions)
 
     // have to upload the header here for now
     return (
