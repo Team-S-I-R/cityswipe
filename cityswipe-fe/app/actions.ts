@@ -2,6 +2,7 @@
 
 import { google } from "@ai-sdk/google";
 import { streamText } from "ai";
+import { generateText } from 'ai';
 import { createStreamableValue } from "ai/rsc";
 import prisma from "@/lib/db";
 import { z } from 'zod';
@@ -14,6 +15,7 @@ import { currentUser } from "@clerk/nextjs/server";
 export interface Message {
   role: "user" | "assistant";
   content: string;
+  type: string
 }
 
 const conversationHistory: Record<string, Message[]> = {};
@@ -106,11 +108,17 @@ export async function streamFlirtatiousConversation(city: string, country: strin
   - Creative and Funny: Include humor and wit to make the conversation engaging.
   - Romantic/Flirtatious: Add romantic and flirtatious jokes and emojis (safe for work) where appropriate.
   
-  Make sure to match the length and style of the user's input. Here's the conversation so far:
+  Make sure to match the style of the user's input. Here's the conversation so far:
   
   ${history.map(msg => `${msg.role === "user" ? "User" : "Assistant"}: ${sanitizeText(msg.content)}`).join('\n')}
   
-  Your response should combine all these elements in a balanced way.`;
+  Your response should combine all these elements in a balanced way.
+  
+  If the user asks anything else, just try to be nice, friendly and make sure you answer everything in complete sentences.
+  `
+  
+
+  ;
   
   (async () => {
     const { textStream } = await streamText({
@@ -131,17 +139,119 @@ export async function streamFlirtatiousConversation(city: string, country: strin
   if (!conversationHistory[city]) {
     conversationHistory[city] = [];
   }
+
   conversationHistory[city].push(...history);
+
+  console.log("cc", stream.value);
 
   return {
     messages: history,
     newMessage: stream.value,
+    type: "message",
   };
 }
 
 export async function getConversationHistory(city: string) {
   return conversationHistory[city] || [];
 }
+
+export async function makeItinerary(city: string, country: string, history: Message[]) {
+  // Use the appropriate Gemini model
+  const model = google("models/gemini-1.5-flash");
+
+  // Helper function to sanitize text input
+  const sanitizeText = (text: string) => text.replace(/[*_~`]/g, '');
+
+  // Construct the prompt for the API, including the history
+  const prompt = `
+    You are a travel assistant. Generate a comprehensive travel plan for a trip to ${city}.
+    Include the following:
+
+    1. **Detailed Itinerary**: Provide a detailed daily itinerary with suggested activities and destinations.
+    2. **Packing List**: Suggest a packing list for the trip, taking into account the weather and local activities.
+    3. **Cultural Information**: Include key cultural practices, local cuisine, and must-see attractions in ${city}.
+
+    Format the response as JSON with fields for 'itinerary', 'packing_list', and 'cultural_info', such as in the following:
+  
+    [
+
+    "title": "Itinerary for Trip to ${city}",
+
+    "itinerary": {
+         { "Day 1": "Arrive in New York City. Check into your hotel. Explore Times Square and have dinner at a local restaurant." },
+         { "Day 2": "Visit the Statue of Liberty and Ellis Island. Spend the afternoon in Central Park. Evening Broadway show." },
+         { "Day 3": "Tour the Metropolitan Museum of Art. Explore the Upper East Side. Dinner at a Michelin-starred restaurant." },
+         { "Day 4": "Visit the Empire State Building and take in the city views. Shopping in Soho. Departure." },
+      },
+
+      "packing_list": [
+          "Comfortable walking shoes",
+          "Weather-appropriate clothing (e.g., light jacket, umbrella)",
+          "Travel-sized toiletries",
+          "Travel documents (ID, tickets)",
+          "Chargers for electronics",
+          "Reusable water bottle"
+      ],
+      
+      "cultural_info": {
+          "Cultural Practices": "New Yorkers value their time and are known for their directness. Tipping is customary in restaurants.",
+          "Local Cuisine": "Try iconic foods such as New York-style pizza, bagels, and hot dogs.",
+          "Must-See Attractions": [
+          "Statue of Liberty",
+          "Central Park",
+          "Empire State Building",
+          "Broadway",
+          "Metropolitan Museum of Art"
+          ]
+      },
+
+      "additional_comments": { "Remember to check for any local events or festivals happening during your visit. Enjoy your trip! " }
+    
+      ]
+
+    }
+
+    Here are tips you must follow when generating this content. THis is important because we will be using JSON.parse to parse this data so it is important to follow this format and to create NO ERRORS.
+    
+    Every key in the JSON string is enclosed in double quotes ("key").
+    The values are correctly formatted (e.g., strings should be in double quotes, numbers should not).
+    There are no trailing commas after the last property of each object or array.
+    DO NOT ADD ANY MARKDOWN, CODE BLOCKS OR FORMATTING BESIDES THE EXAMPLE JSON FORMAT.
+
+    Make sure the compatibility percentage is a number between 0 and 100. 
+    Do not include formatting or code blocks, follow example. 
+  
+    Here is the history of the conversation to provide some context.:
+
+  ${history.map(msg => `${msg.role === "user" ? "User" : "Assistant"}: ${sanitizeText(msg.content)}`).join('\n')}
+  
+
+
+  `;
+
+  // Send prompt to the model and wait for the response
+  const { text } = await generateText({
+    model: model,
+    prompt: prompt,
+  });
+
+
+  console.log("cc", text);
+
+  // Update conversation history for the city
+  if (!conversationHistory[city]) {
+    conversationHistory[city] = [];
+  }
+  conversationHistory[city].push(...history);
+
+  // Return the new message and updated conversation history
+  return {
+    messages: history,
+    newMessage: text,  // Assuming `response.data.text` contains the generated message
+    type: "itinerary",
+  };
+}
+
 
 
 

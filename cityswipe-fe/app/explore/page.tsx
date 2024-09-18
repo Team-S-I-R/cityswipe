@@ -9,6 +9,8 @@ import Chat from "../cs-componets/chat"
 import Sidebar from "../cs-componets/sidebar"
 import { useCitySwipe } from "../citySwipeContext"
 import { useEffect, useState } from "react"
+import Itinerary from "../cs-componets/itinerary"
+import { motion, AnimatePresence } from "framer-motion"
 
 export default function Explore({clerkdata, matches}: any) {
     
@@ -16,9 +18,20 @@ export default function Explore({clerkdata, matches}: any) {
     const { isMatching } = useCitySwipe();
     const { userdata, setUserData } = useCitySwipe();
     const { usermatches, setUserMatches }  = useCitySwipe()
+    const { isItineraryModalOpen, setIsItineraryModalOpen } = useCitySwipe();
     const { selectedMatch, setSelectedMatch } = useCitySwipe();
     const { chatImg, setChatImg } = useCitySwipe();
-    
+
+    const itinerarVariants = {
+        open: { opacity: 1, y: 0, width: "25%" },
+        closed: { opacity: 0, y: "-100%", width: "0%" },
+    }
+
+    const chatVariants = {
+        open: { width: "70%" },
+        closed: { width: "95%" },
+    }
+
     useEffect(() => {
         setUserData?.(clerkdata);
         setUserMatches?.(matches);
@@ -30,49 +43,60 @@ export default function Explore({clerkdata, matches}: any) {
             {/* this ensures that the explore page actually renders with matches.  */}
             {usermatches.length > 0 && (
                 <>
-                    {/* lg desktop */}
-                    <main className="hidden lg:flex w-[100dvw] h-[100dvh] overflow-hidden">
-                        <ResizablePanelGroup
-                            direction="horizontal"
-                            className="rounded-lg border"
+                    {/* lg / md desktop */}
+                    <main className="hidden md:flex w-[100dvw] h-[100dvh] overflow-hidden">
+                        
+                        <div className="flex w-[75px] h-full items-center justify-center">
+                            <Sidebar clerkdata={userdata} matches={usermatches}/>
+                        </div>
+
+                        <AnimatePresence>
+
+                        <motion.div
+                            initial="closed"
+                            animate={isItineraryModalOpen ? "open" : "closed"}
+                            variants={itinerarVariants} 
+                            transition={{ duration: 0.5 }}                                     
+                            className={`h-full`} 
                         >
-                            <ResizablePanel defaultSize={20} className="max-w-[40%]">
-                                <div className="flex h-full items-center justify-center">
-                                    <Sidebar clerkdata={userdata} matches={usermatches}/>
-                                </div>
-                            </ResizablePanel>
-                            <ResizableHandle />
+                            <Itinerary/>
+                        </motion.div>
 
-                            <ResizablePanel defaultSize={80} className="max-w-[100%]">
-                                <div className="flex w-full h-full items-center justify-center relative">
-                                    <Chat matches={usermatches}/>
-                                </div>
-                            </ResizablePanel>
+                        <motion.div 
+                        initial="closed"
+                        animate={isItineraryModalOpen ? "open" : "closed"}
+                        variants={chatVariants} 
+                        transition={{ duration: 0.5 }}   
+                        className={`flex w-[80%] h-full items-center justify-center relative`}>
+                            <Chat matches={usermatches}/>
+                        </motion.div>
 
-                        </ResizablePanelGroup>
+                        </AnimatePresence>
+
+
                     </main>
 
                     {/* md desktop */}
-                    <main className="hidden md:flex lg:hidden w-[100dvw] h-[100dvh] overflow-hidden">
+                    {/* <main className="hidden md:flex lg:hidden w-[100dvw] h-[100dvh] overflow-hidden">
                         <ResizablePanelGroup
                             direction="horizontal"
                             className="rounded-lg border"
                         >
-                            <ResizablePanel defaultSize={40} className="max-w-[40%]">
+                            <ResizablePanel defaultSize={20} className="max-w-[20%]">
                                 <div className="flex h-full items-center justify-center">
                                     <Sidebar clerkdata={userdata}/>
                                 </div>
                             </ResizablePanel>
                             <ResizableHandle />
 
-                            <ResizablePanel defaultSize={60} className="max-w-[100%]">
+                            <ResizablePanel defaultSize={80} className="max-w-[100%]">
                                 <div className="flex w-full h-full items-center justify-center relative">
                                     <Chat/>
                                 </div>
                             </ResizablePanel>
 
                         </ResizablePanelGroup>
-                    </main>
+                    </main> */}
 
                     {/* mobile */}
                     <main className="flex md:hidden w-[100dvw] h-[100dvh] overflow-hidden">
@@ -93,14 +117,14 @@ export default function Explore({clerkdata, matches}: any) {
                             direction="horizontal"
                             className="rounded-lg border"
                         >
-                            <ResizablePanel defaultSize={20} className="max-w-[40%]">
+                            <ResizablePanel defaultSize={10} className="max-w-[40%]">
                                 <div className="flex h-full items-center justify-center">
                                     <Sidebar clerkdata={userdata} matches={usermatches}/>
                                 </div>
                             </ResizablePanel>
                             <ResizableHandle />
 
-                            <ResizablePanel defaultSize={80} className="max-w-[100%]">
+                            <ResizablePanel defaultSize={90} className="max-w-[100%]">
                                 <div className="flex w-full h-full items-center justify-center relative">
                                     <Chat matches={usermatches}/>
                                 </div>
@@ -115,14 +139,14 @@ export default function Explore({clerkdata, matches}: any) {
                             direction="horizontal"
                             className="rounded-lg border"
                         >
-                            <ResizablePanel defaultSize={40} className="max-w-[40%]">
+                            <ResizablePanel defaultSize={10} className="max-w-[10%]">
                                 <div className="flex h-full items-center justify-center">
                                     <Sidebar clerkdata={userdata}/>
                                 </div>
                             </ResizablePanel>
                             <ResizableHandle />
 
-                            <ResizablePanel defaultSize={60} className="max-w-[100%]">
+                            <ResizablePanel defaultSize={90} className="max-w-[100%]">
                                 <div className="flex w-full h-full items-center justify-center relative">
                                     <Chat/>
                                 </div>

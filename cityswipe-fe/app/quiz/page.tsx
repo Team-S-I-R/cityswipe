@@ -77,15 +77,16 @@ export default function QuizClient({ clerkdata }: any) {
   };
 
   // ANCHOR key listeners ⌨️
-  const handleKeyDown = (event: KeyboardEvent) => {
-    if (event.key === "ArrowDown") {
-      setCurrentQuestionIndex((prevIndex) =>
-        Math.min(prevIndex + 1, quizQuestions.length - 1)
-      );
-    } else if (event.key === "ArrowUp") {
-      setCurrentQuestionIndex((prevIndex) => Math.max(prevIndex - 1, 0));
-    }
-  };
+  // const handleKeyDown = (event: KeyboardEvent) => {
+  //   if (event.key === "ArrowDown") {
+  //     handleNext();
+  //     setCurrentQuestionIndex((prevIndex) =>
+  //       Math.min(prevIndex + 1, quizQuestions.length - 1)
+  //     );
+  //   } else if (event.key === "ArrowUp") {
+  //     setCurrentQuestionIndex((prevIndex) => Math.max(prevIndex - 1, 0));
+  //   }
+  // };
 
   const handleNext = () => {
     const newResponses = [...responses];
@@ -117,12 +118,12 @@ export default function QuizClient({ clerkdata }: any) {
     setCurrentQuestionIndex((prevIndex) => Math.max(prevIndex - 1, 0));
   };
 
-  useEffect(() => {
-    window.addEventListener("keydown", handleKeyDown);
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, []);
+  // useEffect(() => {
+  //   window.addEventListener("keydown", handleKeyDown);
+  //   return () => {
+  //     window.removeEventListener("keydown", handleKeyDown);
+  //   };
+  // }, []);
   // end key listeners
 
   // ANCHOR setting the quiz
@@ -177,7 +178,7 @@ export default function QuizClient({ clerkdata }: any) {
         )}`;
 
     const conversationHistory: Message[] = [
-      { role: "user" as const, content: prompt },
+      { role: "user" as const, content: prompt, type: "message" },
     ];
 
     const { newMessage } = await streamConversation(conversationHistory);
@@ -195,60 +196,60 @@ export default function QuizClient({ clerkdata }: any) {
 
     const generatedDestinations = [];
     try {
-    const destinations = JSON.parse(textContent);
+      const destinations = JSON.parse(textContent);
 
-    for (const destination of destinations) {
-        const { city, country, compatibility, description, pros, cons, } = destination;
+      for (const destination of destinations) {
+          const { city, country, compatibility, description, pros, cons, } = destination;
 
-            // ANCHOR Fetch image for the current city-country pair
-            const client = createClient('8U6Se7vVT3H9tx1KPZAQTkDUSW0IKi3ldgBTVyh3W9NFF7roIpZxktzY');
-            let illustration = '';
+              // ANCHOR Fetch image for the current city-country pair
+              const client = createClient('8U6Se7vVT3H9tx1KPZAQTkDUSW0IKi3ldgBTVyh3W9NFF7roIpZxktzY');
+              let illustration = '';
 
-            const searchQuery = `${city}, landscape`;
-            try {
-                const response = await client.photos.search({ query: `${searchQuery}`, per_page: 1 });
-                if ('photos' in response && response.photos.length > 0) {
-                    illustration = response.photos[0].src.landscape;
-                }
-            } catch (error) {
-                console.error(`Error in fetching photo for ${city}, ${country}:`, error);
-            }
+              const searchQuery = `${city}, landscape`;
+              try {
+                  const response = await client.photos.search({ query: `${searchQuery}`, per_page: 1 });
+                  if ('photos' in response && response.photos.length > 0) {
+                      illustration = response.photos[0].src.landscape;
+                  }
+              } catch (error) {
+                  console.error(`Error in fetching photo for ${city}, ${country}:`, error);
+              }
 
-            generatedDestinations.push({
-                id: count++,
-                city: city.trim(),
-                country: country.trim(),
-                compatibility: parseFloat(compatibility),
-                illustration: illustration,
-                description: description.trim(),
-                pros: pros,
-                cons: cons,
-            });
+              generatedDestinations.push({
+                  id: count++,
+                  city: city.trim(),
+                  country: country.trim(),
+                  compatibility: parseFloat(compatibility),
+                  illustration: illustration,
+                  description: description.trim(),
+                  pros: pros,
+                  cons: cons,
+              });
+      }
+
+      const validDestinations = generatedDestinations.filter(destination => destination !== null);
+
+      setDestinations(validDestinations);
+
+      await setDestinationSet({
+          id: 1,
+          cards: validDestinations.reverse(),
+      });
+
+      await addQuestions(otherString);
+
+      setLoadingMatches(false);
+
+      const endTime = performance.now(); // End tracking time
+      console.log(`handleGemini took ${endTime - startTime} milliseconds`);
+
+      router.push("/match");
+      } catch (error) {
+                
+        setLoadingMatches(false);
+        toast({ title: 'Error. Please try submitting again!', description: 'We encountered an error. Please try submitting again.', itemID: 'error' });
+
     }
-
-    const validDestinations = generatedDestinations.filter(destination => destination !== null);
-
-    setDestinations(validDestinations);
-
-    await setDestinationSet({
-        id: 1,
-        cards: validDestinations.reverse(),
-    });
-
-    await addQuestions(otherString);
-
-    setLoadingMatches(false);
-
-    const endTime = performance.now(); // End tracking time
-    console.log(`handleGemini took ${endTime - startTime} milliseconds`);
-
-    router.push("/match");
-  } catch (error) {
-            
-    setLoadingMatches(false);
-    toast({ title: 'Error. Please try submitting again!', description: 'We encountered an error. Please try submitting again.', itemID: 'error' });
-
-}
   };
 
   // ANCHOR Resetting the quiz {

@@ -1,7 +1,7 @@
 'use client'
 
 import { useCitySwipe } from "../citySwipeContext";
-import { ChevronDown, EllipsisVertical, Home, MessageCircleMore, Settings } from "lucide-react";
+import { ChevronDown, EllipsisVertical, Home, MessageCircleMore, PanelLeft, PanelRight, Settings } from "lucide-react";
 import { MessageCircleHeart } from "lucide-react";
 import { House } from "lucide-react";
 import Link from "next/link";
@@ -35,7 +35,12 @@ export default function Sidebar( {clerkdata, matches} : any,) {
     const { isChatting, setIsChatting } = useCitySwipe();
     const { isMatching, setIsMatching } = useCitySwipe();
     const { selectedMatch, setSelectedMatch } = useCitySwipe();
+    const { selectedPros, setSelectedPros } = useCitySwipe();
+    const { selectedCons, setSelectedCons } = useCitySwipe();
+    const { selectedCompatibility, setSelectedCompatibility } = useCitySwipe();
+    const { selectedBio, setSelectedBio } = useCitySwipe();
     const { isSidebarOpen, setIsSidebarOpen } = useCitySwipe();
+    const { isItineraryModalOpen, setIsItineraryModalOpen } = useCitySwipe();
     const { clearConversation, setClearConversation } = useCitySwipe();
     const { photoUrl, setPhotoUrl } = useCitySwipe();
     const { chatImg, setChatImg } = useCitySwipe();
@@ -47,6 +52,10 @@ export default function Sidebar( {clerkdata, matches} : any,) {
     useEffect(() => {
         setChatImg?.(usermatches?.[0]?.illustration);
         setSelectedMatch?.(usermatches?.[0]?.city as string)
+        setSelectedCompatibility?.(usermatches?.[0]?.compatibility as number)
+        setSelectedBio?.(usermatches?.[0]?.description as string)
+        setSelectedPros?.(usermatches?.[0]?.pros as any)
+        setSelectedCons?.(usermatches?.[0]?.cons as any)
     }, [])
 
 
@@ -56,9 +65,13 @@ export default function Sidebar( {clerkdata, matches} : any,) {
 
 
     // make globe state for selected city match
-    const handleCityMatch = (city: string, img: string) => {
+    const handleCityMatch = (city: string, img: string, compatibility: number, bio: string, pros: any, cons: any) => {
         setSelectedMatch?.(city);
         setChatImg?.(img);
+        setSelectedCompatibility?.(compatibility);
+        setSelectedBio?.(bio);
+        setSelectedPros?.(pros);
+        setSelectedCons?.(cons);
         // setClearConversation?.(1)
     }
 
@@ -90,143 +103,156 @@ export default function Sidebar( {clerkdata, matches} : any,) {
         if (status.pending === true) {
           return (
             <button className="bg-gradient-to-t from-red-400/30 to-orange-400/30 text-red-400 hover:text-white hover:from-red-400 hover:to-orange-400 px-3 py-2 rounded-lg">Deleting...</button> 
-        )
+            )
         }
-      }
+    }
 
 
-    
+
     return (
 
         <>
-        
-        {/* desktop */}
-        <div className="w-full h-full bg-gray-100 px-3 py-1 hidden md:flex flex-col justify-between" > 
-        
-            <div className="flex flex-col w-full h-[70%]  gap-3">
-            
-                {/* user stuff */}
-                <div className="w-full h-max">
 
-                    <div className="w-full flex h-[60px]">
-                    {/* <div className="w-full flex h-[60px] bg-gradient-to-t from-cyan-500 to-green-400 p-3"> */}
-                        <div className="w-full flex place-content-start place-items-center justify-start h-full gap-5">
-                            <UserButton/>
-                            <div>
-                                <p className="text-[14px] font-bold">{clerkdata?.name}</p>
-                                <p className="text-[12px] text-muted-foreground">@{clerkdata?.username}</p>
+            {/* desktop */}
+            <div className="w-full h-full bg-gray-100 py-[2px] place-items-center place-content-center hidden md:flex flex-col justify-between" >
+                
+                <div className="w-full z-10 flex place-content-center place-items-center  h-[6%] border-b border-primary/20">
+                    <span onClick={() => setIsItineraryModalOpen?.(!isItineraryModalOpen)} className="hover:cursor-pointer">
+                        { isItineraryModalOpen && <PanelRight /> }
+                        { !isItineraryModalOpen && <PanelLeft /> }
+                    </span>
+                </div>
+
+                <div className="flex py-4 place-items-center  flex-col w-max h-[70%]  gap-3">
+
+
+                    {/* selected */}
+                    <div className="w-max px-2 h-max flex flex-col">
+
+                        {/* <p className="px-2 text-muted-foreground font-bold">Selected Match</p> */}
+
+                        <div className="bg-green-400 place-items-center p-2 mt-3 w-max flex flex-col gap-8 relative h-max select-none  rounded-full overflow-hidden" >
+
+                            <div className="w-[30px] h-[30px] rounded-full flex place-items-end place-content-end">
+                                <Image className="rounded-full h-full  w-full object-cover" src={chatImg ? chatImg : placeholderimg} sizes="100%" width={30} height={30} alt="" />
                             </div>
+
+
+                        </div>
+
+                     
+                        {/* {selectedMatch == '' ? (
+                            <p className="select-none"><strong>{usermatches?.[0]?.city}</strong></p>
+                            ) : (
+                                <p className="select-none"><strong>{selectedMatch}</strong></p>
+                                )} */}
+
+
+
+                    </div>
+
+                    <div className="w-full h-[1px] bg-gray-300"></div>
+
+
+                    {/* mapped destinations */}
+                    <div className="w-max h-[50%] flex flex-col gap-4  no-scrollbar overflow-y-scroll">
+
+                        {usermatches?.map((dest: DestinationItem, index: number) => {
+                            return (
+                                <>
+                                    <div className="w-full flex place-content-center place-items-center">
+
+                                        <div key={index} onClick={() => handleCityMatch(dest.city, dest.illustration, dest.compatibility || 0, dest.description, dest.pros, dest.cons)} className="w-full relative h-max select-none flex hover:bg-gray-200  py-1 rounded-xl hover:scale-[102%]  overflow-hidden place-items-center place-content-center">
+                                            <div className="w-full h-max cursor-pointer place-items-center place-content-center relative flex flex-col"
+                                                // style={{ backgroundImage: `url(${dest.illustration})`, backgroundRepeat: 'no-repeat', backgroundSize: 'fill', backgroundPosition: 'center' }}
+                                                key={dest.id}>
+                                                <div className="w-full flex-col  flex gap-1 place-items-center place-content-center justify-between">
+
+                                                    <div className="w-max flex place-items-center place-content-center">
+                                                        <div className="w-[30px] h-[30px] rounded-full flex">
+                                                            {/* <div className="absolute z-[-1] bg-gradient-to-r from-white via-white to-transparent w-full h-full"></div> */}
+                                                            <Image className="rounded-full h-full  w-full object-cover" src={dest.illustration} sizes="100%" width={30} height={30} alt="" />
+                                                        </div>
+                                                        {/* <h3 className="text-[14px] p-2 rounded-full w-max">{dest.city}</h3> */}
+                                                    </div>
+
+                                                    <p className="px-2 text-[9px]">{dest.city}</p>
+
+                                                    {/* <p className="text-[10px] p-2 flex flex-col rounded-full font-bold w-max h-max">
+                                                        <span className="text-green-500 text-[15px]">{dest.compatibility}% </span>
+                                                        Match!
+                                                    </p> */}
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* <Popover>
+                                            <PopoverTrigger>
+                                                <div className="hover:cursor-pointer hover:bg-gray-200 py-2  rounded-lg">
+                                                    <EllipsisVertical size={15} />
+                                                </div>
+                                            </PopoverTrigger>
+                                            <PopoverContent className="w-max flex place-items-center place-content-center flex-col gap-4">
+                                                <div className="flex w-full place-items-center place-content-center flex-col">
+                                                    <p className="text-[12px] text-muted-foreground">Deleting a match can NOT be undone.</p>
+                                                    <p className="text-[12px] text-muted-foreground">Are you sure?</p>
+                                                </div>
+                                                <form action={() => deleteMatch(String(dest.id))} className="w-max flex place-items-center place-content-center">
+                                                    <Input type="hidden" name="id" value={dest.id} />
+                                                    <DeleteButton />
+                                                </form>
+                                            </PopoverContent>
+                                        </Popover> */}
+
+                                    </div>
+                                </>
+                            );
+                        })}
+
+                    </div>
+
+                </div>
+
+                {/* settings stuff / upgrade stuff maybe */}
+                <div className="w-max h-max my-6 place-items-center  flex flex-col gap-6">
+
+                    <Link href="/">
+
+                        <div className="cursor-pointer text-[14px] w-full h-max flex place-items-center gap-3">
+                            <Home size={18} />
+                            {/* <p className="font-bold">Home</p> */}
+                        </div>
+
+                    </Link>
+                  
+                    <div className="cursor-pointer text-[14px] w-max h-max flex place-items-center gap-3">
+                        <Settings size={18} />
+                        {/* <p className="font-bold">Home</p> */}
+                    </div>           
+
+                    {/* user stuff */}
+                    <div className="w-max  h-max">
+
+                        <div className="w-full flex h-[60px]">
+                            {/* <div className="w-full flex h-[60px] bg-gradient-to-t from-cyan-500 to-green-400 p-3"> */}
+                            <div className="w-full flex place-content-start place-items-center justify-start h-full gap-5">
+                                <UserButton />
+                                {/* <div className="flex gap-3">
+                                    <p className="text-[14px] font-bold">{clerkdata?.name}</p>
+                                    <p className="text-[12px] text-muted-foreground">@{clerkdata?.username}</p>
+                                </div> */}
+                            </div>
+
                         </div>
 
                     </div>
 
-                </div>
+                    <p className="px-4 flex w-full place-content-start text-[10px] text-muted-foreground font-bold">Cityswipe</p>
 
-                {/* selected */}
-                <div className="w-full h-max flex flex-col">
-                    
-                    <p className="px-2 text-muted-foreground font-bold">Selected Match</p>
-                    
-                    <div className="bg-gray-200 place-items-center px-4 mt-3 w-full flex gap-8 relative h-max select-none py-4 rounded-xl overflow-hidden place-items-start" >
-                        
-                        <div className="w-[30px] h-[30px] rounded-full flex place-items-end place-content-end">
-                                <Image className="rounded-full h-full  w-full object-cover" src={chatImg ? chatImg : placeholderimg} sizes="100%" width={30} height={30} alt="" />           
-                        </div> 
+                </div>      
 
-                        {selectedMatch == '' ? (
-                            <p className="select-none"><strong>{usermatches?.[0]?.city}</strong></p>
-                        ) : (
-                            <p className="select-none"><strong>{selectedMatch}</strong></p>
-                        )}
-
-                    </div>
-
-
-
-                </div>
-
-                <p className="px-4 text-muted-foreground font-bold">All Matches</p>
-
-                {/* mapped destinations */}
-                <div className="w-full h-[50%]  no-scrollbar overflow-y-scroll">
-
-                    {usermatches?.map((dest: DestinationItem, index: number) => {
-                        return (
-                            <>
-                            <div className="w-full flex gap-2 place-items-center place-content-center">
-
-                                <div key={index} onClick={() => handleCityMatch(dest.city, dest.illustration)} className="w-full relative h-max select-none flex hover:bg-gray-200 px-4 py-1 rounded-xl hover:scale-[102%] gap-[15px] overflow-hidden place-items-start">
-                                    <div className="w-full  h-max cursor-pointer relative flex flex-col place-items-start place-content-center" 
-                                    // style={{ backgroundImage: `url(${dest.illustration})`, backgroundRepeat: 'no-repeat', backgroundSize: 'fill', backgroundPosition: 'center' }}
-                                    key={dest.id}>
-                                        <div className="w-full mr-3 flex gap-1 place-items-center place-content-center justify-between">
-                                            
-                                            <div className="w-max flex gap-2 place-items-center place-content-center">
-                                                <div className="w-[30px] h-[30px] rounded-full flex place-items-end place-content-end">
-                                                    {/* <div className="absolute z-[-1] bg-gradient-to-r from-white via-white to-transparent w-full h-full"></div> */}
-                                                    <Image className="rounded-full h-full  w-full object-cover" src={dest.illustration} sizes="100%" width={30} height={30} alt="" />
-                                                </div>
-                                                <h3 className="text-[14px] p-2 rounded-full w-max">{dest.city}</h3>
-                                            </div>
-
-                                            <p className="text-[10px] p-2 flex flex-col rounded-full font-bold w-max h-max">
-                                                <span className="text-green-500 text-[15px]">{dest.compatibility}% </span>
-                                                Match!
-                                            </p>
-                    
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <Popover>
-                                    <PopoverTrigger>
-                                        <div className="hover:cursor-pointer hover:bg-gray-200 py-2 px-1 rounded-lg">
-                                            <EllipsisVertical size={15} />
-                                        </div>
-                                    </PopoverTrigger>
-                                    <PopoverContent className="w-max flex place-items-center place-content-center flex-col gap-4">
-                                        <div className="flex w-full place-items-center place-content-center flex-col">
-                                            <p className="text-[12px] text-muted-foreground">Deleting a match can NOT be undone.</p>
-                                            <p className="text-[12px] text-muted-foreground">Are you sure?</p>
-                                        </div>
-                                        <form action={() => deleteMatch(String(dest.id))} className="w-max flex place-items-center place-content-center">
-                                            <Input type="hidden" name="id" value={dest.id} />
-                                            <DeleteButton />
-                                        </form>
-                                    </PopoverContent>
-                                </Popover>
-                            
-                            </div>
-                            </>
-                        );
-                    })}
-
-                </div>
-
-            </div>
-
-            {/* settings stuff / upgrade stuff maybe */}
-            <div className="w-full  h-max my-6  flex flex-col gap-6">
-
-                <Link href="/">
-                
-                <div className="px-4 cursor-pointer text-[14px] w-full h-max flex place-items-center gap-3">
-                    <Home size={18}/>
-                    <p className="font-bold">Home</p>
-                </div>
-
-                </Link>
-
-                <div className="px-4 cursor-pointer text-[14px] w-full h-max flex place-items-center gap-3">
-                    <Settings size={18}/>
-                    <p className="font-bold">Settings</p>
-                </div>
-
-                <p className="px-4 flex w-full place-content-start text-[10px] text-muted-foreground font-bold">Cityswipe</p>
-
-            </div>
-
-        </div> 
+            </div> 
 
         {/* mobile */}
         <div className="w-[50px] z-[100] relative h-full bg-gray-100 py-3 flex md:hidden flex-col place-items-center place-content justify-between" > 
@@ -302,7 +328,7 @@ export default function Sidebar( {clerkdata, matches} : any,) {
                         {savedDestination.destinations.map((dest: DestinationItem) => {
                             return (
                                 <>
-                                <div onClick={() => handleCityMatch(dest.city, dest.illustration ?? '', )} className="w-full relative h-max select-none hover:bg-gray-200 px-4 py-1 rounded-xl hover:scale-[102%] flex flex-col gap-[15px] overflow-hidden place-items-start">
+                                <div onClick={() => handleCityMatch(dest.city, dest.illustration ?? '', dest.compatibility || 0, dest.description, dest.pros, dest.cons )} className="w-full relative h-max select-none hover:bg-gray-200 px-4 py-1 rounded-xl hover:scale-[102%] flex flex-col gap-[15px] overflow-hidden place-items-start">
                                     <div className="w-full  h-max cursor-pointer relative flex flex-col place-items-start place-content-center" 
                                     // style={{ backgroundImage: `url(${dest.illustration})`, backgroundRepeat: 'no-repeat', backgroundSize: 'fill', backgroundPosition: 'center' }}
                                     key={dest.id}>
