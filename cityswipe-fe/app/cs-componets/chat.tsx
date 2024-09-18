@@ -470,7 +470,7 @@ export default function Chat({matches}: any) {
                                         </>
                                     )}
 
-
+{/* 
                                     {currentMessegeType === "itinerary" && message.role === 'assistant' && index === conversation.length - 1 && (
                                         <>
                                             <div className="w-[70%] py-4 flex flex-col pl-[4%] mt-3 h-max">
@@ -482,7 +482,7 @@ export default function Chat({matches}: any) {
                                                 {Object.entries(genItinerary.itinerary).map(([day, activities], index) => (
                                                     <div key={index} className="flex flex-col mb-4 gap-2">
                                                         <span className="font-bold text-2xl">{day}:</span>
-                                                        <span> {activities as string}</span> {/* Cast activities to string */}
+                                                        <span> {activities as string}</span> 
                                                     </div>
                                                 ))}
 
@@ -497,7 +497,7 @@ export default function Chat({matches}: any) {
 
                                             </div>  
                                         </>
-                                    )}
+                                    )} */}
 
                                 </div>
 
