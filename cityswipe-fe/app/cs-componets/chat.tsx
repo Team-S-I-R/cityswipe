@@ -41,14 +41,14 @@ export default function Chat({matches}: any) {
         closed: { opacity: 0, x: "-100%" },
     }
 
-    const [genItinerary, setGenItinerary] = useState({
-        id: 0,
-        title: "",
-        itinerary: {},
-        packing_list: "",
-        cultural_info: {},
-        additional_comments: "",
-    });
+    // const [genItinerary, setGenItinerary] = useState({
+    //     id: 0,
+    //     title: "",
+    //     itinerary: {},
+    //     packing_list: "",
+    //     cultural_info: {},
+    //     additional_comments: "",
+    // });
 
     const [currentMessegeType, setCurrentMessegeType] = useState<string>("");
 
@@ -96,54 +96,54 @@ export default function Chat({matches}: any) {
         }
 
         // this will handle itinerary specifically
-        if (wantsItinerary != false) {
+        // if (wantsItinerary != false) {
 
-            const itineraryprompopt = 'Hi, can you make me an itinerary for my trip to' + " " + selectedMatch
-            await setInput(itineraryprompopt);
+        //     const itineraryprompopt = 'Hi, can you make me an itinerary for my trip to' + " " + selectedMatch
+        //     await setInput(itineraryprompopt);
 
-            const { newMessage, type } = await makeItinerary(split == undefined ? "" : split[0], split == undefined ? "" : split[1], [
-                { role: "user", content: input, type: "itinerary" },
-            ]);
+        //     const { newMessage, type } = await makeItinerary(split == undefined ? "" : split[0], split == undefined ? "" : split[1], [
+        //         { role: "user", content: input, type: "itinerary" },
+        //     ]);
 
-            const textContent = newMessage;
-            setCurrentMessegeType(type);
+        //     const textContent = newMessage;
+        //     setCurrentMessegeType(type);
 
-            console.log("nmessage: ", textContent);
+        //     console.log("nmessage: ", textContent);
 
-            try {
-                const itineraryfull = JSON.parse(textContent);
+        //     try {
+        //         const itineraryfull = JSON.parse(textContent);
 
-                let generatedItinerary = {
-                    id: Math.floor(Math.random() * 1000000),
-                    title: itineraryfull.title,
-                    itinerary: itineraryfull.itinerary,
-                    packing_list: itineraryfull.packing_list,
-                    cultural_info: itineraryfull.cultural_info,
-                    additional_comments: itineraryfull.additional_comments
+        //         let generatedItinerary = {
+        //             id: Math.floor(Math.random() * 1000000),
+        //             title: itineraryfull.title,
+        //             itinerary: itineraryfull.itinerary,
+        //             packing_list: itineraryfull.packing_list,
+        //             cultural_info: itineraryfull.cultural_info,
+        //             additional_comments: itineraryfull.additional_comments
                     
-                };
+        //         };
 
-                console.log("itinerary: ", generatedItinerary);
-                console.log("itinerary id: ", generatedItinerary.id);
-                console.log("itinerary itinerary: ", generatedItinerary.itinerary);
-                console.log("itinerary packing_list: ", generatedItinerary.packing_list);
-                console.log("itinerary cultural_info: ", generatedItinerary.cultural_info);
+        //         console.log("itinerary: ", generatedItinerary);
+        //         console.log("itinerary id: ", generatedItinerary.id);
+        //         console.log("itinerary itinerary: ", generatedItinerary.itinerary);
+        //         console.log("itinerary packing_list: ", generatedItinerary.packing_list);
+        //         console.log("itinerary cultural_info: ", generatedItinerary.cultural_info);
 
-                setGenItinerary({
-                    id: generatedItinerary.id,
-                    title: generatedItinerary.title,
-                    itinerary: generatedItinerary.itinerary,
-                    packing_list: generatedItinerary.packing_list,
-                    cultural_info: generatedItinerary.cultural_info,
-                    additional_comments: generatedItinerary.additional_comments ,
-                });
+        //         setGenItinerary({
+        //             id: generatedItinerary.id,
+        //             title: generatedItinerary.title,
+        //             itinerary: generatedItinerary.itinerary,
+        //             packing_list: generatedItinerary.packing_list,
+        //             cultural_info: generatedItinerary.cultural_info,
+        //             additional_comments: generatedItinerary.additional_comments ,
+        //         });
 
-                setWantsItinerary(false);
+        //         setWantsItinerary(false);
 
-            } catch (error) {
-                console.error(`Error in fetching itinerary for ${selectedMatch}:`, error);
-            }
-        }
+        //     } catch (error) {
+        //         console.error(`Error in fetching itinerary for ${selectedMatch}:`, error);
+        //     }
+        // }
     }
 
     const handleUserPrePrompt = (text: any) => {
