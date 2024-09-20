@@ -31,6 +31,7 @@ const Itinerary = () => {
     const { userquestions } = useCitySwipe()
     const [ blockToMessWith, setBlockToMessWith ] = useState("")
     const { newItineraryItem, setNewItineraryItem } = useCitySwipe();
+    const {usermatches, setUserMatches} = useCitySwipe();
     const { addingItemToItinerary, setAddingItemToItinerary } = useCitySwipe();
     const [date, setDate] = useState<DateRange | undefined>({
         from: new Date(),
@@ -42,21 +43,30 @@ const Itinerary = () => {
         initialContent: [
             {
               type: "paragraph",
-              content: "Welcome to this demo!",
+              content: `Welcome to your ${selectedMatch || usermatches[0]?.city} itinerary!`,
             }
         ]
     });
     // gets all "blocks in the itinerary"
     const blocks = editor.document;
+
     useEffect(() => {
         setBlockToMessWith(blocks[blocks.length - 1].id);
+        console.log("blockToMessWith: ", blockToMessWith);
     });
 
     // Function to insert blocks
     const insertBlocks = (blocksToInsert: any, referenceBlock: any, placement: any) => {
-        editor.insertBlocks(blocksToInsert, referenceBlock, placement);
-        setAddingItemToItinerary?.(false);
-        console.log("Blocks inserted");
+        
+            try {
+                editor?.insertBlocks(blocksToInsert, referenceBlock, placement);
+                setAddingItemToItinerary?.(false);
+                console.log("Blocks inserted");
+            } catch (error) {
+                console.log(error);
+            }
+
+
     };
     
     useEffect(() => {

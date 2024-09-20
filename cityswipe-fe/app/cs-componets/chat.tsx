@@ -42,6 +42,7 @@ export default function Chat({matches}: any) {
     const [itineraryModalOpen, setItineraryModalOpen] = useState<boolean>(false);
     const [wantsItinerary, setWantsItinerary] = useState<boolean>(false);
 
+
   const variants = {
     open: { opacity: 1, x: 0 },
     closed: { opacity: 0, x: "-100%" },
@@ -155,11 +156,13 @@ export default function Chat({matches}: any) {
     }
 
     const handleAddingItemToItinerary = (text: any) => {
+
         console.log("adding item....");
         console.log("text: ", text);
         setNewItineraryItem?.(text);
         console.log("adding item is true now....");
         setAddingItemToItinerary?.(true);
+        
     }
     
     
