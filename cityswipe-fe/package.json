@@ -11,6 +11,9 @@
   },
   "dependencies": {
     "@ai-sdk/google": "^0.0.30",
+    "@blocknote/core": "^0.15.9",
+    "@blocknote/mantine": "^0.15.9",
+    "@blocknote/react": "^0.15.9",
     "@clerk/nextjs": "^5.3.7",
     "@gsap/react": "^2.1.1",
     "@prisma/client": "^5.17.0",

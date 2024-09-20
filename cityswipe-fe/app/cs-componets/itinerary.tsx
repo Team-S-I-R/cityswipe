@@ -1,8 +1,9 @@
+'use client'
 
 import { useCitySwipe } from "../citySwipeContext";
 
 import { Calendar as CalendarIcon } from "lucide-react";
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { addDays, format } from "date-fns"
 import { DateRange } from "react-day-picker" 
 import { cn } from "@/lib/utils"
@@ -14,16 +15,44 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { Input } from "@/components/ui/input";
- 
+import { AnimatePresence, motion } from "framer-motion"
+
+import "@blocknote/core/fonts/inter.css";
+import { BlockNoteView } from "@blocknote/mantine";
+import { Block } from "@blocknote/core";
+import "@blocknote/mantine/style.css";
+import { useCreateBlockNote } from "@blocknote/react";
+
+type BlockIdentifier = string | Block;
 
 const Itinerary = () => {
 
     const { selectedMatch } = useCitySwipe()
     const { userquestions } = useCitySwipe()
+    const [ blockToMessWith, setBlockToMessWith ] = useState("")
     const [date, setDate] = useState<DateRange | undefined>({
         from: new Date(),
         to: addDays(new Date(), 20),
       })
+
+    // Creates a new editor instance.
+    const editor = useCreateBlockNote({
+        initialContent: [
+            {
+              type: "paragraph",
+              content: "Welcome to this demo!",
+            }
+        ]
+    });
+    // gets all "blocks in the itinerary"
+    const blocks = editor.document;
+    useEffect(() => {
+        setBlockToMessWith(blocks[0].id); 
+    }, []);
+    // Function to insert blocks
+    const insertBlocks = (blocksToInsert: any, referenceBlock: any, placement: any) => {
+        editor.insertBlocks(blocksToInsert, referenceBlock, placement);
+    };
 
 
     return (
@@ -38,7 +67,7 @@ const Itinerary = () => {
                         <span className="bg-gradient-to-t from-cyan-400 to-green-400 text-[9px] px-2 py-1 text-white rounded-full  top-[-40%] right-[-70%]">NEW</span>
                     </div>
 
-                    <div className="p-4 px-8 flex flex-col gap-2">
+                    {/* <motion.div className="p-4 px-[50px] flex flex-col gap-2">
                     
                         <p className="text-[12px]" >
                             Based on your quiz answers, we have you coming from 
@@ -48,7 +77,6 @@ const Itinerary = () => {
 
                         <p className="text-[12px]">For us to be able to make the most useful itinerary for you, we just need to know when you will start and end your trip:</p>
 
-                        {/* ANCHOR start trip and end date */}
                         <Popover>
                             <PopoverTrigger asChild>
                             <Button
@@ -92,9 +120,20 @@ const Itinerary = () => {
 
                         <p className="text-[12px]">Your itinerary will show here.</p>
 
+
+                    </motion.div> */}
+                    
+
+                    <div className="py-2 w-full">
+                        <BlockNoteView 
+                        className="text-[12px]" 
+                        theme={'light'} 
+                        editor={editor} 
+                        />
                     </div>
 
                     </div>
+                    {/* <button onClick={() => insertBlocks([{type: "paragraph", content: "Hello World"}], blockToMessWith, "after")}>Submit</button> */}
         </> 
     )
 }

@@ -76,3 +76,7 @@
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
+.bn-inline-content {
+  font-size: 12px !important;
+}

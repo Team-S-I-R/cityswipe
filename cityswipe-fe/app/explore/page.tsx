@@ -24,8 +24,8 @@ export default function Explore({clerkdata, matches, questions}: any) {
     const { chatImg, setChatImg } = useCitySwipe();
 
     const itinerarVariants = {
-        open: { opacity: 1, y: 0, width: "25%" },
-        closed: { opacity: 0, y: "-100%", width: "0%" },
+        open: { width: "25%", opacity: 1,  },
+        closed: { width: "0%", opacity: 0, },
     }
 
     const chatVariants = {
@@ -63,7 +63,7 @@ export default function Explore({clerkdata, matches, questions}: any) {
                             initial="closed"
                             animate={isItineraryModalOpen ? "open" : "closed"}
                             variants={itinerarVariants} 
-                            transition={{ duration: 0.5 }}                                     
+                            transition={{ duration: 1.25 }}                                     
                             className={`h-full`} 
                         >
                             <Itinerary/>
