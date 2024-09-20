@@ -28,7 +28,7 @@ import { number } from "zod";
 export default function QuizClient({ clerkdata }: any) {
   const { isStarted, setIsStarted } = useCitySwipe();
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [otherString, setOtherString] = useState<string[]>(Array(13).fill(""));
+  const [otherString, setOtherString] = useState<string[]>(Array(quizQuestions.length).fill(""));
   const [responses, setResponses] = useState<string[]>([]);
   // Responses for debuggin!
   // const [responses, setResponses] = useState<string[]>([
