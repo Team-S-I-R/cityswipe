@@ -59,7 +59,7 @@ export default function Sidebar( {clerkdata, matches} : any,) {
     }, [])
 
 
-    console.log("matches: ", usermatches?.[0]?.illustration)
+    // console.log("matches: ", usermatches?.[0]?.illustration)
     
     const router = useRouter();
 

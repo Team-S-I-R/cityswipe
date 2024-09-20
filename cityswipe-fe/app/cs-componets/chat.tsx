@@ -31,10 +31,10 @@ export default function Chat({matches}: any) {
     const { selectedBio, setSelectedBio } = useCitySwipe();
     const { selectedPros, setSelectedPros } = useCitySwipe();
     const { selectedCons, setSelectedCons } = useCitySwipe(); 
-    const [userPrePrompt, setUserPrePrompt] = useState<string>("");
+    const { addingItemToItinerary, setAddingItemToItinerary } = useCitySwipe();
+    const { newItineraryItem, setNewItineraryItem } = useCitySwipe();
     const [itineraryModalOpen, setItineraryModalOpen] = useState<boolean>(false);
     const [wantsItinerary, setWantsItinerary] = useState<boolean>(false);
-    const [ isMenuOpen, setIsMenuOpen ] = useState()
 
     const variants = {
         open: { opacity: 1, x: 0 },
@@ -149,6 +149,18 @@ export default function Chat({matches}: any) {
     const handleUserPrePrompt = (text: any) => {
         setInput(text);
     }
+
+    const handleAddingItemToItinerary = (text: any) => {
+        let count = 0;
+        console.log("adding item....");
+        console.log("text: ", text);
+        if (count == 0) {
+            setNewItineraryItem?.(text);
+            count += 1;
+        }
+        console.log("adding item is true now....");
+        setAddingItemToItinerary?.(true);
+    }
     
     
     // import saved global state city
@@ -207,7 +219,6 @@ export default function Chat({matches}: any) {
 
                                 </div>
 
-                                {/* ANCHOR pros and cons */}
                                 <div className="flex w-full justify-between">
 
                                 <div className="my-2">
@@ -329,7 +340,6 @@ export default function Chat({matches}: any) {
 
                             </div>
 
-                            {/* ANCHOR pros and cons */}
                             <div className="flex w-full justify-between">
                                 
                                 <div className="my-2">
@@ -460,44 +470,16 @@ export default function Chat({matches}: any) {
                                     {message.role === 'assistant' && (
                                         <>
                                             <div className="w-full h-[1px] bg-gray-300"></div>
-                                            <div className="flex w-max gap-1 place-items-center place-content-center text-gray-300 hover:text-gray-800 cursor-pointer">
+                                            <div onClick={() => handleAddingItemToItinerary(message.content)} className="flex w-max gap-1 place-items-center place-content-center text-gray-300 hover:text-gray-800 cursor-pointer">
                                                 <Plus/>
                                                 <p>
                                                     Add to itinerary
                                                 </p>
 
                                             </div>
+
                                         </>
                                     )}
-
-{/* 
-                                    {currentMessegeType === "itinerary" && message.role === 'assistant' && index === conversation.length - 1 && (
-                                        <>
-                                            <div className="w-[70%] py-4 flex flex-col pl-[4%] mt-3 h-max">
-                                            
-                                                <span className="font-bold text-4xl">{genItinerary.title}</span>
-                                                
-                                                <span className="h-[1px] w-full my-6"></span>
-
-                                                {Object.entries(genItinerary.itinerary).map(([day, activities], index) => (
-                                                    <div key={index} className="flex flex-col mb-4 gap-2">
-                                                        <span className="font-bold text-2xl">{day}:</span>
-                                                        <span> {activities as string}</span> 
-                                                    </div>
-                                                ))}
-
-
-                                                <span>{genItinerary.packing_list}</span>
-                                                {Object.entries(genItinerary.cultural_info).map(([practices], index) => (
-                                                    <div key={index}>
-                                                        <span> {practices}</span>
-                                                    </div>
-                                                ))}
-                                                <span>{genItinerary.additional_comments}</span>
-
-                                            </div>  
-                                        </>
-                                    )} */}
 
                                 </div>
 
@@ -506,62 +488,14 @@ export default function Chat({matches}: any) {
                                 {message.role === 'user' && (
                                     <Image src={userdata?.profileImg || placeholderimg} sizes="100%" width={30} height={30} className="object-cover ml-4 my-3 w-[30px] h-[30px] rounded-full" alt="" />
                                 )}
+                                
 
                             </div>
                         ))} 
 
-                        {/* <div className="w-[70%] text-gray-500/60 pl-[4%] mt-3 h-max flex flex-col gap-2">
-
-                            <p className="select-none">I can also:</p>
-
-                            <div className="w-full h-[1px] bg-gray-300"></div>
-
-
-                            <div onClick={() => setItineraryModalOpen(!itineraryModalOpen)} className="z-10 hover:text-black cursor-pointer p-2 w-max h-max flex gap-2 place-items-center">
-                                <Plus/>
-                                <p>Make your Itinerary</p>
-                            </div>
-
-                            <AnimatePresence mode="wait">
-                                <motion.div 
-                                initial="closed"
-                                animate={itineraryModalOpen ? "open" : "closed"}
-                                variants={variants}
-                                className="bg-green-300 p-2 w-full h-max text-black rounded-md" onClick={() => setItineraryModalOpen(false)}>
-                                    <p className="font-bold text-lg py-4b">In order to make your itinerary, I need to know:</p>
-
-                                    <div className="flex flex-col gap-2 mt-2">
-
-                                        <p>Where will you be traveling from?</p>
-
-                                        <Input className="w-full"/>
-
-                                    </div>
-
-                                    <div className="flex flex-col gap-2 mt-2">
-
-                                        <p>How many days is your trip?</p>
-
-                                        <Input className="w-full"/>
-
-                                    </div>
-                            
-                                    <div className="flex flex-col gap-2 mt-2">
-
-                                        <p>How many people will be on your trip?</p>
-
-                                        <Input className="w-full"/>
-
-                                    </div>
-                                    
-                                </motion.div>
-                            </AnimatePresence>
-                
-                        </div> */}
                                                 
 
                     <div className="w-full flex flex-col gap-4 place-items-end py-3 h-max text-gray-500/60">
-                        {/* <div className="w-full h-[1px] bg-gray-300 mt-3"></div> */}
                     </div>
              
                     </div>

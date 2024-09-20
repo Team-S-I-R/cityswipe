@@ -4,7 +4,7 @@ import { useCitySwipe } from "../citySwipeContext";
 
 import { Calendar as CalendarIcon } from "lucide-react";
 import { useEffect, useState } from "react"
-import { addDays, format } from "date-fns"
+import { addDays, format, set } from "date-fns"
 import { DateRange } from "react-day-picker" 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -30,6 +30,8 @@ const Itinerary = () => {
     const { selectedMatch } = useCitySwipe()
     const { userquestions } = useCitySwipe()
     const [ blockToMessWith, setBlockToMessWith ] = useState("")
+    const { newItineraryItem, setNewItineraryItem } = useCitySwipe();
+    const { addingItemToItinerary, setAddingItemToItinerary } = useCitySwipe();
     const [date, setDate] = useState<DateRange | undefined>({
         from: new Date(),
         to: addDays(new Date(), 20),
@@ -48,11 +50,26 @@ const Itinerary = () => {
     const blocks = editor.document;
     useEffect(() => {
         setBlockToMessWith(blocks[0].id); 
-    }, []);
+    }, [blocks[0].id]);
+
+    const [count, setCount] = useState(0);
     // Function to insert blocks
     const insertBlocks = (blocksToInsert: any, referenceBlock: any, placement: any) => {
         editor.insertBlocks(blocksToInsert, referenceBlock, placement);
+        console.log("count: the count is", count)
+        setCount(count + 1);
     };
+
+    if (addingItemToItinerary === true) {
+        console.log("insert blocks is starting....");
+
+        if (count == 0 && addingItemToItinerary === true) {
+            insertBlocks([{type: "paragraph", content: newItineraryItem}], blockToMessWith, "after");
+            setAddingItemToItinerary?.(false);
+        }
+        
+        console.log("false now");
+    }
 
 
     return (

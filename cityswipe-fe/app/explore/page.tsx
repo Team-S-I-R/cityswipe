@@ -42,7 +42,6 @@ export default function Explore({clerkdata, matches, questions}: any) {
         setUserQuestions?.(questions);
     }, []);
 
-    console.log("server user questions: ", questions)
 
     // have to upload the header here for now
     return (
@@ -57,25 +56,27 @@ export default function Explore({clerkdata, matches, questions}: any) {
                             <Sidebar clerkdata={userdata} matches={usermatches}/>
                         </div>
 
-                        <AnimatePresence>
+                        <AnimatePresence >
 
                         <motion.div
+                        key='1'
                             initial="closed"
                             animate={isItineraryModalOpen ? "open" : "closed"}
                             variants={itinerarVariants} 
                             transition={{ duration: 1.25 }}                                     
                             className={`h-full`} 
                         >
-                            <Itinerary/>
+                            <Itinerary key='3'/>
                         </motion.div>
 
                         <motion.div 
+                        key='2'
                         initial="closed"
                         animate={isItineraryModalOpen ? "open" : "closed"}
                         variants={chatVariants} 
                         transition={{ duration: 0.5 }}   
                         className={`flex w-[80%] h-full items-center justify-center relative`}>
-                            <Chat matches={usermatches}/>
+                            <Chat key='4' matches={usermatches}/>
                         </motion.div>
 
                         </AnimatePresence>
