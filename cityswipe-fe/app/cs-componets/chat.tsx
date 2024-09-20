@@ -23,22 +23,24 @@ import { motion, AnimatePresence } from "framer-motion";
 import { preprompts } from "./preprompts";
 import SparklesText from "@/components/magicui/sparkles-text";
 
-export default function Chat({ matches }: any) {
-  const [conversation, setConversation] = useState<Message[]>([]);
-  const [input, setInput] = useState<string>("");
-  const { selectedMatch, setSelectedMatch } = useCitySwipe();
-  const { selectedCompatibility } = useCitySwipe();
-  const { clearConversation, setClearConversation } = useCitySwipe();
-  const { userdata, setUserData } = useCitySwipe();
-  const { usermatches, setUserMatches } = useCitySwipe();
-  const { chatImg, setChatImg } = useCitySwipe();
-  const { selectedBio, setSelectedBio } = useCitySwipe();
-  const { selectedPros, setSelectedPros } = useCitySwipe();
-  const { selectedCons, setSelectedCons } = useCitySwipe();
-  const [userPrePrompt, setUserPrePrompt] = useState<string>("");
-  const [itineraryModalOpen, setItineraryModalOpen] = useState<boolean>(false);
-  const [wantsItinerary, setWantsItinerary] = useState<boolean>(false);
-  const [isMenuOpen, setIsMenuOpen] = useState();
+
+export default function Chat({matches}: any) {
+
+    const [conversation, setConversation] = useState<Message[]>([]);
+    const [input, setInput] = useState<string>("");
+    const { selectedMatch, setSelectedMatch } = useCitySwipe();
+    const { selectedCompatibility } = useCitySwipe();
+    const { clearConversation, setClearConversation } = useCitySwipe();
+    const { userdata, setUserData } = useCitySwipe();
+    const { usermatches, setUserMatches } = useCitySwipe();
+    const {chatImg, setChatImg} = useCitySwipe();
+    const { selectedBio, setSelectedBio } = useCitySwipe();
+    const { selectedPros, setSelectedPros } = useCitySwipe();
+    const { selectedCons, setSelectedCons } = useCitySwipe(); 
+    const { addingItemToItinerary, setAddingItemToItinerary } = useCitySwipe();
+    const { newItineraryItem, setNewItineraryItem } = useCitySwipe();
+    const [itineraryModalOpen, setItineraryModalOpen] = useState<boolean>(false);
+    const [wantsItinerary, setWantsItinerary] = useState<boolean>(false);
 
   const variants = {
     open: { opacity: 1, x: 0 },
@@ -148,11 +150,20 @@ export default function Chat({ matches }: any) {
     // }
   };
 
-  const handleUserPrePrompt = (text: any) => {
-    setInput(text);
-  };
+    const handleUserPrePrompt = (text: any) => {
+        setInput(text);
+    }
 
-  // import saved global state city
+    const handleAddingItemToItinerary = (text: any) => {
+        console.log("adding item....");
+        console.log("text: ", text);
+        setNewItineraryItem?.(text);
+        console.log("adding item is true now....");
+        setAddingItemToItinerary?.(true);
+    }
+    
+    
+    // import saved global state city
 
   return (
     <>
@@ -220,29 +231,23 @@ export default function Chat({ matches }: any) {
                     </motion.div>
                   </div>
 
-                  {/* ANCHOR pros and cons */}
-                  <div className="flex w-full justify-between">
-                    <div className="my-2">
-                      <p className="font-bold">
-                        Some of the <span className="text-green-400">pros</span>{" "}
-                        of this city are:
-                      </p>
+                                <div className="flex w-full justify-between">
 
-                      {userdata?.[0]?.pros
-                        ?.slice(0, 3)
-                        .map((pro: any, index: number) => (
-                          <motion.div
-                            initial={{ opacity: 0, y: 100 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.75 }}
-                            key={index}
-                            className="flex gap-2 my-2"
-                          >
-                            <div className="w-[10px] h-[10px] rounded-full bg-green-400"></div>
-                            <p className="text-[12px]">{pro}</p>
-                          </motion.div>
-                        ))}
-                    </div>
+                                <div className="my-2">
+
+                                    <p className="font-bold">Some of the <span className="text-green-400">pros</span> of this city are:</p>
+
+                                    {userdata?.[0]?.pros?.slice(0, 3).map((pro: any, index: number) => (
+                                        <motion.div 
+                                        initial={{ opacity: 0, y: 100 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ duration: 0.75 }}
+                                        key={index} className="flex gap-2 my-2">
+                                            <div className="w-[10px] h-[10px] rounded-full bg-green-400"></div>
+                                            <p className="text-[12px]">{pro}</p>
+                                        </motion.div>
+                                    ))}
+                                </div>
 
                     <div className="my-2">
                       <p className="font-bold">
@@ -377,124 +382,103 @@ export default function Chat({ matches }: any) {
                     </motion.div>
                   </div>
 
-                  {/* ANCHOR pros and cons */}
-                  <div className="flex w-full justify-between">
-                    <div className="my-2">
-                      <p className="font-bold">
-                        Some of the <span className="text-green-400">pros</span>{" "}
-                        of this city are:
-                      </p>
+                            <div className="flex w-full justify-between">
+                                
+                                <div className="my-2">
+    
+                                    <p className="font-bold">Some of the <span className="text-green-400">pros</span> of this city are:</p>
+    
+                                    {selectedPros?.slice(0, 3).map((pro, index) => (
+                                        <motion.div 
+                                        initial={{ opacity: 0, y: 100 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ duration: 0.75 }}
+                                        key={index} className="flex gap-2 my-2">
+                                            <div className="w-[10px] h-[10px] rounded-full bg-green-400"></div>
+                                            <p className="text-[12px]">{pro}</p>
+                                        </motion.div>
+                                    ))}
+                                </div>
+    
+                                <div className="my-2">
+    
+                                    <p className="font-bold">Some of the <span className="text-red-400">cons</span> of this city are:</p>
+    
+                                    {selectedCons?.slice(0, 3).map((con, index) => (
+                                        <motion.div 
+                                        initial={{ opacity: 0, y: 100 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ duration: 0.75 }}
+                                        key={index} className="flex gap-2 my-2">
+                                            <div className="w-[10px] h-[10px] rounded-full bg-red-400"></div>
+                                            <p className="text-[12px]">{con}</p>
+                                        </motion.div>
+                                    ))}
+                                </div>
+    
+                            </div>
+                
+    
+                            <div className="w-full mt-4 place-content-center flex flex-col h-max no-scrollbar  overflow-x-scroll">
+    
+                                <motion.p 
+                                initial={{ opacity: 0, y: 100 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.75 }}
+                                className="font-bold text-xl">
+                                    Suggested Questions to ask
+                                </motion.p>
+    
+    
+                                <motion.div 
+                                initial={{ opacity: 0, y: 100 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 1.5 }}
+                                className="p-2 w-full place-content-center justify-between h-max flex gap-2 ">
+                                    <motion.div onClick={() => handleUserPrePrompt(preprompts[0].prompt + " " + selectedMatch + "?")} className="cursor-pointer hover:bg-gray-100/50 flex w-[32%] text-center p-3 rounded-sm place-items-center place-content-center outline outline-[1px] min-h-[150px] h-max">
+                                        
+                                        <motion.div className="w-max">
+                                            <p>{preprompts[0].name}</p>
+                                        </motion.div>
+                                    
+                                    </motion.div>
+                                
+                                    <motion.div onClick={() => handleUserPrePrompt(preprompts[1].prompt + " " + selectedMatch + "?")} className="cursor-pointer hover:bg-gray-100/50 flex w-[32%] text-center p-3 rounded-sm place-items-center place-content-center outline outline-[1px] min-h-[150px] h-max">
+                                        
+                                        <motion.div className="w-max">
+                                            <p>{preprompts[1].name}</p>
+                                        </motion.div>
+                                    
+                                    </motion.div>
+    
+                                    <motion.div onClick={() => handleUserPrePrompt(preprompts[2].prompt + " " + selectedMatch + "?")} className="cursor-pointer hover:bg-gray-100/50 flex w-[32%] text-center p-3 rounded-sm place-items-center place-content-center outline outline-[1px] min-h-[150px] h-max">
+                                        
+                                        <motion.div className="w-max">
+                                            <p>{preprompts[2].name}</p>
+                                        </motion.div>
+                                    
+                                    </motion.div>
+                                </motion.div>
+    
+    
+                            </div>
+    
+                            <p className="text-muted-foreground text-[10px]">By clicking on these suggested questions and then pressing the green and white arrow button below, you will receive the answers you seek from Cityswipe. Always do your own due diligence before making any big decisions.</p>
+    
+                            <p>or</p>
+    
+                            <p className="flex gap-2 place-items-center">Ask any other questions you may have below <ArrowDown className="w-[15px] h-[15px]"/></p>
+                            
+                            </>
+                        )}
 
-                      {selectedPros?.slice(0, 3).map((pro, index) => (
-                        <motion.div
-                          initial={{ opacity: 0, y: 100 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ duration: 0.75 }}
-                          key={index}
-                          className="flex gap-2 my-2"
-                        >
-                          <div className="w-[10px] h-[10px] rounded-full bg-green-400"></div>
-                          <p className="text-[12px]">{pro}</p>
-                        </motion.div>
-                      ))}
+
                     </div>
-
-                    <div className="my-2">
-                      <p className="font-bold">
-                        Some of the <span className="text-red-400">cons</span>{" "}
-                        of this city are:
-                      </p>
-
-                      {selectedCons?.slice(0, 3).map((con, index) => (
-                        <motion.div
-                          initial={{ opacity: 0, y: 100 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ duration: 0.75 }}
-                          key={index}
-                          className="flex gap-2 my-2"
-                        >
-                          <div className="w-[10px] h-[10px] rounded-full bg-red-400"></div>
-                          <p className="text-[12px]">{con}</p>
-                        </motion.div>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="w-full mt-14 place-content-center flex flex-col h-max no-scrollbar  overflow-x-scroll">
-                    <motion.p
-                      initial={{ opacity: 0, y: 100 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.75 }}
-                      className="font-bold text-xl mb-2"
-                    >
-                      Suggested Questions to ask
-                    </motion.p>
-
-                    <motion.div
-                      initial={{ opacity: 0, y: 100 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 1.5 }}
-                      className="p-2 w-full place-content-center justify-between h-max flex gap-2 "
-                    >
-                      <motion.div
-                        onClick={() =>
-                          handleUserPrePrompt(
-                            preprompts[0].prompt + " " + selectedMatch + "?"
-                          )
-                        }
-                        className="cursor-pointer hover:bg-gray-100/50 flex w-[32%] text-center p-3 rounded-sm place-items-center place-content-center outline outline-[1px] min-h-[150px] h-max"
-                      >
-                        <motion.div className="w-max">
-                          <p>{preprompts[0].name}</p>
-                        </motion.div>
-                      </motion.div>
-
-                      <motion.div
-                        onClick={() =>
-                          handleUserPrePrompt(
-                            preprompts[1].prompt + " " + selectedMatch + "?"
-                          )
-                        }
-                        className="cursor-pointer hover:bg-gray-100/50 flex w-[32%] text-center p-3 rounded-sm place-items-center place-content-center outline outline-[1px] min-h-[150px] h-max"
-                      >
-                        <motion.div className="w-max">
-                          <p>{preprompts[1].name}</p>
-                        </motion.div>
-                      </motion.div>
-
-                      <motion.div
-                        onClick={() =>
-                          handleUserPrePrompt(
-                            preprompts[2].prompt + " " + selectedMatch + "?"
-                          )
-                        }
-                        className="cursor-pointer hover:bg-gray-100/50 flex w-[32%] text-center p-3 rounded-sm place-items-center place-content-center outline outline-[1px] min-h-[150px] h-max"
-                      >
-                        <motion.div className="w-max">
-                          <p>{preprompts[2].name}</p>
-                        </motion.div>
-                      </motion.div>
-                    </motion.div>
-                  </div>
-
-                  <p className="text-muted-foreground text-[10px]">
-                    By clicking on these suggested questions and then pressing
-                    the green and white arrow button below, you will receive the
-                    answers you seek from Cityswipe. Always do your own due
-                    diligence before making any big decisions.
-                  </p>
-
-                  <p>or</p>
-
-                  <p className="flex gap-2 place-items-center">
-                    Ask any other questions you may have below{" "}
-                    <ArrowDown className="w-[15px] h-[15px]" />
-                  </p>
+                    
                 </>
-              )}
-            </div>
-          </>
-        )}
+            )}
+  
+
 
         {conversation.length > 0 && (
           <>
@@ -541,114 +525,41 @@ export default function Chat({ matches }: any) {
                       <span className="w-max">{message.content}</span>
                     </div>
 
-                    {message.role === "assistant" && (
-                      <>
-                        <div className="w-full h-[1px] bg-gray-300"></div>
-                        <div className="flex w-max gap-1 place-items-center place-content-center text-gray-300 hover:text-gray-800 cursor-pointer">
-                          <Plus />
-                          <p>Add to itinerary</p>
-                        </div>
-                      </>
-                    )}
-
-                    {/* 
-                                    {currentMessegeType === "itinerary" && message.role === 'assistant' && index === conversation.length - 1 && (
+                                    {message.role === 'assistant' && (
                                         <>
-                                            <div className="w-[70%] py-4 flex flex-col pl-[4%] mt-3 h-max">
-                                            
-                                                <span className="font-bold text-4xl">{genItinerary.title}</span>
-                                                
-                                                <span className="h-[1px] w-full my-6"></span>
+                                            <div className="w-full h-[1px] bg-gray-300"></div>
+                                            <div onClick={() => handleAddingItemToItinerary(message.content)} className="flex w-max gap-1 place-items-center place-content-center text-gray-300 hover:text-gray-800 cursor-pointer">
+                                                <Plus/>
+                                                <p>
+                                                    Add to itinerary
+                                                </p>
 
-                                                {Object.entries(genItinerary.itinerary).map(([day, activities], index) => (
-                                                    <div key={index} className="flex flex-col mb-4 gap-2">
-                                                        <span className="font-bold text-2xl">{day}:</span>
-                                                        <span> {activities as string}</span> 
-                                                    </div>
-                                                ))}
+                                            </div>
 
-
-                                                <span>{genItinerary.packing_list}</span>
-                                                {Object.entries(genItinerary.cultural_info).map(([practices], index) => (
-                                                    <div key={index}>
-                                                        <span> {practices}</span>
-                                                    </div>
-                                                ))}
-                                                <span>{genItinerary.additional_comments}</span>
-
-                                            </div>  
                                         </>
-                                    )} */}
-                  </div>
+                                    )}
 
-                  {message.role === "user" && (
-                    <Image
-                      src={userdata?.profileImg || placeholderimg}
-                      sizes="100%"
-                      width={30}
-                      height={30}
-                      className="object-cover ml-4 my-3 w-[30px] h-[30px] rounded-full"
-                      alt=""
-                    />
-                  )}
-                </div>
-              ))}
-
-              {/* <div className="w-[70%] text-gray-500/60 pl-[4%] mt-3 h-max flex flex-col gap-2">
-
-                            <p className="select-none">I can also:</p>
-
-                            <div className="w-full h-[1px] bg-gray-300"></div>
+                                </div>
 
 
-                            <div onClick={() => setItineraryModalOpen(!itineraryModalOpen)} className="z-10 hover:text-black cursor-pointer p-2 w-max h-max flex gap-2 place-items-center">
-                                <Plus/>
-                                <p>Make your Itinerary</p>
+
+                                {message.role === 'user' && (
+                                    <Image src={userdata?.profileImg || placeholderimg} sizes="100%" width={30} height={30} className="object-cover ml-4 my-3 w-[30px] h-[30px] rounded-full" alt="" />
+                                )}
+                                
+
                             </div>
+                        ))} 
 
-                            <AnimatePresence mode="wait">
-                                <motion.div 
-                                initial="closed"
-                                animate={itineraryModalOpen ? "open" : "closed"}
-                                variants={variants}
-                                className="bg-green-300 p-2 w-full h-max text-black rounded-md" onClick={() => setItineraryModalOpen(false)}>
-                                    <p className="font-bold text-lg py-4b">In order to make your itinerary, I need to know:</p>
+                                                
 
-                                    <div className="flex flex-col gap-2 mt-2">
-
-                                        <p>Where will you be traveling from?</p>
-
-                                        <Input className="w-full"/>
-
-                                    </div>
-
-                                    <div className="flex flex-col gap-2 mt-2">
-
-                                        <p>How many days is your trip?</p>
-
-                                        <Input className="w-full"/>
-
-                                    </div>
-                            
-                                    <div className="flex flex-col gap-2 mt-2">
-
-                                        <p>How many people will be on your trip?</p>
-
-                                        <Input className="w-full"/>
-
-                                    </div>
-                                    
-                                </motion.div>
-                            </AnimatePresence>
-                
-                        </div> */}
-
-              <div className="w-full flex flex-col gap-4 place-items-end py-3 h-max text-gray-500/60">
-                {/* <div className="w-full h-[1px] bg-gray-300 mt-3"></div> */}
-              </div>
-            </div>
-          </>
-        )}
+                    <div className="w-full flex flex-col gap-4 place-items-end py-3 h-max text-gray-500/60">
+                        {/* <div className="w-full h-[1px] bg-gray-300 mt-3"></div> */}
+                    </div>
+             
+                    </div>
+                </>
+            )}
 
         <div></div>
 
