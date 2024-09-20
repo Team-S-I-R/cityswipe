@@ -49,27 +49,23 @@ const Itinerary = () => {
     // gets all "blocks in the itinerary"
     const blocks = editor.document;
     useEffect(() => {
-        setBlockToMessWith(blocks[0].id); 
-    }, [blocks[0].id]);
+        setBlockToMessWith(blocks[blocks.length - 1].id);
+    });
 
-    const [count, setCount] = useState(0);
     // Function to insert blocks
     const insertBlocks = (blocksToInsert: any, referenceBlock: any, placement: any) => {
         editor.insertBlocks(blocksToInsert, referenceBlock, placement);
-        console.log("count: the count is", count)
-        setCount(count + 1);
+        setAddingItemToItinerary?.(false);
+        console.log("Blocks inserted");
     };
-
-    if (addingItemToItinerary === true) {
-        console.log("insert blocks is starting....");
-
-        if (count == 0 && addingItemToItinerary === true) {
+    
+    useEffect(() => {
+        if (addingItemToItinerary) {
+            console.log("insert blocks is starting....");
             insertBlocks([{type: "paragraph", content: newItineraryItem}], blockToMessWith, "after");
-            setAddingItemToItinerary?.(false);
+            console.log("false now");
         }
-        
-        console.log("false now");
-    }
+    }, [addingItemToItinerary, newItineraryItem, blockToMessWith]);
 
 
     return (
