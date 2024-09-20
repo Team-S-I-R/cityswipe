@@ -22,7 +22,7 @@ import { Description } from "@radix-ui/react-dialog";
 import { createClient } from "pexels";
 import { AnimatePresence, motion } from "framer-motion";
 import Header from "../cs-componets/header";
-import { useToast } from "../../hooks/use-toast"
+import { useToast } from "../../hooks/use-toast";
 import { number } from "zod";
 
 export default function QuizClient({ clerkdata }: any) {
@@ -52,7 +52,7 @@ export default function QuizClient({ clerkdata }: any) {
   const [destinationSet, setDestinationSet] = useDestinationSetContext();
   const router = useRouter();
   const [loadingMatches, setLoadingMatches] = useState(false);
-  const { toast } = useToast()
+  const { toast } = useToast();
 
   console.log("responses", responses);
 
@@ -89,9 +89,9 @@ export default function QuizClient({ clerkdata }: any) {
     if (toggle) {
       for (let i = 0; i < toggle.children.length; i++) {
         let child = toggle.children[i];
-        // console.log(child?.ariaPressed);
+        // console.log(child?.getAttribute("data-state"));
         // console.log(child.innerHTML);
-        child?.ariaPressed == "true" &&
+        child?.getAttribute("data-state") == "on" &&
           (newStr = newStr.concat(child.innerHTML) + ". ");
       }
     }
@@ -99,12 +99,28 @@ export default function QuizClient({ clerkdata }: any) {
       newStr + otherString[currentQuestionIndex];
     newResponses[currentQuestionIndex] == "" &&
       (newResponses[currentQuestionIndex] = currentQuestion.defaultValue);
-    console.log(newResponses[currentQuestionIndex]);
+    // console.log(newResponses[currentQuestionIndex]);
     setResponses(newResponses);
 
-    setCurrentQuestionIndex((prevIndex) =>
-      Math.min(prevIndex + 1, quizQuestions.length - 1)
-    );
+    if (
+      currentQuestion.id == 5 &&
+      newResponses[currentQuestionIndex] == "yes. "
+    ) {
+      // Set the response for the skipped question to its default value (any)
+      newResponses[currentQuestionIndex + 1] =
+        quizQuestions[currentQuestionIndex + 1].defaultValue;
+      setResponses(newResponses);
+
+      // Skip the next question
+      setCurrentQuestionIndex((prevIndex) =>
+        Math.min(prevIndex + 2, quizQuestions.length - 1)
+      );
+    } else {
+      // Go to the next question
+      setCurrentQuestionIndex((prevIndex) =>
+        Math.min(prevIndex + 1, quizQuestions.length - 1)
+      );
+    }  
   };
 
   const handlePrevious = () => {
@@ -164,9 +180,9 @@ export default function QuizClient({ clerkdata }: any) {
         Make sure the compatibility percentage is a number between 0 and 100. 
         Do not include formatting or code blocks, follow example. 
         Corelate all the data when making decisions. 
-        Questions are answered by the user in order of listing as follows: home country, travel budget, distance their prefer to travel, accomodation preferences, fluently spoken languages, comfort navigating places where your primary language is not widely spoken, preferred climate/temperature, preferred landscape, interested outdoor activities, interested urban activities, dietary restrictions, dining preferences, particular interests/additional requirements. 
+        the questions answered by the user (in order) are as follows: \n${console.log(quizQuestions.map(q => q.question).join('\n'))}\n 
         
-        Here are the user preference answers in order:\n\n${responses.join(
+        Here are the user preference answers in order:\n${responses.join(
           "\n"
         )}`;
 
@@ -186,47 +202,57 @@ export default function QuizClient({ clerkdata }: any) {
     // because of this delay this gives us freedom to add either an add or just a better loading state.
     // const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-
     const generatedDestinations = [];
     try {
       const destinations = JSON.parse(textContent);
 
       for (const destination of destinations) {
-          const { city, country, compatibility, description, pros, cons, } = destination;
+        const { city, country, compatibility, description, pros, cons } =
+          destination;
 
-              // ANCHOR Fetch image for the current city-country pair
-              const client = createClient('8U6Se7vVT3H9tx1KPZAQTkDUSW0IKi3ldgBTVyh3W9NFF7roIpZxktzY');
-              let illustration = '';
+        // ANCHOR Fetch image for the current city-country pair
+        const client = createClient(
+          "8U6Se7vVT3H9tx1KPZAQTkDUSW0IKi3ldgBTVyh3W9NFF7roIpZxktzY"
+        );
+        let illustration = "";
 
-              const searchQuery = `${city}, landscape`;
-              try {
-                  const response = await client.photos.search({ query: `${searchQuery}`, per_page: 1 });
-                  if ('photos' in response && response.photos.length > 0) {
-                      illustration = response.photos[0].src.landscape;
-                  }
-              } catch (error) {
-                  console.error(`Error in fetching photo for ${city}, ${country}:`, error);
-              }
+        const searchQuery = `${city}, landscape`;
+        try {
+          const response = await client.photos.search({
+            query: `${searchQuery}`,
+            per_page: 1,
+          });
+          if ("photos" in response && response.photos.length > 0) {
+            illustration = response.photos[0].src.landscape;
+          }
+        } catch (error) {
+          console.error(
+            `Error in fetching photo for ${city}, ${country}:`,
+            error
+          );
+        }
 
-              generatedDestinations.push({
-                  id: count++,
-                  city: city.trim(),
-                  country: country.trim(),
-                  compatibility: parseFloat(compatibility),
-                  illustration: illustration,
-                  description: description.trim(),
-                  pros: pros,
-                  cons: cons,
-              });
+        generatedDestinations.push({
+          id: count++,
+          city: city.trim(),
+          country: country.trim(),
+          compatibility: parseFloat(compatibility),
+          illustration: illustration,
+          description: description.trim(),
+          pros: pros,
+          cons: cons,
+        });
       }
 
-      const validDestinations = generatedDestinations.filter(destination => destination !== null);
+      const validDestinations = generatedDestinations.filter(
+        (destination) => destination !== null
+      );
 
       setDestinations(validDestinations);
 
       await setDestinationSet({
-          id: 1,
-          cards: validDestinations.reverse(),
+        id: 1,
+        cards: validDestinations.reverse(),
       });
 
       await addQuestions(otherString);
@@ -237,11 +263,13 @@ export default function QuizClient({ clerkdata }: any) {
       console.log(`handleGemini took ${endTime - startTime} milliseconds`);
 
       router.push("/match");
-      } catch (error) {
-                
-        setLoadingMatches(false);
-        toast({ title: 'Error. Please try submitting again!', description: 'We encountered an error. Please try submitting again.', itemID: 'error' });
-
+    } catch (error) {
+      setLoadingMatches(false);
+      toast({
+        title: "Error. Please try submitting again!",
+        description: "We encountered an error. Please try submitting again.",
+        itemID: "error",
+      });
     }
   };
 
@@ -269,41 +297,49 @@ export default function QuizClient({ clerkdata }: any) {
             loadingMatches ? "blur-sm" : "blur-0"
           }`}
         >
-          {currentQuestionIndex == 0 && <h1 className="w-full w-md text-muted-foreground sm:text-left text-center place-content-center text-[15px]">
-            Hi {userdata?.name?.split(" ")[0]}, Take the Cityswipe quiz to find
-            your perfect destination!
-          </h1>}
+          {currentQuestionIndex == 0 && (
+            <h1 className="w-full w-md text-muted-foreground sm:text-left text-center place-content-center text-[15px]">
+              Hi {userdata?.name?.split(" ")[0]}, Take the Cityswipe quiz to
+              find your perfect destination!
+            </h1>
+          )}
 
           <p className="text-3xl text-center sm:text-left sm:text-[44px] w-full font-bold">
             {currentQuestion.question}
           </p>
 
-          {currentQuestion.infoText != "" && <h1 className=" w-full w-md text-muted-foreground sm:text-left text-center place-content-center text-[15px]">
-            {currentQuestion.infoText}
-          </h1>}
+          {currentQuestion.infoText != "" && (
+            <h1 className=" w-full w-md text-muted-foreground sm:text-left text-center place-content-center text-[15px]">
+              {currentQuestion.infoText}
+            </h1>
+          )}
 
           {/* Answer Options */}
           <div className="flex flex-col w-full place-items-start gap-3 pt-8">
-            {currentQuestion.selectionType != "text" && (<ToggleGroup
-              id="toggle-group"
-              type={currentQuestion.selectionType as "multiple" | "single"}
-              className="flex w-full sm:w-auto"
-            >
-              {currentQuestion.answerOptions.map((answer, i) => {
-                return (
-                  <ToggleGroupItem
-                    key={`response-option-${i}`}
-                    id={`response-option-${i}`}
-                    className={"data-[state=on]:bg-gradient-to-t data-[state=on]:from-cyan-500 data-[state=on]:to-green-400  data-[state=on]:text-white text-muted-foreground"}
-                    variant="outline"
-                    value={answer}
-                    size="lg"
-                  >
-                    {answer}
-                  </ToggleGroupItem>
-                );
-              })}
-            </ToggleGroup>)}
+            {currentQuestion.selectionType != "text" && (
+              <ToggleGroup
+                id="toggle-group"
+                type={currentQuestion.selectionType as "multiple" | "single"}
+                className="flex w-full sm:w-auto"
+              >
+                {currentQuestion.answerOptions.map((answer, i) => {
+                  return (
+                    <ToggleGroupItem
+                      key={`response-option-${i}`}
+                      id={`response-option-${i}`}
+                      className={
+                        "data-[state=on]:bg-gradient-to-t data-[state=on]:from-cyan-500 data-[state=on]:to-green-400  data-[state=on]:text-white text-muted-foreground"
+                      }
+                      variant="outline"
+                      value={answer}
+                      size="lg"
+                    >
+                      {answer}
+                    </ToggleGroupItem>
+                  );
+                })}
+              </ToggleGroup>
+            )}
 
             <div className="flex sm:flex w-full pt-0">
               <Input
