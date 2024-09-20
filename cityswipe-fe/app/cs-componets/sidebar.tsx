@@ -116,14 +116,14 @@ export default function Sidebar( {clerkdata, matches} : any,) {
             {/* desktop */}
             <div className="w-full h-full bg-gray-100 py-[2px] place-items-center place-content-center hidden md:flex flex-col justify-between" >
                 
-                <div className="w-full z-10 flex place-content-center place-items-center  h-[6%] border-b border-primary/20">
+                <div className="w-full z-10 flex place-content-center place-items-center h-[6%] border-b border-primary/20">
                     <span onClick={() => setIsItineraryModalOpen?.(!isItineraryModalOpen)} className="hover:cursor-pointer">
                         { isItineraryModalOpen && <PanelRight /> }
                         { !isItineraryModalOpen && <PanelLeft /> }
                     </span>
                 </div>
 
-                <div className="flex py-4 place-items-center  flex-col w-max h-[70%]  gap-3">
+                <div className="flex py-4 place-items-center flex-col w-max h-[70%] gap-3">
 
 
                     {/* selected */}
@@ -155,7 +155,7 @@ export default function Sidebar( {clerkdata, matches} : any,) {
 
 
                     {/* mapped destinations */}
-                    <div className="w-max h-[50%] flex flex-col gap-4  no-scrollbar overflow-y-scroll">
+                    <div className="w-max h-full flex flex-col gap-4 no-scrollbar overflow-y-scroll">
 
                         {usermatches?.map((dest: DestinationItem, index: number) => {
                             return (
