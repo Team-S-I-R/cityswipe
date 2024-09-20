@@ -155,13 +155,9 @@ export default function Chat({matches}: any) {
     }
 
     const handleAddingItemToItinerary = (text: any) => {
-        let count = 0;
         console.log("adding item....");
         console.log("text: ", text);
-        if (count == 0) {
-            setNewItineraryItem?.(text);
-            count += 1;
-        }
+        setNewItineraryItem?.(text);
         console.log("adding item is true now....");
         setAddingItemToItinerary?.(true);
     }
