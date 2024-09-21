@@ -54,6 +54,10 @@ const PricingPage = () => {
       const checkoutSessionJson = await checkoutSession.json();
   
       const stripe = await getStripe();
+      if (!stripe) {
+        console.error("Stripe initialization failed.");
+        return;
+      }
       const { error } = await stripe.redirectToCheckout({
         sessionId: checkoutSessionJson.id,
       });
