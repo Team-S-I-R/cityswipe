@@ -38,6 +38,10 @@ const ResultPage: React.FC = () => {
     }
   };
 
+  const handleFreePlan = () => {
+    router.push("/quiz");
+  };
+
   useEffect(() => {
     const fetchCheckoutSession = async (): Promise<void> => {
       if (!session_id) return;
@@ -109,7 +113,7 @@ const ResultPage: React.FC = () => {
                 Your payment was not successful. Please try again.
               </p>
               <div className="flex gap-4 justify-center">
-                <Button className="bg-gradient-to-t from-cyan-500 to-green-400">
+                <Button onClick={() => handleFreePlan()} className="bg-gradient-to-t from-cyan-500 to-green-400">
                   Get Started Free
                 </Button>
                 <Button onClick={() => handleSubmit()} className="bg-gradient-to-t from-cyan-500 to-green-400">

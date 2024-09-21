@@ -8,10 +8,12 @@ import destination1 from "../assets/imgs/destination-img-1.jpg";
 import destination2 from "../assets/imgs/destination-img-2.jpg";
 import destination3 from "../assets/imgs/destination-img-3.jpg";
 import destination4 from "../assets/imgs/destination-img-4.jpg";
+import { useRouter } from "next/navigation";
 
 const PricingPage = () => {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const images = [destination1, destination2, destination3, destination4];
+    const router = useRouter();
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -29,7 +31,7 @@ const PricingPage = () => {
             features: [
                 "8 city matches per quiz",
                 "itinerary planning for 1 city match",
-                "1000 chat messages",
+                "100 chat messages",
             ]
         },
         {
@@ -37,9 +39,9 @@ const PricingPage = () => {
             price: "$19.99",
             description: "Ideal for serious travelers",
             features: [
-                "Unlimited city matches",
+                "Even more city matches",
                 "Advanced itinerary planning for all matches",
-                "unlimited chat messages",
+                "Unlimited chat messages",
             ]
         }
     ];
@@ -65,6 +67,10 @@ const PricingPage = () => {
       if (error) {
         console.warn(error.message);
       }
+    };
+
+    const handleFreePlan = () => {
+      router.push("/quiz");
     };
 
     return (
@@ -106,7 +112,7 @@ const PricingPage = () => {
                         <CardFooter>
                             <Button 
                                 className="w-full bg-gradient-to-t from-cyan-500 to-green-400"
-                                onClick={plan.title === "Pro" ? handleSubmit : undefined}
+                                onClick={plan.title === "Pro" ? handleSubmit : handleFreePlan}
                             >
                                 {plan.title === "Free" ? "Get Started" : "Choose Plan"}
                             </Button>
