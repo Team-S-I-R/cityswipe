@@ -43,10 +43,19 @@ const Itinerary = () => {
     const editor = useCreateBlockNote({
         initialContent: [
             {
-              type: "paragraph",
-              
+              type: "paragraph", 
               content: `Welcome to your itinerary!`,
-            }
+            },
+            {
+              type: "paragraph", 
+              content: `Here you can further plan out your trip, by jotting down important information you want to remember.
+              `,
+            },
+            {
+              type: "paragraph", 
+              content: `Also, by talking to your match and simply press "Add to itinerary", under the green speech bubble, it will add whatever you are talking about to your itinerary as well!
+              `,
+            },
         ]
     });
     
@@ -99,7 +108,7 @@ const Itinerary = () => {
                     
                     <div className="select-none text-[14px] px-2 text-center font-bold flex-nowrap flex h-[6%] border-b  border-primary/20 w-full place-content-center place-items-center gap-2">
                         <p>My</p>
-                        <p>{selectedMatch}</p>
+                        {/* <p>{selectedMatch}</p> */}
                         <p className="">Itinerary
                         </p>
                         <span className="bg-gradient-to-t from-cyan-400 to-green-400 text-[9px] px-2 py-1 text-white rounded-full  top-[-40%] right-[-70%]">NEW</span>
