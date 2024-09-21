@@ -8,10 +8,12 @@ import destination1 from "../assets/imgs/destination-img-1.jpg";
 import destination2 from "../assets/imgs/destination-img-2.jpg";
 import destination3 from "../assets/imgs/destination-img-3.jpg";
 import destination4 from "../assets/imgs/destination-img-4.jpg";
+import { useRouter } from "next/navigation";
 
 const PricingPage = () => {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const images = [destination1, destination2, destination3, destination4];
+    const router = useRouter();
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -29,7 +31,7 @@ const PricingPage = () => {
             features: [
                 "8 city matches per quiz",
                 "Itinerary planning for 1 city match",
-                "1000 chat messages",
+                "100 chat messages",
             ]
         },
         {
@@ -74,6 +76,10 @@ const PricingPage = () => {
       }
     };
 
+    const handleFreePlan = () => {
+      router.push("/quiz");
+    };
+
     return (
         <div className="container w-full h-full py-12 flex flex-col items-center justify-center min-h-screen">
             <div className="absolute inset-0 z-[-1] overflow-hidden w-screen h-screen">
@@ -113,7 +119,7 @@ const PricingPage = () => {
                         <CardFooter>
                             <Button 
                                 className="w-full bg-gradient-to-t from-cyan-500 to-green-400"
-                                onClick={() => plan.title !== "Free" ? handleSubmit(plan.title) : null}
+                                onClick={() => plan.title !== "Free" ? handleSubmit(plan.title) : handleFreePlan()}
                             >
                                 {plan.title === "Free" ? "Get Started" : "Choose Plan"}
                             </Button>
