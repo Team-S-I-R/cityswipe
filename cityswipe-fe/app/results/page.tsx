@@ -6,17 +6,18 @@ import Header from '../cs-componets/header';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 // import { Spinner } from "@/components/ui/spinner";
+import getStripe from "@/utils/get-stripe";
 
-const ResultPage = () => {
+const ResultPage: React.FC = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const session_id = searchParams.get("session_id");
   
-  const [loading, setLoading] = useState(true);
-  const [session, setSession] = useState(null);
-  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [session, setSession] = useState<any>(null);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (): Promise<void> => {
     const checkoutSession = await fetch("/api/checkout_sessions", {
       method: "POST",
       headers: { origin: "http://localhost:3000"},
@@ -26,17 +27,19 @@ const ResultPage = () => {
     const checkoutSessionJson = await checkoutSession.json();
 
     const stripe = await getStripe();
-    const { error } = await stripe.redirectToCheckout({
-      sessionId: checkoutSessionJson.id,
-    });
+    if (stripe) {
+      const { error } = await stripe.redirectToCheckout({
+        sessionId: checkoutSessionJson.id,
+      });
 
-    if (error) {
-      console.warn(error.message);
+      if (error) {
+        console.warn(error.message);
+      }
     }
   };
 
   useEffect(() => {
-    const fetchCheckoutSession = async () => {
+    const fetchCheckoutSession = async (): Promise<void> => {
       if (!session_id) return;
       try {
         const res = await fetch(
@@ -60,12 +63,12 @@ const ResultPage = () => {
   if (loading) {
     return (
       <div className="w-screen h-screen flex flex-col items-center justify-center">
-        <Card className="w-full max-w-sm text-center">
-          <CardContent className="pt-6">
+        <div className="w-full max-w-sm text-center bg-white shadow-md rounded-lg p-6">
+          <div className="pt-6">
             {/* <Spinner className="w-8 h-8" /> */}
             <p className="mt-2 text-lg">Loading...</p>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
     );
   }

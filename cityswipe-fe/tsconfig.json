@@ -32,7 +32,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "app/results/page.js",
+    "app/results/page.tsx",
     "api/checkout_sessions/route.js",
   ],
   "exclude": [
