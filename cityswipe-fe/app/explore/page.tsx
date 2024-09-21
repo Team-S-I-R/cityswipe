@@ -40,6 +40,7 @@ export default function Explore({clerkdata, matches, questions}: any) {
 
     useEffect(() => {
         setUserQuestions?.(questions);
+        setIsItineraryModalOpen?.(true);
     }, []);
 
 
@@ -60,7 +61,7 @@ export default function Explore({clerkdata, matches, questions}: any) {
 
                         <motion.div
                         key='1'
-                            initial="closed"
+                            initial="open"
                             animate={isItineraryModalOpen ? "open" : "closed"}
                             variants={itinerarVariants} 
                             transition={{ duration: 1.25 }}                                     
@@ -71,7 +72,7 @@ export default function Explore({clerkdata, matches, questions}: any) {
 
                         <motion.div 
                         key='2'
-                        initial="closed"
+                        initial="open"
                         animate={isItineraryModalOpen ? "open" : "closed"}
                         variants={chatVariants} 
                         transition={{ duration: 0.5 }}   

@@ -252,6 +252,39 @@ export async function makeItinerary(city: string, country: string, history: Mess
   };
 }
 
+export async function summerizeItineraryText(itinerarytext: string ) {
+  const model = google("models/gemini-1.5-flash");
+
+
+  // Construct the prompt for the API, including the history
+  const prompt = `
+    You are a travel assistant. 
+
+    Here are tips you must follow when generating this content. THis is important because we will be 
+    adding this text to our users itinerary.
+
+    Ths user is going to give you some text and they want you ot turn it into a small summary that they can use on their itinerary. 
+
+    this is the text they gave you: ${itinerarytext}
+       
+    DO NOT ADD ANY MARKDOWN, CODE BLOCKS OR FORMATTING.
+
+
+  `;
+
+  // Send prompt to the model and wait for the response
+  const { text } = await generateText({
+    model: model,
+    prompt: prompt,
+  });
+
+  // Update conversation history for the city
+  console.log("summerizeItineraryText", text);
+  // Return the new message and updated conversation history
+  return text
+
+}
+
 
 
 

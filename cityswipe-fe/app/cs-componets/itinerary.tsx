@@ -22,6 +22,7 @@ import { BlockNoteView } from "@blocknote/mantine";
 import { Block } from "@blocknote/core";
 import "@blocknote/mantine/style.css";
 import { useCreateBlockNote } from "@blocknote/react";
+import { summerizeItineraryText } from "../actions";
 
 type BlockIdentifier = string | Block;
 
@@ -43,10 +44,12 @@ const Itinerary = () => {
         initialContent: [
             {
               type: "paragraph",
-              content: `Welcome to your ${selectedMatch || usermatches[0]?.city} itinerary!`,
+              
+              content: `Welcome to your itinerary!`,
             }
         ]
     });
+    
     // gets all "blocks in the itinerary"
     const blocks = editor.document;
 
@@ -69,12 +72,24 @@ const Itinerary = () => {
 
     };
     
+    
+
     useEffect(() => {
-        if (addingItemToItinerary) {
-            console.log("insert blocks is starting....");
-            insertBlocks([{type: "paragraph", content: newItineraryItem}], blockToMessWith, "after");
-            console.log("false now");
-        }
+        const insertSummarizedText = async () => {
+            if (addingItemToItinerary) {
+                console.log("insert blocks is starting....");
+                try {
+                    const summarizedText = await summerizeItineraryText?.(newItineraryItem as string);
+                    console.log("summarizedText: ", summarizedText);
+                    insertBlocks([{type: "paragraph", content: summarizedText}], blockToMessWith, "after");
+                    console.log("false now");
+                } catch (error) {
+                    console.error("Error summarizing itinerary text:", error);
+                }
+            }
+        };
+
+        insertSummarizedText();
     }, [addingItemToItinerary, newItineraryItem, blockToMessWith]);
 
 
