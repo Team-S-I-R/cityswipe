@@ -71,7 +71,7 @@ import useGSAP from '@gsap/react'
 
         {/* desktop */}
         <motion.div 
-        initial={{ opacity: 0, y: 100 }}
+        initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1.5 }}
         className="hidden sm:flex absolute z-[20] top-10 px-8 w-full place-items-center place-content-center justify-between">
@@ -100,6 +100,10 @@ import useGSAP from '@gsap/react'
                 <SignedIn>
 
                 <div className="flex place-items-center place-content-center text-[12px]">
+                  <Link href="/pricing">
+                    <button className="text-muted-foreground hover:text-black hover:scale-[97%] px-4 py-2 rounded-lg">Pricing</button>
+                  </Link>
+
                   <Link href="/match">
                     <button className="text-muted-foreground hover:text-black hover:scale-[97%] px-4 py-2 rounded-lg">Match</button>
                   </Link>
@@ -120,7 +124,7 @@ import useGSAP from '@gsap/react'
 
         {/* Mobile */}
         <motion.div 
-        initial={{ opacity: 0, y: 100 }}
+        initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1.5 }}
         className="flex sm:hidden absolute z-[20] top-5 px-8 w-full place-items-center place-content-center justify-between">

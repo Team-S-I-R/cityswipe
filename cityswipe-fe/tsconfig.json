@@ -31,7 +31,9 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts"
+    ".next/types/**/*.ts",
+    "app/results/page.tsx",
+    "api/checkout_sessions/route.js",
   ],
   "exclude": [
     "node_modules"
