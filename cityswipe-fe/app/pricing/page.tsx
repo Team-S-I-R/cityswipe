@@ -37,7 +37,7 @@ const PricingPage = () => {
         {
             title: "Pro Monthly",
             price: "$5",
-            description: "Ideal for serious travelers/TEMPORARILY FREE",
+            description: "Ideal for serious travelers",
             features: [
                 "Unlimited city matches",
                 "Itinerary planning for all city matches",
@@ -47,7 +47,7 @@ const PricingPage = () => {
         {
             title: "Pro Yearly",
             price: "$50",
-            description: "Best value for frequent travelers/TEMPORARILY FREE",
+            description: "Best value for frequent travelers",
             features: [
                 "All Pro Monthly features",
                 "Save $10 compared to monthly plan",
@@ -105,7 +105,7 @@ const PricingPage = () => {
                         </CardHeader>
                         <CardContent className="flex-grow">
                             <p className="text-3xl font-bold mb-4">{plan.price}<span className="text-sm font-normal">{plan.price !== "$0" ? (plan.title === "Pro Yearly" ? "/year" : "/month") : ""}</span></p>
-                            <ul className="space-y-2">
+                            <ul className="space-y-2 text-sm">
                                 {plan.features.map((feature, featureIndex) => (
                                     <li key={featureIndex} className="flex items-center">
                                         <svg className="w-4 h-4 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
