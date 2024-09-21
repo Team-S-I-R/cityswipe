@@ -99,7 +99,7 @@ export default function Hero() {
             <div className="absolute top-0 left-0 w-screen h-screen">
               <img
                 id="match-img"
-                className="opacity-1  w-full h-full object-cover"
+                className="opacity-1 w-full h-full object-cover"
                 src={destination1.src}
                 alt=""
               />
