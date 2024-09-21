@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import getStripe from "@/utils/get-stripe";
 import destination1 from "../assets/imgs/destination-img-1.jpg";
 import destination2 from "../assets/imgs/destination-img-2.jpg";
 import destination3 from "../assets/imgs/destination-img-3.jpg";
@@ -43,6 +44,25 @@ const PricingPage = () => {
         }
     ];
 
+    const handleSubmit = async () => {
+      const checkoutSession = await fetch("/api/checkout_sessions", {
+        method: "POST",
+        headers: { origin: "http://localhost:3000"},
+      //   headers: { origin: "https://cityswipe.app/"},
+      //   body: JSON.stringify({model: model})
+      });
+      const checkoutSessionJson = await checkoutSession.json();
+  
+      const stripe = await getStripe();
+      const { error } = await stripe.redirectToCheckout({
+        sessionId: checkoutSessionJson.id,
+      });
+  
+      if (error) {
+        console.warn(error.message);
+      }
+    };
+
     return (
         <div className="container w-full h-full py-12 flex flex-col items-center justify-center min-h-screen">
             <div className="absolute inset-0 z-[-1] overflow-hidden w-screen h-screen">
@@ -80,7 +100,12 @@ const PricingPage = () => {
                             </ul>
                         </CardContent>
                         <CardFooter>
-                            <Button className="w-full bg-gradient-to-t from-cyan-500 to-green-400">{plan.title === "Free" ? "Get Started" : "Choose Plan"}</Button>
+                            <Button 
+                                className="w-full bg-gradient-to-t from-cyan-500 to-green-400"
+                                onClick={plan.title === "Pro" ? handleSubmit : undefined}
+                            >
+                                {plan.title === "Free" ? "Get Started" : "Choose Plan"}
+                            </Button>
                         </CardFooter>
                     </Card>
                 ))}
