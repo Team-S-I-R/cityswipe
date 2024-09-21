@@ -2,28 +2,48 @@ import { NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { NextRequest } from 'next/server'
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: '2023-08-16' })
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: '2024-06-20' })
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
-//   const data = await req.json()
+  const data = await req.json()
   
   try {
+    const plan = data.plan
+
+    let priceData: Stripe.Checkout.SessionCreateParams.LineItem.PriceData
+
+    if (plan === 'Pro Monthly') {
+      priceData = {
+        currency: 'usd',
+        product_data: {
+          name: 'Pro Monthly Subscription',
+        },
+        unit_amount: 500, // $5.00
+        recurring: {
+          interval: 'month',
+        },
+      }
+    } else if (plan === 'Pro Yearly') {
+      priceData = {
+        currency: 'usd',
+        product_data: {
+          name: 'Pro Yearly Subscription',
+        },
+        unit_amount: 5000, // $50.00
+        recurring: {
+          interval: 'year',
+        },
+      }
+    } else {
+      throw new Error('Invalid plan selected')
+    }
+
     const params: Stripe.Checkout.SessionCreateParams = {
       mode: 'subscription',
       payment_method_types: ['card'],
       line_items: [
         {
-          price_data: {
-            currency: 'usd',
-            product_data: {
-              name: `Pro Subscription`,
-            },
-            unit_amount: Math.round(19.99 * 100),
-            recurring: {
-              interval: 'month',
-              interval_count: 1,
-            },
-          },
+          price_data: priceData,
           quantity: 1,
         },
       ],

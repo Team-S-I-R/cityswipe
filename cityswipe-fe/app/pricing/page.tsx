@@ -28,38 +28,49 @@ const PricingPage = () => {
             description: "Perfect for casual travelers",
             features: [
                 "8 city matches per quiz",
-                "itinerary planning for 1 city match",
+                "Itinerary planning for 1 city match",
                 "1000 chat messages",
             ]
         },
         {
-            title: "Pro",
-            price: "$19.99",
-            description: "Ideal for serious travelers",
+            title: "Pro Monthly",
+            price: "$5",
+            description: "Ideal for serious travelers/TEMPORARILY FREE",
             features: [
                 "Unlimited city matches",
-                "Advanced itinerary planning for all matches",
-                "unlimited chat messages",
+                "Itinerary planning for all city matches",
+                "Unlimited chat messages",
+            ]
+        },
+        {
+            title: "Pro Yearly",
+            price: "$50",
+            description: "Best value for frequent travelers/TEMPORARILY FREE",
+            features: [
+                "All Pro Monthly features",
+                "Save $10 compared to monthly plan",
+                // "Priority customer support",
             ]
         }
     ];
 
-    const handleSubmit = async () => {
+    const handleSubmit = async (plan: string) => {
       const checkoutSession = await fetch("/api/checkout_sessions", {
         method: "POST",
         headers: { origin: "http://localhost:3000"},
-      //   headers: { origin: "https://cityswipe.app/"},
-      //   body: JSON.stringify({model: model})
+        body: JSON.stringify({plan: plan})
       });
       const checkoutSessionJson = await checkoutSession.json();
   
       const stripe = await getStripe();
-      const { error } = await stripe.redirectToCheckout({
-        sessionId: checkoutSessionJson.id,
-      });
-  
-      if (error) {
-        console.warn(error.message);
+      if (stripe) {
+        const { error } = await stripe.redirectToCheckout({
+          sessionId: checkoutSessionJson.id,
+        });
+    
+        if (error) {
+          console.warn(error.message);
+        }
       }
     };
 
@@ -79,7 +90,7 @@ const PricingPage = () => {
                 <div className="h-full absolute inset-0 bg-gradient-to-b from-white via-white to-transparent"></div>
             </div>
             <h1 className="text-4xl font-bold text-center mb-12 relative z-10">Choose Your Plan</h1>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl w-full relative z-10">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl w-full relative z-10">
                 {pricingPlans.map((plan, index) => (
                     <Card key={index} className="flex flex-col">
                         <CardHeader>
@@ -87,7 +98,7 @@ const PricingPage = () => {
                             <CardDescription>{plan.description}</CardDescription>
                         </CardHeader>
                         <CardContent className="flex-grow">
-                            <p className="text-3xl font-bold mb-4">{plan.price}<span className="text-sm font-normal">{plan.price !== "$0" ? "/month" : ""}</span></p>
+                            <p className="text-3xl font-bold mb-4">{plan.price}<span className="text-sm font-normal">{plan.price !== "$0" ? (plan.title === "Pro Yearly" ? "/year" : "/month") : ""}</span></p>
                             <ul className="space-y-2">
                                 {plan.features.map((feature, featureIndex) => (
                                     <li key={featureIndex} className="flex items-center">
@@ -102,7 +113,7 @@ const PricingPage = () => {
                         <CardFooter>
                             <Button 
                                 className="w-full bg-gradient-to-t from-cyan-500 to-green-400"
-                                onClick={plan.title === "Pro" ? handleSubmit : undefined}
+                                onClick={() => plan.title !== "Free" ? handleSubmit(plan.title) : null}
                             >
                                 {plan.title === "Free" ? "Get Started" : "Choose Plan"}
                             </Button>

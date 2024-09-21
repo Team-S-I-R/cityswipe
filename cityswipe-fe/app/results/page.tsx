@@ -17,12 +17,11 @@ const ResultPage: React.FC = () => {
   const [session, setSession] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = async (): Promise<void> => {
+  const handleSubmit = async (plan: string): Promise<void> => {
     const checkoutSession = await fetch("/api/checkout_sessions", {
       method: "POST",
       headers: { origin: "http://localhost:3000"},
-    //   headers: { origin: "https://cityswipe.app/"},
-    //   body: JSON.stringify({model: model})
+      body: JSON.stringify({ plan: plan })
     });
     const checkoutSessionJson = await checkoutSession.json();
 
@@ -63,7 +62,7 @@ const ResultPage: React.FC = () => {
   if (loading) {
     return (
       <div className="w-screen h-screen flex flex-col items-center justify-center">
-        <div className="w-full max-w-sm text-center bg-white shadow-md rounded-lg p-6">
+        <div className="w-full max-w-sm text-center bg-white rounded-lg p-6">
           <div className="pt-6">
             {/* <Spinner className="w-8 h-8" /> */}
             <p className="mt-2 text-lg">Loading...</p>
@@ -112,8 +111,11 @@ const ResultPage: React.FC = () => {
                 <Button className="bg-gradient-to-t from-cyan-500 to-green-400">
                   Get Started Free
                 </Button>
-                <Button onClick={() => handleSubmit()} className="bg-gradient-to-t from-cyan-500 to-green-400">
-                  Try Pro Plan
+                <Button onClick={() => handleSubmit('Pro Monthly')} className="bg-gradient-to-t from-cyan-500 to-green-400">
+                  Try Pro Monthly
+                </Button>
+                <Button onClick={() => handleSubmit('Pro Yearly')} className="bg-gradient-to-t from-cyan-500 to-green-400">
+                  Try Pro Yearly
                 </Button>
               </div>
             </div>
