@@ -1,7 +1,7 @@
 'use client'
 
 import { useCitySwipe } from "../citySwipeContext";
-import { ChevronDown, EllipsisVertical, Home, MessageCircleMore, PanelLeft, PanelRight, Settings } from "lucide-react";
+import { ChevronDown, CreditCard, EllipsisVertical, Home, MessageCircleMore, PanelLeft, PanelRight, Settings } from "lucide-react";
 import { MessageCircleHeart } from "lucide-react";
 import { House } from "lucide-react";
 import Link from "next/link";
@@ -226,10 +226,16 @@ export default function Sidebar( {clerkdata, matches} : any,) {
 
                     </Link>
                   
-                    <div className="cursor-pointer text-[14px] w-max h-max flex place-items-center gap-3">
+                    <Link href="/pricing">
+                    
+                        <CreditCard />
+
+                    </Link>  
+                            
+                    {/* <div className="cursor-pointer text-[14px] w-max h-max flex place-items-center gap-3">
                         <Settings />
-                        {/* <p className="font-bold">Home</p> */}
-                    </div>           
+                    </div>  */}
+
 
                     {/* user stuff */}
                     <div className="w-max  h-max">
@@ -272,9 +278,17 @@ export default function Sidebar( {clerkdata, matches} : any,) {
 
                 </Link>
 
+                <Link href="/pricing">
+                    
+                    <div className="px-1 cursor-pointer text-[14px] w-full h-max flex place-items-center gap-3">
+                        <CreditCard size={18} />
+                    </div>
+
+                </Link>  
+{/* 
                 <div className="px-1 cursor-pointer text-[14px] w-full h-max flex place-items-center gap-3">
                     <Settings size={18}/>
-                </div>
+                </div> */}
 
                        {/* user stuff */}
                 <div className="w-full h-max">

@@ -100,9 +100,6 @@ import useGSAP from '@gsap/react'
                 <SignedIn>
 
                 <div className="flex place-items-center place-content-center text-[12px]">
-                  <Link href="/pricing">
-                    <button className="text-muted-foreground hover:text-black hover:scale-[97%] px-4 py-2 rounded-lg">Pricing</button>
-                  </Link>
 
                   <Link href="/match">
                     <button className="text-muted-foreground hover:text-black hover:scale-[97%] px-4 py-2 rounded-lg">Match</button>
@@ -111,6 +108,11 @@ import useGSAP from '@gsap/react'
                   <Link href="/explore">
                     <button className="text-muted-foreground hover:text-black hover:scale-[97%] px-4 py-2 rounded-lg">Chat</button>
                   </Link>
+           
+                  <Link href="/pricing">
+                    <button className="text-muted-foreground hover:text-black hover:scale-[97%] px-4 py-2 rounded-lg">Pricing</button>
+                  </Link>
+                  
               </div>
                 
                   <UserButton />

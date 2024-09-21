@@ -57,6 +57,8 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     
     const checkoutSession: Stripe.Checkout.Session = await stripe.checkout.sessions.create(params)
     
+    // ANCHOR WILL ADD RESULTS TO DATABASE HERE
+
     return NextResponse.json(checkoutSession, {
       status: 200,
     })
