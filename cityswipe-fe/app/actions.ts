@@ -2,20 +2,21 @@
 
 import { google } from "@ai-sdk/google";
 import { streamText } from "ai";
-import { generateText } from 'ai';
-import { createStreamableValue } from "ai/rsc";
+import { generateText } from "ai";
+import { createStreamableValue, readStreamableValue } from "ai/rsc";
 import prisma from "@/lib/db";
-import { z } from 'zod';
-import { revalidatePath } from 'next/cache';
+import { z } from "zod";
+import { revalidatePath } from "next/cache";
 import { currentUser } from "@clerk/nextjs/server";
-
+import quizQuestions from "./quiz-questions/questions";
+import { createClient } from "pexels";
 
 // ANCHOR gemini stuff --------------------------------------------------------------------
 
 export interface Message {
   role: "user" | "assistant";
   content: string;
-  type: string
+  type: string;
 }
 
 const conversationHistory: Record<string, Message[]> = {};
@@ -42,7 +43,7 @@ export async function generateCityBio(city: string) {
       topK: 50,
     });
 
-    let fullBio = '';
+    let fullBio = "";
 
     for await (const text of textStream) {
       stream.update(text);
@@ -51,14 +52,17 @@ export async function generateCityBio(city: string) {
 
     console.log(`generated bio for ${city}:`, fullBio);
     try {
-      const bioLines = fullBio.split('\n');
+      const bioLines = fullBio.split("\n");
       const bioObject = {
-        age: bioLines[0].split(':')[1].trim(),
-        languages: bioLines[1].split(':')[1].trim(),
-        food: bioLines[2].split(':')[1].trim(),
-        interests: bioLines[3].split(':')[1].trim(),
+        age: bioLines[0].split(":")[1].trim(),
+        languages: bioLines[1].split(":")[1].trim(),
+        food: bioLines[2].split(":")[1].trim(),
+        interests: bioLines[3].split(":")[1].trim(),
       };
-      console.log(`Structured bio for ${city}:`, JSON.stringify(bioObject, null, 2));
+      console.log(
+        `Structured bio for ${city}:`,
+        JSON.stringify(bioObject, null, 2)
+      );
     } catch (error) {
       console.error(`Error parsing bio for ${city}:`, error);
     }
@@ -95,12 +99,16 @@ export async function streamConversation(history: Message[]) {
   };
 }
 
-export async function streamFlirtatiousConversation(city: string, country: string, history: Message[]) {
+export async function streamFlirtatiousConversation(
+  city: string,
+  country: string,
+  history: Message[]
+) {
   const stream = createStreamableValue();
   // const model = google("models/gemini-1.5-pro-latest");
   const model = google("models/gemini-1.5-flash");
 
-  const sanitizeText = (text: string,) => text.replace(/[*_~`]/g, '');
+  const sanitizeText = (text: string) => text.replace(/[*_~`]/g, "");
 
   const prompt = `You are ${city} in ${country}, a charming city in a "dating app" for vacation spots. You have a personality that reflects the unique characteristics of your city. When the user asks about who you are, you must respond as ${city} in ${country}. Your responses should be:
   
@@ -110,21 +118,25 @@ export async function streamFlirtatiousConversation(city: string, country: strin
   
   Make sure to match the style of the user's input. Here's the conversation so far:
   
-  ${history.map(msg => `${msg.role === "user" ? "User" : "Assistant"}: ${sanitizeText(msg.content)}`).join('\n')}
+  ${history
+    .map(
+      (msg) =>
+        `${msg.role === "user" ? "User" : "Assistant"}: ${sanitizeText(
+          msg.content
+        )}`
+    )
+    .join("\n")}
   
   Your response should combine all these elements in a balanced way.
   
   If the user asks anything else, just try to be nice, friendly and make sure you answer everything in complete sentences.
-  `
-  
+  `;
 
-  ;
-  
   (async () => {
     const { textStream } = await streamText({
       model: model,
       messages: [{ role: "user", content: prompt }],
-      temperature: 0.9, 
+      temperature: 0.9,
       topP: 0.85,
       topK: 40,
     });
@@ -155,12 +167,16 @@ export async function getConversationHistory(city: string) {
   return conversationHistory[city] || [];
 }
 
-export async function makeItinerary(city: string, country: string, history: Message[]) {
+export async function makeItinerary(
+  city: string,
+  country: string,
+  history: Message[]
+) {
   // Use the appropriate Gemini model
   const model = google("models/gemini-1.5-flash");
 
   // Helper function to sanitize text input
-  const sanitizeText = (text: string) => text.replace(/[*_~`]/g, '');
+  const sanitizeText = (text: string) => text.replace(/[*_~`]/g, "");
 
   // Construct the prompt for the API, including the history
   const prompt = `
@@ -223,7 +239,14 @@ export async function makeItinerary(city: string, country: string, history: Mess
   
     Here is the history of the conversation to provide some context.:
 
-  ${history.map(msg => `${msg.role === "user" ? "User" : "Assistant"}: ${sanitizeText(msg.content)}`).join('\n')}
+  ${history
+    .map(
+      (msg) =>
+        `${msg.role === "user" ? "User" : "Assistant"}: ${sanitizeText(
+          msg.content
+        )}`
+    )
+    .join("\n")}
   
 
 
@@ -234,7 +257,6 @@ export async function makeItinerary(city: string, country: string, history: Mess
     model: model,
     prompt: prompt,
   });
-
 
   console.log("cc", text);
 
@@ -247,14 +269,13 @@ export async function makeItinerary(city: string, country: string, history: Mess
   // Return the new message and updated conversation history
   return {
     messages: history,
-    newMessage: text,  // Assuming `response.data.text` contains the generated message
+    newMessage: text, // Assuming `response.data.text` contains the generated message
     type: "itinerary",
   };
 }
 
-export async function summerizeItineraryText(itinerarytext: string ) {
+export async function summerizeItineraryText(itinerarytext: string) {
   const model = google("models/gemini-1.5-flash");
-
 
   // Construct the prompt for the API, including the history
   const prompt = `
@@ -281,12 +302,8 @@ export async function summerizeItineraryText(itinerarytext: string ) {
   // Update conversation history for the city
   console.log("summerizeItineraryText", text);
   // Return the new message and updated conversation history
-  return text
-
+  return text;
 }
-
-
-
 
 // ANCHOR waiting list form stuff ----------------------------------------------------
 
@@ -303,7 +320,10 @@ type FormState = {
   message: string;
 };
 
-export async function submitFormResponse(formData: FormData, formState: FormState) {
+export async function submitFormResponse(
+  formData: FormData,
+  formState: FormState
+) {
   await new Promise((resolve) => setTimeout(resolve, 250));
 
   const city_id = generateRandomId();
@@ -325,66 +345,61 @@ export async function submitFormResponse(formData: FormData, formState: FormStat
       },
     });
 
-    revalidatePath('/');
+    revalidatePath("/");
 
     return {
-      message: 'Message created',
+      message: "Message created",
     };
-
   } catch (error) {
     // Handle the error
     return {
-      message: 'Something went wrong',
+      message: "Something went wrong",
     };
   }
 }
 
-
-
 // ANCHOR adding questions to database (supabase stuff) ------------------------------------
 export async function addQuestions(questions: any) {
-
-  let count = 0
+  let count = 0;
 
   const user = await currentUser();
 
   const quizResponseCount = await prisma?.quizAnswer.findMany({
     where: {
-      userId: user?.id
-    }
+      userId: user?.id,
+    },
   });
 
-
   // ensure this is only run once
-  if (count < 1 && quizResponseCount.length < 1) { {
-    await prisma?.quizAnswer.create({
-      data: {
-        a1: questions?.[0],
-        a2: questions?.[1],
-        a3: questions?.[2],
-        a4: questions?.[3],
-        a5: questions?.[4],
-        a6: questions?.[5],
-        a7: questions?.[6],
-        a8: questions?.[7],
-        a9: questions?.[8],
-        a10: questions?.[9],
-        a11: questions?.[10],
-        a12: questions?.[11],
-        userId: user?.id,
-      },
-    })
+  if (count < 1 && quizResponseCount.length < 1) {
+    {
+      await prisma?.quizAnswer.create({
+        data: {
+          a1: questions?.[0],
+          a2: questions?.[1],
+          a3: questions?.[2],
+          a4: questions?.[3],
+          a5: questions?.[4],
+          a6: questions?.[5],
+          a7: questions?.[6],
+          a8: questions?.[7],
+          a9: questions?.[8],
+          a10: questions?.[9],
+          a11: questions?.[10],
+          a12: questions?.[11],
+          userId: user?.id,
+        },
+      });
 
-    count += 1
+      count += 1;
+    }
   }
-}
 }
 
 // adding matches to database
 export async function addMatch(savedDestination: any) {
-
   const user = await currentUser();
-  
+
   interface Destination {
     city: string;
     username: string;
@@ -397,34 +412,143 @@ export async function addMatch(savedDestination: any) {
   }
 
   // this is the last destination we then just add this to the database
-  const destination: Destination = savedDestination?.destinations[savedDestination?.destinations?.length - 1];
+  const destination: Destination =
+    savedDestination?.destinations[savedDestination?.destinations?.length - 1];
 
   console.log("destination: ", destination);
 
-    await prisma?.match.create({
-      data: {
-        city: destination?.city,
-        username: user?.username || "",
-        country: destination?.country,
-        description: destination?.description,
-        illustration: destination?.illustration,
-        pros: Array.isArray(destination?.pros) ? destination?.pros.map(String) : [],
-        cons: Array.isArray(destination?.cons) ? destination?.cons.map(String) : [],
-        compatibility: destination?.compatibility,
-        userId: user?.id,
-      },
-    });
+  await prisma?.match.create({
+    data: {
+      city: destination?.city,
+      username: user?.username || "",
+      country: destination?.country,
+      description: destination?.description,
+      illustration: destination?.illustration,
+      pros: Array.isArray(destination?.pros)
+        ? destination?.pros.map(String)
+        : [],
+      cons: Array.isArray(destination?.cons)
+        ? destination?.cons.map(String)
+        : [],
+      compatibility: destination?.compatibility,
+      userId: user?.id,
+    },
+  });
 }
-export async function deleteMatch(id: string) {
 
+export async function deleteMatch(id: string) {
   await prisma?.match.delete({
     where: {
       id: id,
     },
   });
 
-  revalidatePath('/explore');
-  revalidatePath('/');
-
+  revalidatePath("/explore");
+  revalidatePath("/");
 }
 
+// Destination Generation
+// export const generateDestinations = async (responses: string[]) => {
+//   const prompt = `Based on the following travel preferences, generate a list of exactly 8 travel destinations formatted as json with values City, Country, Compatibility Percentage(based on the user preferences provided), a brief description of the city, the pros (based on the user preferences), the cons (based on the user preferences). Example format:
+//       [
+//           {
+//               "id": 0
+//               "city": "Tokyo",
+//               "country": "Japan",
+//               "compatibility": 85,
+//               "description": "A short description about tokyo",
+//               "pros": ["Rich history", "Modern architecture", "Vibrant nightlife", "Delicious food", "Famous landmarks", "Fashion industry", "Technology industry", "Historical sites", "Cultural attractions", "Entertainment options"],
+//               "cons": ["Crowded", "Expensive", "Pollution", "Language barrier", "Lack of green spaces", "High cost of living", "Long working hours", "Traffic congestion", "Limited public transportation", "Limited public transportation"],
+//           },
+//           {
+//               "id": 1
+//               "city": "Paris",
+//               "country": "France",
+//               "compatibility": 78,
+//               "description": "A short description about paris",
+//               "pros": ["Beautiful architecture", "Delicious food", "Romantic atmosphere", "Art and fashion", "Historical sites", "Cultural attractions", "Entertainment options", "Museums", "Restaurants", "Parks"],
+//               "cons": ["Expensive", "Crowded", "Language barrier", "Lack of green spaces", "High cost of living", "Long working hours", "Traffic congestion", "Limited public transportation", "Limited public transportation"],
+//           },
+//               ... 6 more of the same format
+//       ]
+
+//       Here are tips you must follow when generating this content. THis is important because we will be using JSON.parse to parse this data so it is important to follow this format and to create NO ERRORS.
+      
+//       Every key in the JSON string is enclosed in double quotes ("key").
+//       The values are correctly formatted (e.g., strings should be in double quotes, numbers should not).
+//       There are no trailing commas after the last property of each object or array.
+//       DO NOT ADD ANY MARKDOWN, CODE BLOCKS OR FORMATTING BESIDES THE EXAMPLE JSON FORMAT.
+
+//       Make sure the compatibility percentage is a number between 0 and 100. 
+//       Do not include formatting or code blocks, follow example. 
+//       Corelate all the data when making decisions. 
+//       the questions answered by the user (in order) are as follows: \n${console.log(
+//         quizQuestions.map((q) => q.question).join("\n")
+//       )}\n 
+      
+//       Here are the user preference answers in order:\n${responses.join("\n")}`;
+
+//   const conversationHistory: Message[] = [
+//     { role: "user" as const, content: prompt, type: "message" },
+//   ];
+
+//   const { newMessage } = await streamConversation(conversationHistory);
+//   let textContent = "";
+
+//   for await (const delta of readStreamableValue(newMessage)) {
+//     textContent += delta;
+//   }
+
+//   let count = 1;
+//   // added a delay because I noticed we get rate limited by the API easily.
+//   // because of this delay this gives us freedom to add either an add or just a better loading state.
+//   // const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+//   const generatedDestinations = [];
+
+//   const destinations = JSON.parse(textContent);
+
+//   for (const destination of destinations) {
+//     const { city, country, compatibility, description, pros, cons } =
+//       destination;
+
+//     // ANCHOR Fetch image for the current city-country pair
+//     const client = createClient(
+//       "8U6Se7vVT3H9tx1KPZAQTkDUSW0IKi3ldgBTVyh3W9NFF7roIpZxktzY"
+//     );
+//     let illustration = "";
+
+//     const searchQuery = `${city}, landscape`;
+//     try {
+//       const response = await client.photos.search({
+//         query: `${searchQuery}`,
+//         per_page: 1,
+//       });
+//       if ("photos" in response && response.photos.length > 0) {
+//         illustration = response.photos[0].src.landscape;
+//       }
+//     } catch (error) {
+//       console.error(`Error in fetching photo for ${city}, ${country}:`, error);
+//     }
+
+//     generatedDestinations.push({
+//       id: count++,
+//       city: city.trim(),
+//       country: country.trim(),
+//       compatibility: parseFloat(compatibility),
+//       illustration: illustration,
+//       description: description.trim(),
+//       pros: pros,
+//       cons: cons,
+//     });
+//   }
+
+//   const validDestinations = generatedDestinations.filter(
+//     (destination) => destination !== null
+//   );
+
+//   return {
+//     id: 1,
+//     cards: validDestinations.reverse(),
+//   };
+// };

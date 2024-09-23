@@ -5,24 +5,27 @@ import { DestinationCompletion, DestinationCards } from "./_components";
 import { savedDestination as initialDestination } from "../../api/savedDestination.api";
 import { getInitialSet } from "../../api/destinationSets.api";
 import { useDestinationSetContext } from "../../context/destinationSetContext";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSavedDestinationContext } from "../../context/savedDestinationContext";
 import Header from "../cs-componets/header";
 
 const Match = () => {
-  // "destination" is the list of destinations 
+  // "destination" is the list of destinations
   const [destinationSet, setDestinationSet] = useDestinationSetContext();
   const [_, setDestination] = useSavedDestinationContext();
+  const [loading, setLoading] = useState(true);
 
   const initialDestinationSet = getInitialSet(0);
 
   useEffect(() => {
+    setLoading(true);
     setDestination(initialDestination);
     // setDestination(destination);
     // setDestination({
     //     id: 1,
     //     cards: destination.reverse(),
     // });
+    setLoading(false);
   }, []);
 
   const isCardStockEmpty = destinationSet.cards.length === 0;
@@ -57,22 +60,19 @@ const Match = () => {
   //   }
   // };
 
-
   return (
     <>
-    <Header />
+      <Header />
       <main className="min-h-screen h-full mx-auto bg-gameSwipe-neutral">
-        
         {/* img debug
         <button className="absolute top-[50%] left-10 bg-red-500 text-white px-4 rounded-md z-[100]" onClick={testPexelsAPI}>
           test
         </button> */}
 
-
         <AnimatePresence mode="wait">
           {!isCardStockEmpty ? (
             <motion.div
-              // else (if the matching is not done) 
+              // else (if the matching is not done)
               key="destinationScreen1"
               id="destinationScreen"
               variants={destinationScreenVariants}
@@ -82,8 +82,8 @@ const Match = () => {
             >
               <DestinationCards />
             </motion.div>
-            /* if the matching is done! */
           ) : (
+            /* if the matching is done! */
             <motion.div
               key="destinationScreen2"
               id="destinationCompletion"
@@ -96,12 +96,9 @@ const Match = () => {
             </motion.div>
           )}
         </AnimatePresence>
-
       </main>
-
-
     </>
-  )
-}
+  );
+};
 
 export default Match;
