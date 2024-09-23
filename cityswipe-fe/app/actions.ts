@@ -341,7 +341,7 @@ export async function submitFormResponse(formData: FormData, formState: FormStat
 
 
 
-// ANCHOR adding questions to database (supabase stuff) ------------------------------------
+// ANCHOR adding to database (supabase stuff) ------------------------------------
 export async function addQuestions(questions: any) {
 
   let count = 0
@@ -380,6 +380,42 @@ export async function addQuestions(questions: any) {
 }
 }
 
+export async function updateQuestions(questions: any) {
+
+    let count = 0
+
+    const user = await currentUser();
+
+    // ensure this is only run once
+    if (count < 1 ) { {
+ 
+      const questionsUpdate = await prisma?.quizAnswer.update({
+        where: {
+            id: questions?.id,
+            userId: user?.id
+        },
+        data: {
+          a1: questions?.[0],
+          a2: questions?.[1],
+          a3: questions?.[2],
+          a4: questions?.[3],
+          a5: questions?.[4],
+          a6: questions?.[5],
+          a7: questions?.[6],
+          a8: questions?.[7],
+          a9: questions?.[8],
+          a10: questions?.[9],
+          a11: questions?.[10],
+          a12: questions?.[11],
+          userId: user?.id,
+      }
+      })
+  
+      }
+    }
+
+}
+
 // adding matches to database
 export async function addMatch(savedDestination: any) {
 
@@ -415,6 +451,9 @@ export async function addMatch(savedDestination: any) {
       },
     });
 }
+
+
+
 export async function deleteMatch(id: string) {
 
   await prisma?.match.delete({
@@ -428,3 +467,6 @@ export async function deleteMatch(id: string) {
 
 }
 
+export async function newSubscriber(subscriber: string) {
+
+}

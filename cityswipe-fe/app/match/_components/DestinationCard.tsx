@@ -141,7 +141,7 @@ const DestinationCard = ({
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 4 }}
         id={`cardDrivenWrapper-${id}`}
-        className="sm:w-[900px] md:h-[660px] hidden sm:flex absolute !cursor-default p-4 gap-4 flex-row shadow-lg bg-white z-10 rounded-xl text-center  pointer-events-none text-black top-[8%] select-none transform translate-x-1/2 translate-y-1/2"
+        className=" md:w-[700px]  hidden sm:flex absolute !cursor-default p-4 gap-4 flex-row shadow-lg bg-white z-10 rounded-xl text-center  pointer-events-none text-black top-[8%] select-none transform translate-x-1/2 translate-y-1/2"
         style={{
           y: drivenY,
           rotate: drivenRotation,
@@ -179,7 +179,7 @@ const DestinationCard = ({
               </div>
 
               {/* ANCHOR the image of match */}
-              <div className="w-[95%] rounded-lg relative h-full bg-gray-400">
+              <div className="w-[95%] rounded-lg relative h-[200px] bg-gray-400">
                 {illustration.length > 10 && (
                   <Image
                     priority
@@ -318,7 +318,7 @@ const DestinationCard = ({
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 5 }}
         id={`cardDrivenWrapper-${id}`}
-        className="w-full h-full sm:hidden absolute !cursor-default p-4 gap-4 flex flex-row shadow-lg bg-white z-10 rounded-xl text-center  pointer-events-none text-black top-[8%] select-none transform translate-x-1/2 translate-y-1/2"
+        className="w-full h-full sm:hidden absolute !cursor-default p-4 gap-4 flex flex-row shadow-lg bg-white z-[10] rounded-xl text-center  pointer-events-none text-black top-[8%] select-none transform translate-x-1/2 translate-y-1/2"
         style={{
           y: drivenY,
           rotate: drivenRotation,
@@ -328,7 +328,7 @@ const DestinationCard = ({
         {/* inside of card  */}
         <div
           id="illustration"
-          className="w-full h-full rounded-xl relative overflow-hidden z-10 flex flex-col"
+          className="w-full h-full ! rounded-xl relative overflow-hidden z-10 flex flex-col"
         >
 
           <div className="flex flex-col place-items-center w-full relative h-[70%]">

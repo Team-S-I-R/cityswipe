@@ -1,8 +1,7 @@
-import { Suspense } from 'react';
-import Explore from './page';
 import prisma from "@/lib/db";
 import { currentUser } from "@clerk/nextjs/server";
-import { redirect } from 'next/navigation';
+import { redirect } from "next/navigation";
+import SettingsClient from "./page";
 import { revalidatePath } from 'next/cache';
 
 export async function fetchUserData() {
@@ -64,14 +63,15 @@ export async function fetchQuestions() {
     return questions
 }
 
-export default async function ExploreServer() {
+export default async function SettingsServer() {
     const data = await fetchUserData();
     const matches = await fetchUserMatches();
     const questions = await fetchQuestions();
-    
-    return (
-        <main className="w-screen h-screen overflow-y-hidden">
-            <Explore clerkdata={data} matches={matches} questions={questions} />
-        </main>
-    );
+
+        return (
+            <>
+            <SettingsClient clerkdata={data} matches={matches} questions={questions} />
+            </>
+        );
+
 }

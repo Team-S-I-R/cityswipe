@@ -8,6 +8,8 @@ import { useDestinationSetContext } from "../../context/destinationSetContext";
 import { useEffect } from "react";
 import { useSavedDestinationContext } from "../../context/savedDestinationContext";
 import Header from "../cs-componets/header";
+import Sidebar from "../cs-componets/sidebar";
+
 
 const Match = () => {
   // "destination" is the list of destinations 
@@ -60,17 +62,23 @@ const Match = () => {
 
   return (
     <>
-    <Header />
-      <main className="min-h-screen h-full mx-auto bg-gameSwipe-neutral">
+ 
+      <main className="h-[100dvh] flex w-full mx-auto">
         
         {/* img debug
         <button className="absolute top-[50%] left-10 bg-red-500 text-white px-4 rounded-md z-[100]" onClick={testPexelsAPI}>
           test
         </button> */}
 
+        <div className="flex w-[75px] h-full items-center justify-center">
+          <Sidebar />
+        </div>
+
 
         <AnimatePresence mode="wait">
           {!isCardStockEmpty ? (
+            <>
+            
             <motion.div
               // else (if the matching is not done) 
               key="destinationScreen1"
@@ -79,9 +87,13 @@ const Match = () => {
               initial="initial"
               animate="animate"
               exit="exit"
+              className="w-full h-full"
             >
+
               <DestinationCards />
             </motion.div>
+
+            </>
             /* if the matching is done! */
           ) : (
             <motion.div

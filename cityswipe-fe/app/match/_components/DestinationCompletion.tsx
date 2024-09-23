@@ -33,7 +33,7 @@ const DestinationCompletion = () => {
 
   return (
     <div
-      className={`flex p-5 min-h-screen h-full flex-col items-center justify-center  bg-gameSwipe.neutral text-gray-700`}
+      className={`flex p-5 min-h-screen h-full flex-col items-center justify-center text-gray-700`}
     >
       {/* <BgPattern /> */}
       <motion.div
