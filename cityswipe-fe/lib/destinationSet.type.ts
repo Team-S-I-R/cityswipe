@@ -1,6 +1,7 @@
 export type DestinationSet = {
    id: number;
    cards: Destination[];
+   allCards: Destination[];
  };
  
  export type Destination = {

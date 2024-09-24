@@ -65,6 +65,7 @@ const DestinationCompletion = () => {
     await setDestinationSet({
       id: 1,
       cards: destinations.reverse(),
+      allCards: destinationSet.allCards.concat(destinations.reverse()),
     })
     console.log(destinationSet)
 

@@ -153,6 +153,7 @@ export default function QuizClient({ clerkdata }: any) {
       await setDestinationSet({
         id: 1,
         cards: destinations.reverse(),
+        allCards: [],
       });
 
       await addQuestions(otherString);
