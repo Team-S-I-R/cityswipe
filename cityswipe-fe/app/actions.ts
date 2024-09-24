@@ -382,38 +382,27 @@ export async function addQuestions(questions: any) {
 
 export async function updateQuestions(questions: any) {
 
-    let count = 0
-
     const user = await currentUser();
 
-    // ensure this is only run once
-    if (count < 1 ) { {
- 
-      const questionsUpdate = await prisma?.quizAnswer.update({
-        where: {
-            id: questions?.id,
-            userId: user?.id
-        },
-        data: {
-          a1: questions?.[0],
-          a2: questions?.[1],
-          a3: questions?.[2],
-          a4: questions?.[3],
-          a5: questions?.[4],
-          a6: questions?.[5],
-          a7: questions?.[6],
-          a8: questions?.[7],
-          a9: questions?.[8],
-          a10: questions?.[9],
-          a11: questions?.[10],
-          a12: questions?.[11],
-          userId: user?.id,
-      }
-      })
-  
-      }
-    }
+    console.log("questions", questions)
 
+    // Ensure this is only run once
+    if (questions.length > 0) {
+        const updatePromises = questions.map((question: any, index: number) => {
+            const dataToUpdate: any = {};
+            dataToUpdate[`a${index + 1}`] = question.value;
+
+            return prisma?.quizAnswer.updateMany({
+                where: {
+                    id: question.id,
+                    userId: user?.id
+                },
+                data: dataToUpdate
+            });
+        });
+
+        await Promise.all(updatePromises);
+    }
 }
 
 // adding matches to database

@@ -95,10 +95,8 @@ export default function QuizClient({ clerkdata }: any) {
           (newStr = newStr.concat(child.innerHTML) + ". ");
       }
     }
-    newResponses[currentQuestionIndex] =
-      newStr + otherString[currentQuestionIndex];
-    newResponses[currentQuestionIndex] == "" &&
-      (newResponses[currentQuestionIndex] = currentQuestion.defaultValue);
+    newResponses[currentQuestionIndex] = newStr + otherString[currentQuestionIndex];
+    newResponses[currentQuestionIndex] == "" && (newResponses[currentQuestionIndex] = currentQuestion.defaultValue);
     // console.log(newResponses[currentQuestionIndex]);
     setResponses(newResponses);
 
