@@ -2,8 +2,10 @@ import { readStreamableValue } from "ai/rsc";
 import { Message, streamConversation } from "../actions";
 import quizQuestions from "../quiz-questions/questions";
 import { createClient } from "pexels";
+import { destinationSets } from "@/api/destinationSets.api";
+import { useDestinationSetContext } from "@/context/destinationSetContext";
 
-export const generateDestinations = async (responses: string[]) => {
+export const generateDestinations = async (responses: string[], excludedCities?: string[]) => {
    const prompt = `Based on the following travel preferences, generate a list of exactly 8 travel destinations formatted as json with values City, Country, Compatibility Percentage(based on the user preferences provided), a brief description of the city, the pros (based on the user preferences), the cons (based on the user preferences). Example format:
        [
            {
@@ -27,7 +29,7 @@ export const generateDestinations = async (responses: string[]) => {
                ... 6 more of the same format
        ]
  
-       Here are tips you must follow when generating this content. THis is important because we will be using JSON.parse to parse this data so it is important to follow this format and to create NO ERRORS.
+       Here are tips you must follow when generating this content. This is important because we will be using JSON.parse to parse this data so it is important to follow this format and to create NO ERRORS.
        
        Every key in the JSON string is enclosed in double quotes ("key").
        The values are correctly formatted (e.g., strings should be in double quotes, numbers should not).
@@ -36,12 +38,16 @@ export const generateDestinations = async (responses: string[]) => {
  
        Make sure the compatibility percentage is a number between 0 and 100. 
        Do not include formatting or code blocks, follow example. 
+       Assume the user can travel internationally to any destination in the world.
        Corelate all the data when making decisions. 
        the questions answered by the user (in order) are as follows: \n${console.log(
          quizQuestions.map((q) => q.question).join("\n")
        )}\n 
        
-       Here are the user preference answers in order:\n${responses.join("\n")}`;
+       Here are the user preference answers in order:\n${responses.join("\n")}
+       
+       Do not provide these cities as options: ${excludedCities ? excludedCities : ''}
+       `;
  
    const conversationHistory: Message[] = [
      { role: "user" as const, content: prompt, type: "message" },

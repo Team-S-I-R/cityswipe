@@ -61,13 +61,13 @@ const DestinationCompletion = () => {
     // need to store original locations 
     // pass those into generate destinations and 
     // tell the function not to include those places
-    const destinations = await generateDestinations(responses)
+    const destinations = await generateDestinations(responses, destinationSet.allCards.map(card => card.city))
     await setDestinationSet({
       id: 1,
       cards: destinations.reverse(),
       allCards: destinationSet.allCards.concat(destinations.reverse()),
     })
-    console.log(destinationSet)
+    console.log(destinationSet.allCards.map(card => card.city))
 
     // add it as auto request when paid account
   }
