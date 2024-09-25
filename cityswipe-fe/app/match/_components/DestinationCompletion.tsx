@@ -67,7 +67,7 @@ const DestinationCompletion = () => {
       cards: destinations.reverse(),
       allCards: destinationSet.allCards.concat(destinations.reverse()),
     })
-    console.log(destinationSet.allCards.map(card => card.city))
+    // console.log(destinationSet.allCards.map(card => card.city))
 
     // add it as auto request when paid account
   }

@@ -107,6 +107,7 @@ export const generateDestinations = async (responses: string[], excludedCities?:
    const validDestinations = generatedDestinations.filter(
      (destination) => destination !== null
    );
+  //  console.log(validDestinations)
  
    return validDestinations;
  };

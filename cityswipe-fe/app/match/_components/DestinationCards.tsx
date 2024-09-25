@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { DestinationCard } from ".";
@@ -16,6 +16,7 @@ import handleResponse from "../_utils/handleResponse";
 import { Button } from "@/components/ui/button";
 import { useCitySwipe } from "@/app/citySwipeContext";
 import { addMatch } from "@/app/actions";
+import { generateDestinations } from "@/app/quiz/generateDestinations";
 
 export const easeInExpo = [0.7, 0, 0.84, 0];
 export const easeOutExpo = [0.16, 1, 0.3, 1];
@@ -44,6 +45,34 @@ const DestinationCards = () => {
     setDirection(btn);
   };
 
+  const loadMore = useCallback(async () => {
+    // get responses from saved
+    let responses = [
+      "not available",
+      "yes. ",
+      "not available",
+      "any climate",
+      "any landscape/scenery",
+      "none in particular",
+      "none in particular",
+      "none",
+    ]
+    // need to store original locations 
+    // pass those into generate destinations and 
+    // tell the function not to include those places
+    const newDestinations = await generateDestinations(responses, destinationSet.allCards.map(card => card.city))
+    // fix ordering
+    const destinations = destinationSet.cards.concat(newDestinations.reverse())
+    await setDestinationSet({
+      id: 1,
+      cards: destinations,
+      allCards: destinationSet.allCards.concat(destinations.reverse()),
+    })
+    // console.log(destinationSet.allCards.map(card => card.city))
+
+    // add it as auto request when paid account
+  }, []);
+
   // This controls the cards that people are swiping on. If left or right it removes that card from available cards left to swipe on in the first place
   useEffect(() => {
     if (["left", "right"].includes(direction)) {
@@ -68,8 +97,15 @@ const DestinationCards = () => {
       addMatch({ destinations: updatedDestinations });
     }
 
+    // add paywall
+
+    // load more matches automatically ##BUG: fix screen reload animation
+    // if (destinationSet.cards.length == 5) {
+    //   loadMore()
+    // }
+
     setDirection("");
-  }, [direction]);
+  }, [direction, loadMore]);
 
   const cardVariants = {
     current: {
