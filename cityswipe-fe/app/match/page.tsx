@@ -9,7 +9,11 @@ import { useEffect } from "react";
 import { useSavedDestinationContext } from "../../context/savedDestinationContext";
 import Header from "../cs-componets/header";
 import Sidebar from "../cs-componets/sidebar";
-
+import destination1 from "../assets/imgs/destination-img-1.jpg"
+import destination2 from "../assets/imgs/destination-img-2.jpg";
+import destination3 from "../assets/imgs/destination-img-3.jpg";
+import destination4 from "../assets/imgs/destination-img-4.jpg";
+import { useState } from "react";
 
 const Match = () => {
   // "destination" is the list of destinations 
@@ -59,6 +63,18 @@ const Match = () => {
   //   }
   // };
 
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const images = [destination1, destination2, destination3, destination4];
+
+  useEffect(() => {
+      const interval = setInterval(() => {
+          setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
+      }, 5000); // Change image every 5 seconds
+
+      return () => clearInterval(interval);
+  }, []);
+
+
 
   return (
     <>
@@ -73,6 +89,20 @@ const Match = () => {
         <div className="flex w-[75px] h-full items-center justify-center">
           <Sidebar />
         </div>
+
+        <div className="absolute inset-0 z-[-1] overflow-hidden w-screen h-screen">
+                {images.map((img, index) => (
+                    <img
+                        key={index}
+                        src={img.src}
+                        alt={`Background ${index + 1}`}
+                        className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
+                            index === currentImageIndex ? 'opacity-100' : 'opacity-0'
+                        }`}
+                    />
+                ))}
+                <div className="h-full absolute inset-0 bg-gradient-to-b from-white via-white to-transparent"></div>
+            </div>
 
 
         <AnimatePresence mode="wait">
@@ -103,6 +133,7 @@ const Match = () => {
               initial="initial"
               animate="animate"
               exit="exit"
+              className="w-full"
             >
               <DestinationCompletion />
             </motion.div>

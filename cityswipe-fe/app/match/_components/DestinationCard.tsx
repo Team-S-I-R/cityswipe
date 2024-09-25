@@ -65,7 +65,7 @@ const DestinationCard = ({
   const outputRotate = [-40, 0, 40];
   const outputActionScaleBadAnswer = [3, 1, 0.3];
   const outputActionScaleRightAnswer = [0.3, 1, 3];
-  const outputMainBgColor = ["#fcbab6", "#fafafa", "#D4E0B2"];
+  const outputMainBgColor = ["rgba(252, 186, 182, 0.5)", "", "rgba(212, 224, 178, 0.5)"];
 
   let drivenX = useTransform(x, inputX, outputX);
   let drivenY = useTransform(x, inputX, outputY);

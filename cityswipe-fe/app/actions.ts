@@ -442,7 +442,6 @@ export async function addMatch(savedDestination: any) {
 }
 
 
-
 export async function deleteMatch(id: string) {
 
   await prisma?.match.delete({
@@ -454,6 +453,83 @@ export async function deleteMatch(id: string) {
   revalidatePath('/explore');
   revalidatePath('/');
 
+}
+
+export async function createItinerary(blocks: any) {
+  const user = await currentUser();
+
+  console.log("blocks: ", blocks);
+
+  // ANCHOR THIS ADDS EVERY BLOCK IN THE ITINERARY TO THE DATABASE
+  // THE TEXT IS IN AN ARRAY ALLOWING ME TO MAP IT IN THE FRONT END
+  //  SAME WITH THE TYPES
+  if (blocks && blocks.length > 0) {
+    let blockNum = 1; // Initialize blockNum outside the loop
+    for (const block of blocks) {
+
+        const blockText = block?.content?.[0]?.text || null;
+        
+        await prisma?.itinerary.create({
+          data: {
+            username: user?.username,
+            blockNum: blockNum,
+            text: blockText,
+            type: block.type,
+            props: block.props,
+            userId: user?.id,
+          },
+
+        });     
+        blockNum += 1; // Increment blockNum after each addition
+
+    }
+    revalidatePath('/explore');
+    revalidatePath('/');
+  }
+}
+
+export async function updateItinerary(blocks: any) {
+
+  const user = await currentUser();
+
+  console.log("blocks: ", blocks);
+
+
+  // I did it this way to stop erros. There will not be any records of previous
+  // saved itineraries for now but it will save whatever the user has done.
+
+
+  // ANCHOR THIS DELETES ALL EXISTING BLOCKS AND CREATES NEW ONES IN THE DATABASE
+  if (blocks && blocks.length > 0) {
+    // Delete all existing blocks for the user
+    await prisma?.itinerary.deleteMany({
+      where: {
+        userId: user?.id,
+      },
+    });
+
+    let blockNum = 1; // Initialize blockNum outside the loop
+    for (const block of blocks) {
+
+        const blockText = block?.content?.[0]?.text || null;
+        
+        await prisma?.itinerary.create({
+          data: {
+            username: user?.username,
+            blockNum: blockNum,
+            text: blockText,
+            type: block.type,
+            props: block.props,
+            userId: user?.id,
+          },
+
+        });     
+        blockNum += 1; // Increment blockNum after each addition
+
+    }
+    revalidatePath('/explore');
+    revalidatePath('/');
+  }
 }
 
 export async function newSubscriber(subscriber: string) {

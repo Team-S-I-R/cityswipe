@@ -46,7 +46,7 @@ export default function Sidebar( {clerkdata, matches} : any,) {
     const { chatImg, setChatImg } = useCitySwipe();
     const { usermatches, setUserMatches } = useCitySwipe();
     const [avatar, setAvatar] = useState<string>('');
-
+    const {currentPath, setCurrentPath} = useCitySwipe();
 
 
     useEffect(() => {
@@ -56,6 +56,7 @@ export default function Sidebar( {clerkdata, matches} : any,) {
         setSelectedBio?.(usermatches?.[0]?.description as string)
         setSelectedPros?.(usermatches?.[0]?.pros as any)
         setSelectedCons?.(usermatches?.[0]?.cons as any)
+        setCurrentPath?.(window.location.pathname);
     }, [])
 
 
@@ -116,7 +117,18 @@ export default function Sidebar( {clerkdata, matches} : any,) {
             {/* desktop */}
             <div className="w-full h-full bg-gray-100  place-items-center place-content-center hidden md:flex flex-col justify-between" >
                 
-                <div className="w-full z-10 flex place-content-center place-items-center p-[0.73em]">
+                {currentPath === '/match' && (
+                    <>
+                    {/* when we get a logo i want to put it here */}
+                    <div></div>
+                    </>
+                )}
+
+                {currentPath !== '/match' && (
+               
+               <>
+               
+               <div className="w-full z-10 flex place-content-center place-items-center p-[0.73em]">
                     <span onClick={() => setIsItineraryModalOpen?.(!isItineraryModalOpen)} className="hover:cursor-pointer">
                         { isItineraryModalOpen && <PanelRight /> }
                         { !isItineraryModalOpen && <PanelLeft /> }
@@ -214,6 +226,10 @@ export default function Sidebar( {clerkdata, matches} : any,) {
 
                 </div>
 
+               </>
+
+                )}
+
                 {/* settings stuff / upgrade stuff maybe */}
                 <div className="w-max h-[30%] my-8 place-items-center  flex flex-col gap-6">
 
@@ -276,9 +292,18 @@ export default function Sidebar( {clerkdata, matches} : any,) {
         {/* mobile */}
         <div className="w-[50px] z-[100] relative h-full bg-gray-100 py-3 flex md:hidden flex-col place-items-center place-content justify-between" > 
 
-            <div className="cursor-pointer p-2 w-max h-max" onClick={() => setIsSidebarOpen?.(!isSidebarOpen)}>
-                {isSidebarOpen ? <ChevronDown className="rotate-90"/> : <ChevronDown className="-rotate-90"/> }
-            </div>
+            {currentPath === '/match' && (
+                <>
+                {/* when we get a logo i want to put it here */}
+                <div></div>
+                </>
+                )}
+            
+            {currentPath !== '/match' && (
+                        <div className="cursor-pointer p-2 w-max h-max" onClick={() => setIsSidebarOpen?.(!isSidebarOpen)}>
+                            {isSidebarOpen ? <ChevronDown className="rotate-90"/> : <ChevronDown className="-rotate-90"/> }
+                        </div>
+            )}
 
             {/* settings stuff / upgrade stuff maybe */}
             <div className="w-max  h-max my-6  flex flex-col gap-6">

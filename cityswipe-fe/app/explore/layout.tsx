@@ -64,14 +64,37 @@ export async function fetchQuestions() {
     return questions
 }
 
+export async function fetchItinerary() {
+    const clerkuser = await currentUser();
+
+    if (!clerkuser) {
+        redirect("/sign-in");
+    }
+
+    let allItineraryBlocks = await prisma?.itinerary.findMany({
+        where: {
+            userId: clerkuser?.id
+        }
+    })
+
+    revalidatePath('/');
+    revalidatePath('/quiz');
+    revalidatePath('/match');
+    revalidatePath('/explore');
+
+
+    return allItineraryBlocks
+}
+
 export default async function ExploreServer() {
     const data = await fetchUserData();
     const matches = await fetchUserMatches();
     const questions = await fetchQuestions();
+    const itinerary = await fetchItinerary();
     
     return (
         <main className="w-screen h-screen overflow-y-hidden">
-            <Explore clerkdata={data} matches={matches} questions={questions} />
+            <Explore clerkdata={data} matches={matches} questions={questions} itinerary={itinerary} />
         </main>
     );
 }

@@ -27,7 +27,7 @@ const initialDrivenProps = {
   cardWrapperX: 0,
   buttonScaleBadAnswer: 1,
   buttonScaleGoodAnswer: 1,
-  mainBgColor: "#fff",
+  mainBgColor: "",
 };
 
 const DestinationCards = () => {
@@ -45,6 +45,11 @@ const DestinationCards = () => {
   const handleActionBtnOnClick = (btn: CardSwipeDirection) => {
     setDirection(btn);
   };
+
+  // seting the current image in bg
+
+
+  
 
   // This controls the cards that people are swiping on. If left or right it removes that card from available cards left to swipe on in the first place
   useEffect(() => {
@@ -120,13 +125,15 @@ const DestinationCards = () => {
         id="gameUIWrapper"
         className="flex flex-col p-5  place-content-center place-items-center justify-between gap-3 w-full h-full relative z-10"
       >
-        <div className="w-full h-max">
+        <div className="w-full h-max flex flex-col">
 
           <SparklesText
               className="text-3xl bg-transparent"
               colors={{ first: "#22d3ee", second: "#4ade80" }}
               text={`Match`}
           />
+
+          <p className="text-[15px] text-muted-foreground">Swipe right on a destination to match with it, or swipe left to skip!</p>
 
         </div>
 
@@ -166,7 +173,7 @@ const DestinationCards = () => {
           </AnimatePresence>
         </div>
 
-        <div className="w-full flex flex-col h-max gap-4 place-items-center">
+        <div className="w-max bg-white rounded-lg p-3 px-6 flex flex-col h-max gap-4 place-items-center">
           <div
             id="actions"
             className="flex items-center justify-center w-max h-max gap-4 relative z-10"

@@ -26,6 +26,7 @@ model User {
 
   Matchs           Match[]
   QuizAnswers      QuizAnswer[]
+  Itinerarys       Itinerary[]
 
   createdAt        DateTime       @default(now())
   updatedAt        DateTime?       @updatedAt
@@ -76,6 +77,21 @@ model QuizAnswer {
   a10             String?
   a11             String?
   a12             String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  User   User?  @relation(fields: [userId], references: [id])
+  userId String
+}
+
+model Itinerary {
+  id              String   @id @default(uuid())
+  username        String?
+  blockNum        Int?
+  type            String?
+  text            String?
+  props           Json
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

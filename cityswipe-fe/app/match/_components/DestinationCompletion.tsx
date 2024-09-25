@@ -33,7 +33,7 @@ const DestinationCompletion = () => {
 
   return (
     <div
-      className={`flex p-5 min-h-screen h-full flex-col items-center justify-center text-gray-700`}
+      className={`flex p-5 w-full min-h-screen h-full flex-col place-content-center justify-center text-gray-700`}
     >
       {/* <BgPattern /> */}
       <motion.div
@@ -43,7 +43,7 @@ const DestinationCompletion = () => {
           scale: 1,
           transition: { ease: "backOut", duration: 0.2, delay: 0.15 },
         }}
-        className="flex flex-col items-center justify-center text-center relative z-10"
+        className="flex flex-col w-full place-content-center justify-center text-center relative z-10"
       >
         <h1 className="text-5xl md:text-[60px] leading-tight font-acuminMedium">
           Complete!

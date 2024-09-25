@@ -404,4 +404,5 @@ export default function QuizClient({ clerkdata }: any) {
       </motion.div>
     </>
   );
+  
 }
