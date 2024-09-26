@@ -47,18 +47,9 @@ const DestinationCards = () => {
 
   const loadMore = useCallback(async () => {
     // get responses from saved
-    let responses = [
-      "not available",
-      "yes. ",
-      "not available",
-      "any climate",
-      "any landscape/scenery",
-      "none in particular",
-      "none in particular",
-      "none",
-    ]
-    // need to store original locations 
-    // pass those into generate destinations and 
+    let responses = destinationSet.responses
+    // store original locations 
+    // pass those into generate destinations => cities and 
     // tell the function not to include those places
     const newDestinations = await generateDestinations(responses, destinationSet.allCards.map(card => card.city))
     // fix ordering
@@ -67,6 +58,7 @@ const DestinationCards = () => {
       id: 1,
       cards: destinations,
       allCards: destinationSet.allCards.concat(destinations.reverse()),
+      responses: responses
     })
     // console.log(destinationSet.allCards.map(card => card.city))
 

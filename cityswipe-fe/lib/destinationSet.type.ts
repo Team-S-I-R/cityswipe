@@ -2,6 +2,7 @@ export type DestinationSet = {
    id: number;
    cards: Destination[];
    allCards: Destination[];
+   responses: string[];
  };
  
  export type Destination = {

@@ -36,17 +36,18 @@ export const destinationSets: DestinationSet[] = [
       },
     ],
     allCards: [],
+    responses: [],
   },
 ];
 
 export const getDestinationSets = async (): Promise<DestinationSet[]> => destinationSets;
 
 export const getDestinationSet = async (destinationSetId: number): Promise<DestinationSet> => {
-  return { id: destinationSetId, cards: reversedCards(destinationSets[destinationSetId].cards), allCards: reversedCards(destinationSets[destinationSetId].allCards)};
+  return { id: destinationSetId, cards: reversedCards(destinationSets[destinationSetId].cards), allCards: reversedCards(destinationSets[destinationSetId].allCards), responses: destinationSets[destinationSetId].responses};
 };
 
 export const getInitialSet = (destinationSetId: number) => {
-  return { id: destinationSetId, cards: reversedCards(destinationSets[destinationSetId].cards), allCards: reversedCards(destinationSets[destinationSetId].allCards)};
+  return { id: destinationSetId, cards: reversedCards(destinationSets[destinationSetId].cards), allCards: reversedCards(destinationSets[destinationSetId].allCards), responses: destinationSets[destinationSetId].responses};
 };
 
 const reversedCards = (cards: Destination[]) => {

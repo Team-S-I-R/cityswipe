@@ -154,6 +154,7 @@ export default function QuizClient({ clerkdata }: any) {
         id: 1,
         cards: destinations.reverse(),
         allCards: destinations.reverse(),
+        responses: responses,
       });
 
       await addQuestions(otherString);
