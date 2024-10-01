@@ -10,8 +10,7 @@ import { revalidatePath } from 'next/cache';
 import { currentUser } from "@clerk/nextjs/server";
 
 
-// ANCHOR gemini stuff --------------------------------------------------------------------
-
+// ANCHOR Gemini Logic --------------------------------------------------------------------
 export interface Message {
   role: "user" | "assistant";
   content: string;
@@ -64,7 +63,7 @@ export async function generateCityBio(city: string) {
     }
 
     stream.done();
-  })().then(() => {});
+  })().then(() => { });
 
   return {
     description: stream.value,
@@ -87,7 +86,7 @@ export async function streamConversation(history: Message[]) {
     }
 
     stream.done();
-  })().then(() => {});
+  })().then(() => { });
 
   return {
     messages: history,
@@ -115,16 +114,13 @@ export async function streamFlirtatiousConversation(city: string, country: strin
   Your response should combine all these elements in a balanced way.
   
   If the user asks anything else, just try to be nice, friendly and make sure you answer everything in complete sentences.
-  `
-  
+  `;
 
-  ;
-  
   (async () => {
     const { textStream } = await streamText({
       model: model,
       messages: [{ role: "user", content: prompt }],
-      temperature: 0.9, 
+      temperature: 0.9,
       topP: 0.85,
       topK: 40,
     });
@@ -134,7 +130,7 @@ export async function streamFlirtatiousConversation(city: string, country: strin
     }
 
     stream.done();
-  })().then(() => {});
+  })().then(() => { });
 
   if (!conversationHistory[city]) {
     conversationHistory[city] = [];
@@ -252,7 +248,7 @@ export async function makeItinerary(city: string, country: string, history: Mess
   };
 }
 
-export async function summerizeItineraryText(itinerarytext: string ) {
+export async function summerizeItineraryText(itinerarytext: string) {
   const model = google("models/gemini-1.5-flash");
 
 
@@ -285,11 +281,7 @@ export async function summerizeItineraryText(itinerarytext: string ) {
 
 }
 
-
-
-
-// ANCHOR waiting list form stuff ----------------------------------------------------
-
+// ANCHOR WaitList Forms & Other ----------------------------------------------------
 const generateRandomId = () => {
   return Math.random().toString(36).substring(2, 10);
 };
@@ -339,9 +331,7 @@ export async function submitFormResponse(formData: FormData, formState: FormStat
   }
 }
 
-
-
-// ANCHOR adding to database (supabase stuff) ------------------------------------
+// ANCHOR Database Logic & Functions (Supabase) ------------------------------------
 export async function addQuestions(questions: any) {
 
   let count = 0
@@ -356,60 +346,60 @@ export async function addQuestions(questions: any) {
 
 
   // ensure this is only run once
-  if (count < 1 && quizResponseCount.length < 1) { {
-    await prisma?.quizAnswer.create({
-      data: {
-        a1: questions?.[0],
-        a2: questions?.[1],
-        a3: questions?.[2],
-        a4: questions?.[3],
-        a5: questions?.[4],
-        a6: questions?.[5],
-        a7: questions?.[6],
-        a8: questions?.[7],
-        a9: questions?.[8],
-        a10: questions?.[9],
-        a11: questions?.[10],
-        a12: questions?.[11],
-        userId: user?.id,
-      },
-    })
+  if (count < 1 && quizResponseCount.length < 1) {
+    {
+      await prisma?.quizAnswer.create({
+        data: {
+          a1: questions?.[0],
+          a2: questions?.[1],
+          a3: questions?.[2],
+          a4: questions?.[3],
+          a5: questions?.[4],
+          a6: questions?.[5],
+          a7: questions?.[6],
+          a8: questions?.[7],
+          a9: questions?.[8],
+          a10: questions?.[9],
+          a11: questions?.[10],
+          a12: questions?.[11],
+          userId: user?.id,
+        },
+      })
 
-    count += 1
+      count += 1
+    }
   }
-}
 }
 
 export async function updateQuestions(questions: any) {
 
-    const user = await currentUser();
+  const user = await currentUser();
 
-    console.log("questions", questions)
+  console.log("questions", questions)
 
-    // Ensure this is only run once
-    if (questions.length > 0) {
-        const updatePromises = questions.map((question: any, index: number) => {
-            const dataToUpdate: any = {};
-            dataToUpdate[`a${index + 1}`] = question.value;
+  // Ensure this is only run once
+  if (questions.length > 0) {
+    const updatePromises = questions.map((question: any, index: number) => {
+      const dataToUpdate: any = {};
+      dataToUpdate[`a${index + 1}`] = question.value;
 
-            return prisma?.quizAnswer.updateMany({
-                where: {
-                    id: question.id,
-                    userId: user?.id
-                },
-                data: dataToUpdate
-            });
-        });
+      return prisma?.quizAnswer.updateMany({
+        where: {
+          id: question.id,
+          userId: user?.id
+        },
+        data: dataToUpdate
+      });
+    });
 
-        await Promise.all(updatePromises);
-    }
+    await Promise.all(updatePromises);
+  }
 }
 
-// adding matches to database
 export async function addMatch(savedDestination: any) {
 
   const user = await currentUser();
-  
+
   interface Destination {
     city: string;
     username: string;
@@ -426,21 +416,20 @@ export async function addMatch(savedDestination: any) {
 
   console.log("destination: ", destination);
 
-    await prisma?.match.create({
-      data: {
-        city: destination?.city,
-        username: user?.username || "",
-        country: destination?.country,
-        description: destination?.description,
-        illustration: destination?.illustration,
-        pros: Array.isArray(destination?.pros) ? destination?.pros.map(String) : [],
-        cons: Array.isArray(destination?.cons) ? destination?.cons.map(String) : [],
-        compatibility: destination?.compatibility,
-        userId: user?.id,
-      },
-    });
+  await prisma?.match.create({
+    data: {
+      city: destination?.city,
+      username: user?.username || "",
+      country: destination?.country,
+      description: destination?.description,
+      illustration: destination?.illustration,
+      pros: Array.isArray(destination?.pros) ? destination?.pros.map(String) : [],
+      cons: Array.isArray(destination?.cons) ? destination?.cons.map(String) : [],
+      compatibility: destination?.compatibility,
+      userId: user?.id,
+    },
+  });
 }
-
 
 export async function deleteMatch(id: string) {
 
@@ -467,20 +456,20 @@ export async function createItinerary(blocks: any) {
     let blockNum = 1; // Initialize blockNum outside the loop
     for (const block of blocks) {
 
-        const blockText = block?.content?.[0]?.text || null;
-        
-        await prisma?.itinerary.create({
-          data: {
-            username: user?.username,
-            blockNum: blockNum,
-            text: blockText,
-            type: block.type,
-            props: block.props,
-            userId: user?.id,
-          },
+      const blockText = block?.content?.[0]?.text || null;
 
-        });     
-        blockNum += 1; // Increment blockNum after each addition
+      await prisma?.itinerary.create({
+        data: {
+          username: user?.username,
+          blockNum: blockNum,
+          text: blockText,
+          type: block.type,
+          props: block.props,
+          userId: user?.id,
+        },
+
+      });
+      blockNum += 1; // Increment blockNum after each addition
 
     }
     revalidatePath('/explore');
@@ -511,20 +500,20 @@ export async function updateItinerary(blocks: any) {
     let blockNum = 1; // Initialize blockNum outside the loop
     for (const block of blocks) {
 
-        const blockText = block?.content?.[0]?.text || null;
-        
-        await prisma?.itinerary.create({
-          data: {
-            username: user?.username,
-            blockNum: blockNum,
-            text: blockText,
-            type: block.type,
-            props: block.props,
-            userId: user?.id,
-          },
+      const blockText = block?.content?.[0]?.text || null;
 
-        });     
-        blockNum += 1; // Increment blockNum after each addition
+      await prisma?.itinerary.create({
+        data: {
+          username: user?.username,
+          blockNum: blockNum,
+          text: blockText,
+          type: block.type,
+          props: block.props,
+          userId: user?.id,
+        },
+
+      });
+      blockNum += 1; // Increment blockNum after each addition
 
     }
     revalidatePath('/explore');
@@ -532,6 +521,36 @@ export async function updateItinerary(blocks: any) {
   }
 }
 
-export async function newSubscriber(subscriber: string) {
+// export async function newSubscriber(subscriber: string) {
+// }
 
+// ANCHOR Giphy API --------------------------------------------------------------------
+export async function searchGiphyGif(query: string, limit: number) {
+  const RATING = "PG";
+  const DEFAULT_LIMIT = 1;
+
+  if (!query) {
+    console.log(`No query was provided, provided query was: ${query}`);
+  }
+
+  const giphyApiKey = process.env.GIPHY_API_KEY;
+  const url = `https://api.giphy.com/v1/gifs/search?api_key=${giphyApiKey}&q=${query}&limit=${limit ? limit : DEFAULT_LIMIT}&rating=${RATING}`;
+
+  try {
+    const response = await fetch(url)
+      .then((res) => res.json())
+      .then((data) => data);
+
+    if (response.data && response.data.length > 0) {
+      console.log("GIF Found for the given query:", response.data[0].url);
+      return response.data[0].url;
+
+    } else {
+      console.log("No GIFs found for the given query.");
+      return null;
+
+    }
+  } catch (error: any) {
+    console.log(`Some Error Occured During Giphy Search: ${error.message}`);
+  }
 }

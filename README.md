@@ -22,7 +22,8 @@ To run the CitySwipe application locally, follow these steps:
 - [Gemini API](https://www.gemini.com/api) - LLM API used for matching users with vacation spots.
 - [Shad CN UI](https://github.com/ssbdragonfly/shad-cn-ui) - Custom UI library for building apps; user interface.
 - [JavaScript (JS)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
-- [TypeScript](https://www.typescriptlang.org/) 
+- [TypeScript](https://www.typescriptlang.org/)
+- [Stripe](https://docs.stripe.com/api) - API for setting up payments.
 
 ## Team Members
 
