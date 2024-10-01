@@ -51,8 +51,10 @@ model Match {
   city            String
   country         String
   compatibility   Float
+  budget          Int?
   illustration    String
   description     String
+
   pros            String[]
   cons            String[]
 
@@ -70,13 +72,6 @@ model QuizAnswer {
   a3              String?
   a4              String?
   a5              String?
-  a6              String?
-  a7              String?
-  a8              String?
-  a9              String?
-  a10             String?
-  a11             String?
-  a12             String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

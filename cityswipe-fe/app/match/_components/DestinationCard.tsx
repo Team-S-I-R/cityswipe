@@ -12,7 +12,14 @@ import {
 import { useDestinationSetContext } from "../../../context/destinationSetContext";
 import { type Destination } from "@/lib/destinationSet.type";
 import { useSavedDestinationContext } from "../../../context/savedDestinationContext";
-import { Dot, Frown, Laugh, MapPin } from "lucide-react";
+import { Dot, Frown, Info, Laugh, MapPin } from "lucide-react";
+import ShinyButton from "../../../components/ui/shiny-button"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 
 type Props = {
   id?: number;
@@ -55,7 +62,7 @@ const DestinationCard = ({
   let cardsAmount = cards.length; //fix
   const [lenofDestinationSet, setLenofDestinationSet] = useState(cardsAmount);
   const [imgLoadingComplete, setImgLoadingComplete] = useState(false);
-  const { city, country, illustration, description, pros, cons } = data;
+  const { city, country, budget, illustration, description, pros, cons } = data;
   const x = useMotionValue(0);
   const isMobile = useMediaQuery("(max-width: 768px)");
   const offsetBoundary = 150;
@@ -197,16 +204,64 @@ const DestinationCard = ({
 
 
           {/* ANCHOR bottom left of card */}
-          <div className="h-[30%] p-4 w-full  z-[2]  flex flex-col gap-2 leading-tight justify-evenly"
+          <div className="h-[30%] py-4 w-full  z-[2]  flex flex-col gap-2 leading-tight justify-evenly"
             id="locationWrapper"
           >
               {/* ANCHOR location/full */}
-              <div className="w-max h-max flex gap-2 place-items-center place-content-center">
-                <MapPin size={15} className="text-muted-foreground"/> 
-                <p id="location" className="text-[15px] text-muted-foreground w-max h-max">
-                  {city}, {country}
-                </p>
-              </div>  
+              <div className="h-max w-full  flex gap-2 place-items-center justify-between">
+                
+                <div className="w-max h-max flex gap-2 place-items-center place-content-center">
+                  <MapPin size={15} className="text-muted-foreground"/> 
+                  <p id="location" className="text-[15px] text-muted-foreground w-max h-max">
+                    {city}, {country}
+                  </p>
+                </div>
+
+                <div className="w-max scale-[90%] gap-2 flex place-items-end pointer-events-auto h-max">
+
+                  <TooltipProvider>
+                    <Tooltip>
+
+                      <TooltipTrigger>
+                          <ShinyButton className="w-max pointer-events-none ">
+                        
+                            <span className="w-max flex">
+
+                              <span className="flex gap-1">
+
+                              <span className="">
+
+                                <span>B</span>
+                                <span className="!lowercase">
+                                  udget:
+                                </span>
+
+
+                              </span>
+
+                                <span id="budget" className="text-green-500 font-bold w-max h-max">
+                                  ${budget}175
+                                </span>
+
+                              </span>
+
+                              <span className="lowercase italic font-bold text-[10px]">(est)</span>
+                            </span> 
+
+
+
+                          </ShinyButton>
+                      </TooltipTrigger>
+
+                      <TooltipContent className="w-max">
+                        <p className="w-[100px]">This budget is an <span className="font-bold italic">estimate</span> of the cost to vacation per day for <span className="underline font-bold">one</span> person.</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+             
+                </div>  
+
+              </div>
  
               {/* ANCHOR bio/description */}
               <div className="h-max text-left  overflow-hidden no-scrollbar pointer-events-auto w-full">

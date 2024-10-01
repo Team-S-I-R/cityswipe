@@ -104,34 +104,6 @@ export default function SettingsClient({clerkdata, matches, questions}: any) {
                                         placeholder={question.a5}
                                     />                            
                                 </div>
-                                <div className="flex flex-col gap-1">
-                                    <p className="font-bold select-none">{quizQuestions[5].question}</p>
-                                    <Input
-                                        onChange={(e) => handleInputChange(5, e.target.value, question.id)}
-                                        placeholder={question.a6}
-                                    />                            
-                                </div>
-                                <div className="flex flex-col gap-1">
-                                    <p className="font-bold select-none">{quizQuestions[6].question}</p>
-                                    <Input
-                                        onChange={(e) => handleInputChange(6, e.target.value, question.id)}
-                                        placeholder={question.a7}
-                                    />
-                                </div>
-                                <div className="flex flex-col gap-1">
-                                    <p className="font-bold">{quizQuestions[7].question}</p>
-                                    <Input
-                                        onChange={(e) => handleInputChange(7, e.target.value, question.id)}
-                                        placeholder={question.a8}
-                                    />                            
-                                </div>
-                                <div className="flex flex-col gap-1">
-                                    <p className="font-bold">{quizQuestions[8].question}</p>
-                                    <Input
-                                        onChange={(e) => handleInputChange(8, e.target.value, question.id)}
-                                        placeholder={question.a9}
-                                    />                            
-                                </div>
                             </div>
                         ))}
                         </div>
