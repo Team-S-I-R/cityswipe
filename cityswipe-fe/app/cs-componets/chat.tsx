@@ -64,12 +64,12 @@ export default function Chat({matches}: any) {
       setConversation([]);
       setClearConversation?.(0);
     }
-  });
+  }, [clearConversation, setClearConversation]);
 
   useEffect(() => {
     setConversation([]);
     setClearConversation?.(0);
-  }, [selectedMatch]);
+  }, [selectedMatch, setClearConversation]);
 
   const startChat = async () => {
     const split = selectedMatch?.split(" ");

@@ -38,13 +38,13 @@ export default function Explore({clerkdata, matches, questions, itinerary}: any)
     useEffect(() => {
         setUserData?.(clerkdata);
         setUserMatches?.(matches);
-    }, [matches]);
+    }, [clerkdata, matches]);
 
     useEffect(() => {
         setUserQuestions?.(questions);
         setIsItineraryModalOpen?.(true);
         setUserItinerary?.(itinerary);
-    }, []);
+    }, [questions, setIsItineraryModalOpen, setUserItinerary, itinerary]);
 
 
     // have to upload the header here for now

@@ -51,13 +51,13 @@ export default function Sidebar( {clerkdata, matches} : any,) {
 
     useEffect(() => {
         setChatImg?.(usermatches?.[0]?.illustration);
-        setSelectedMatch?.(usermatches?.[0]?.city as string)
-        setSelectedCompatibility?.(usermatches?.[0]?.compatibility as number)
-        setSelectedBio?.(usermatches?.[0]?.description as string)
-        setSelectedPros?.(usermatches?.[0]?.pros as any)
-        setSelectedCons?.(usermatches?.[0]?.cons as any)
+        setSelectedMatch?.(usermatches?.[0]?.city as string);
+        setSelectedCompatibility?.(usermatches?.[0]?.compatibility as number);
+        setSelectedBio?.(usermatches?.[0]?.description as string);
+        setSelectedPros?.(usermatches?.[0]?.pros as any);
+        setSelectedCons?.(usermatches?.[0]?.cons as any);
         setCurrentPath?.(window.location.pathname);
-    }, [])
+    }, [usermatches, setChatImg, setSelectedMatch, setSelectedCompatibility, setSelectedBio, setSelectedPros, setSelectedCons, setCurrentPath]);
 
 
     // console.log("matches: ", usermatches?.[0]?.illustration)

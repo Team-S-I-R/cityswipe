@@ -5,7 +5,7 @@ import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 
-export async function fetchUserData() {
+async function fetchUserData() {
     const clerkuser = await currentUser();
 
     if (!clerkuser) {
@@ -26,64 +26,69 @@ export async function fetchUserData() {
     return user;
 }
 
- export async function fetchUserMatches() {
-    const clerkuser = await currentUser();
-
-    let matches = prisma?.match.findMany({
-        where: {
-            userId: clerkuser?.id
-        }
-    });
-
-    return matches
-}
-
-export async function fetchQuestions() {
+async function fetchUserMatches() {
     const clerkuser = await currentUser();
 
     if (!clerkuser) {
         redirect("/sign-in");
+        return null; // Ensure function returns null if redirecting
+    }
+
+    let matches = await prisma?.match.findMany({
+        where: {
+            userId: clerkuser.id
+        }
+    });
+
+    return matches;
+}
+
+async function fetchQuestions() {
+    const clerkuser = await currentUser();
+
+    if (!clerkuser) {
+        redirect("/sign-in");
+        return null; // Ensure function returns null if redirecting
     }
 
     let questions = await prisma?.quizAnswer.findMany({
         where: {
-            userId: clerkuser?.id
+            userId: clerkuser.id
         }
-    })
+    });
 
     revalidatePath('/');
     revalidatePath('/quiz');
     revalidatePath('/match');
     revalidatePath('/explore');
-
 
     if (questions.length < 1) {
         redirect("/quiz");
     }
 
-    return questions
+    return questions;
 }
 
-export async function fetchItinerary() {
+async function fetchItinerary() {
     const clerkuser = await currentUser();
 
     if (!clerkuser) {
         redirect("/sign-in");
+        return null; // Ensure function returns null if redirecting
     }
 
     let allItineraryBlocks = await prisma?.itinerary.findMany({
         where: {
-            userId: clerkuser?.id
+            userId: clerkuser.id
         }
-    })
+    });
 
     revalidatePath('/');
     revalidatePath('/quiz');
     revalidatePath('/match');
     revalidatePath('/explore');
 
-
-    return allItineraryBlocks
+    return allItineraryBlocks;
 }
 
 export default async function ExploreServer() {

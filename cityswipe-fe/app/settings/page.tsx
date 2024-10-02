@@ -60,7 +60,7 @@ export default function SettingsClient({clerkdata, matches, questions}: any) {
                     <div className="flex justify-between place-items-center pb-4 w-full h-max">
                         <div className="w-full flex flex-col gap-1">
                             <p className="font-bold text-xl">My Initial Quiz Answers</p>
-                            <p className="text-sm w-[70%] text-muted-foreground">Type in any updated answers you would like and click "Update" to see your changes!</p>
+                            <p className="text-sm w-[70%] text-muted-foreground">Type in any updated answers you would like and click ( Update ) to see your changes!</p>
                         </div>
                         <Button className="hover:scale-[95%] text-white px-3 py-1 text-[14px] w-full sm:w-auto bg-gradient-to-t from-cyan-500 to-green-400 select-none" onClick={() => updateQuestions(responses)}>Update</Button>
                     </div>

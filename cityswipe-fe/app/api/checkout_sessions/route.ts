@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { NextRequest } from 'next/server'
-import { newSubscriber } from '@/app/actions'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: '2024-06-20' })
 
@@ -59,8 +58,6 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     const checkoutSession: Stripe.Checkout.Session = await stripe.checkout.sessions.create(params)
     
     // ANCHOR WILL ADD RESULTS TO DATABASE HERE
-
-    await newSubscriber(data.email)
 
     return NextResponse.json(checkoutSession, {
       status: 200,

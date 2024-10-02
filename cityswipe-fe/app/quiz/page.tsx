@@ -366,7 +366,7 @@ export default function QuizClient({ clerkdata }: any) {
             
               <span className="text-sm text-muted-foreground flex flex-col place-items-end">
                 <span className="font-bold !text-black">You made it! </span> 
-                <span>Press "Find Your Match" to see your matches!</span>
+                <span>Press ( Find Your Match ) to see your matches!</span>
               </span>
             
             )}
