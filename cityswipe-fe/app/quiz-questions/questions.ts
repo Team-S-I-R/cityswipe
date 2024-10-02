@@ -1,6 +1,20 @@
 import { searchGiphyGif } from "../actions";
 import { useState, useEffect } from "react";
 
+import lowImg from '../assets/imgs/lowOptionImg.png'
+import midImg from '../assets/imgs/midOptionImg.png'
+import luxuryImg from '../assets/imgs/luxuryOptionImg.png'
+import adventureImg from '../assets/imgs/adventureOptionImg.png'
+import relaxationImg from '../assets/imgs/relaxationOptionImg.png'
+import cultureImg from '../assets/imgs/culturalEOptionImg.png'
+import soloImg from '../assets/imgs/soloOptionImg.png'
+import familyImg from '../assets/imgs/familyOptionImg.png'
+import groupImg from '../assets/imgs/groupOptionImg.jpg'
+import safeImg from '../assets/imgs/safeOptionImg.png'
+import affordableImg from '../assets/imgs/affordableOptionImg.png'
+import attractionsImg from '../assets/imgs/attractionsOptionImg.png'
+
+
 // ANCHOR !!! ---- IMPORTANT ---- !!!
 
 // 1. DO NOT CHANGE THE IDS!
@@ -30,6 +44,7 @@ const quizQuestions = [
     id: 2,
     question: "What is your travel budget?",
     answerOptions: ["low", "moderate", "luxury"],
+    answerOptionImages: [lowImg.src, midImg.src, luxuryImg.src],
     additionalStringPlaceholder: "other / additional information",
     defaultValue: "any budget level",
     selectionType: "multiple",
@@ -41,6 +56,7 @@ const quizQuestions = [
     id: 3,
     question: "What type of experiences are you seeking? (e.g., adventure, relaxation, cultural immersion)",
     answerOptions: ["adventure", "relaxation", "cultural immersion"],
+    answerOptionImages: [adventureImg.src, relaxationImg.src, cultureImg.src],
     additionalStringPlaceholder: "other / additional information",
     defaultValue: "any experience",
     selectionType: "multiple",
@@ -52,6 +68,7 @@ const quizQuestions = [
     id: 4,
     question: "What is your preferred mode of travel? (e.g., solo, family, group)",
     answerOptions: ["solo", "family", "group"],
+    answerOptionImages: [soloImg.src, familyImg.src, groupImg.src],
     additionalStringPlaceholder: "other / additional information",
     defaultValue: "any mode",
     selectionType: "multiple",
@@ -63,6 +80,7 @@ const quizQuestions = [
     id: 5,
     question: "What is your top priority when choosing a destination? (e.g., safety, affordability, attractions)",
     answerOptions: ["safety", "affordability", "attractions"],
+    answerOptionImages: [safeImg.src, affordableImg.src, attractionsImg.src],
     additionalStringPlaceholder: "other / additional information",
     defaultValue: "any priority",
     selectionType: "multiple",
