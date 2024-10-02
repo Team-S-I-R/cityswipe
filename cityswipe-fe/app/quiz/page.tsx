@@ -151,7 +151,7 @@ export default function QuizClient({ clerkdata }: any) {
   const handleOptionSelection = (option: string, index: number) => {
     
     // If the same option is clicked again, reset the states
-    if (highlightedOptionIndex === index && responses[currentQuestionIndex] === option) {
+    if (responses[currentQuestionIndex] === option) {
       
       setHighlightedOptionIndex(null);
       setIsOptionHighlighted(false);
@@ -440,14 +440,14 @@ export default function QuizClient({ clerkdata }: any) {
                           <ToggleGroupItem
                             key={`response-option-${i}`}
                             id={`response-option-${i}`}
-                            className={`relative text-[18px] flex py-4 w-full h-[60px] md:w-[200px] md:h-[200px] font-bold !text-white ${highlightedOptionIndex === i && responses[currentQuestionIndex] === answer ? "!bg-transparent outline outline-[3px] outline-black/40" : "!bg-transparent" }`}
+                            className={`relative text-[18px] flex py-4 w-full h-[60px] md:w-[33%] md:h-[200px] font-bold !text-white ${responses[currentQuestionIndex] === answer ? "!bg-transparent outline outline-[3px] outline-black/40" : "!bg-transparent" }`}
                             variant="outline"
                             value={answer}
                             onClick={() => handleOptionSelection(answer, i)}
                             size="lg"
                           >
                             
-                            {highlightedOptionIndex === i && responses[currentQuestionIndex] === answer && (
+                            {responses[currentQuestionIndex] === answer && (
                                <motion.span 
                                initial={{ opacity: 0.6, y: -20 }}
                                animate={{ opacity: 1, y: 0 }}
@@ -458,7 +458,7 @@ export default function QuizClient({ clerkdata }: any) {
                               </motion.span>
                             )}
                          
-                            {highlightedOptionIndex != i && responses[currentQuestionIndex] != answer && (
+                            { responses[currentQuestionIndex] != answer && (
                                <motion.span 
                                className="bg-black opacity-80 p-1 px-3 rounded-full">
                                {answer}
@@ -477,7 +477,7 @@ export default function QuizClient({ clerkdata }: any) {
                               />
                             </span>
 
-                            {highlightedOptionIndex === i && responses[currentQuestionIndex] === answer && (
+                            { responses[currentQuestionIndex] === answer && (
                               <motion.span 
                               initial={{ opacity: 0 }}
                               animate={{ opacity: 1 }}
