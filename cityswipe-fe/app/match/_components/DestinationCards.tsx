@@ -13,6 +13,7 @@ import {
 } from "@/lib/destinationSet.type";
 import { useSavedDestinationContext } from "../../../context/savedDestinationContext";
 import handleResponse from "../_utils/handleResponse";
+import loadMoreCards from "../_utils/loadCards";
 import { Button } from "@/components/ui/button";
 import { useCitySwipe } from "@/app/citySwipeContext";
 import { addMatch } from "@/app/actions";
@@ -45,25 +46,6 @@ const DestinationCards = () => {
     setDirection(btn);
   };
 
-  const loadMore = useCallback(async () => {
-    // get responses from saved
-    let responses = destinationSet.responses
-    // store original locations 
-    // pass those into generate destinations => cities and 
-    // tell the function not to include those places
-    const newDestinations = await generateDestinations(responses, destinationSet.allCards.map(card => card.city))
-    // fix ordering
-    const destinations = destinationSet.cards.concat(newDestinations.reverse())
-    await setDestinationSet({
-      id: 1,
-      cards: destinations,
-      allCards: destinationSet.allCards.concat(destinations.reverse()),
-      responses: responses
-    })
-    // console.log(destinationSet.allCards.map(card => card.city))
-
-    // add it as auto request when paid account
-  }, []);
 
   // This controls the cards that people are swiping on. If left or right it removes that card from available cards left to swipe on in the first place
   useEffect(() => {
@@ -97,7 +79,7 @@ const DestinationCards = () => {
     // }
 
     setDirection("");
-  }, [direction, loadMore]);
+  }, [direction, loadMoreCards]);
 
   const cardVariants = {
     current: {

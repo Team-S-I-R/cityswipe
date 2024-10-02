@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 // import { Spinner } from "@/components/ui/spinner";
 import getStripe from "@/utils/get-stripe";
+import Stripe from "stripe";
 
 const ResultPage: React.FC = () => {
   const router = useRouter();
@@ -54,6 +55,7 @@ const ResultPage: React.FC = () => {
         } else {
           setError(sessionData.error);
         }
+        console.log(sessionData)
       } catch (err) {
         setError("An error occurred while retrieving the session.");
       } finally {

@@ -8,9 +8,8 @@ import { motion } from "framer-motion";
 
 import { useSavedDestinationContext } from "../../../context/savedDestinationContext";
 import { useDestinationSetContext } from "../../../context/destinationSetContext";
-import { getInitialSet } from "@/api/destinationSets.api";
 import Link from "next/link";
-import { generateDestinations } from "@/app/quiz/generateDestinations";
+import loadMoreCards from "../_utils/loadCards";
 
 const DestinationCompletion = () => {
   const [destinationSet, setDestinationSet] = useDestinationSetContext();
@@ -18,59 +17,13 @@ const DestinationCompletion = () => {
 
   // const cardsAmount = games[game.id]?.cards.length;
   const cardsAmount = cards.length;
-  const initialDestinationSet = getInitialSet(0);
   const [destination, setDestination] = useSavedDestinationContext();
   const [loading, setLoading] = useState(false);
-  const [responses, setResponses] = useState<string[]>([
-    "not available",
-    "yes. ",
-    "not available",
-    "any climate",
-    "any landscape/scenery",
-    "none in particular",
-    "none in particular",
-    "none",
-  ]);
 
   const memoizedStats = useRef({
     destination_count: structuredClone(destination.destinations.length),
     cardsAmount: structuredClone(cardsAmount),
   });
-
-  useEffect(() => {
-    // get questions responses db
-    // setResponses([
-    //   "not available",
-    //   "yes. ",
-    //   "not available",
-    //   "any climate",
-    //   "any landscape/scenery",
-    //   "none in particular",
-    //   "none in particular",
-    //   "none",
-    // ]);
-  });
-
-  // const handleReplay = () => {
-  //   setUser(initialUser);
-  //   setGame(initialGame);
-  // };
-  // console.log(destination.destinations[0].toString());
-
-  const loadMore = async () => {
-    // need to store original locations 
-    // pass those into generate destinations and 
-    // tell the function not to include those places
-    const destinations = await generateDestinations(responses, destinationSet.allCards.map(card => card.city))
-    await setDestinationSet({
-      id: 1,
-      cards: destinations.reverse(),
-      allCards: destinationSet.allCards.concat(destinations.reverse()),
-    })
-    // console.log(destinationSet.allCards.map(card => card.city))
-
-    // add it as auto request when paid account
-  }
 
   return (
     <div
@@ -94,7 +47,7 @@ const DestinationCompletion = () => {
           to you saved locations.
         </p>
 
-        <button onClick={loadMore} className="bg-gradient-to-t from-cyan-500 to-green-400 text-white hover:opacity-90 font-bold py-2 px-4 rounded mt-8">
+        <button onClick={loadMoreCards} className="bg-gradient-to-t from-cyan-500 to-green-400 text-white hover:opacity-90 font-bold py-2 px-4 rounded mt-8">
           load more
         </button>
 
