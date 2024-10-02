@@ -24,6 +24,14 @@ import { AnimatePresence, motion } from "framer-motion";
 import Header from "../cs-componets/header";
 import { useToast } from "../../hooks/use-toast";
 import { number } from "zod";
+import Image from "next/image";
+import { searchGiphyGif } from "../actions";
+import gif1 from "../assets/gifs/gif1.gif"
+import gif2 from "../assets/gifs/gif2.gif"
+import gif3 from "../assets/gifs/gif3.gif"
+import gif4 from "../assets/gifs/gif4.gif"
+import gif5 from "../assets/gifs/gif5.gif"
+
 
 export default function QuizClient({ clerkdata }: any) {
   const { isStarted, setIsStarted } = useCitySwipe();
@@ -44,6 +52,17 @@ export default function QuizClient({ clerkdata }: any) {
   const [loadingMatches, setLoadingMatches] = useState(false);
   const { toast } = useToast();
 
+  const [gifUrls, setGifUrls] = useState<string[]>([
+    gif1.src,
+    gif2.src,
+    gif3.src,
+    gif4.src,
+    gif5.src
+  ]);
+
+  const [gifToShow, setGifToShow] = useState<string>(gif1.src);
+  const [gifAnimationKey, setGifAnimationKey] = useState<number>(0);
+
   console.log("responses", responses);
 
   // ANCHOR sets user data
@@ -54,16 +73,21 @@ export default function QuizClient({ clerkdata }: any) {
     }
   }, [clerkdata]);
 
-// ANCHOR text sanitization (this cleans up the text input for gemini (Shaurya's reccomendation)) ------------------------------------------------------------------------------------------------
+  // ANCHOR text sanitization (this cleans up the text input for gemini (Shaurya's reccomendation)) ------------------------------------------------------------------------------------------------
 
   const sanitizeText = (text: string) => {
     const sanText = text.replace(/[*_~`]/g, "");
     return sanText;
   };
 
-// ANCHOR these will toggles the next question forward and backwards ------------------------------------------------------------------------------------------------
-// ----- NOTE (handling form data from a button like this is extremely unreliable and there are better ways just using things like Refs, Props, Etc to handle this..)
-// ----- I handle clearing what I need to clear here but I do not set the data from the form here.
+  // Function to trigger GIF animation
+  const triggerGifAnimation = () => {
+    setGifAnimationKey(prevKey => prevKey + 1);
+  };
+
+  // ANCHOR these will toggles the next question forward and backwards ------------------------------------------------------------------------------------------------
+  // ----- NOTE (handling form data from a button like this is extremely unreliable and there are better ways just using things like Refs, Props, Etc to handle this..)
+  // ----- I handle clearing what I need to clear here but I do not set the data from the form here.
   const handleNext = () => {
     if (currentQuestion.id == 5 && responses[currentQuestionIndex] == "yes. ") {
       
@@ -72,14 +96,12 @@ export default function QuizClient({ clerkdata }: any) {
         Math.min(prevIndex + 2, quizQuestions.length - 1)
       );
 
-
     } else {
 
       // Go to the next question
       setCurrentQuestionIndex((prevIndex) =>
         Math.min(prevIndex + 1, quizQuestions.length - 1)
       );
-
 
     }
     if (inputRef.current) {
@@ -89,6 +111,9 @@ export default function QuizClient({ clerkdata }: any) {
     setIsOptionHighlighted(false);
     setHighlightedOptionIndex(null);
     setTheHighlightedAnswer("");
+    triggerGifAnimation(); // Trigger animation
+
+    console.log("currentQuestionIndex: ", currentQuestionIndex);
   };
 
   const handlePrevious = () => {
@@ -97,12 +122,15 @@ export default function QuizClient({ clerkdata }: any) {
     setIsOptionHighlighted(false);
     setHighlightedOptionIndex(null);
     setTheHighlightedAnswer("");
+    triggerGifAnimation(); // Trigger animation
+
+    console.log("currentQuestionIndex: ", currentQuestionIndex);
   };
 
-// ANCHOR these two functions ensure that responses are updated on change -
+  // ANCHOR these two functions ensure that responses are updated on change -
   // ----- DO NOT CHANGE THIS WITHOUT COMMUNICATING WITH ITWELA AND CONSOLE LOGGING WHAT YOU ARE DOING.
   // ----- IF FOR SOME REASON YOU DON'T THINK THIS WORKS, CONSOLE LOG BEFORE CHANGING ANYTHING.
-// -------------------------------------------------------------------------------------------------
+  // -------------------------------------------------------------------------------------------------
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     
@@ -156,9 +184,10 @@ export default function QuizClient({ clerkdata }: any) {
       // Set the highlighted answer
       setTheHighlightedAnswer(option);
     }
+    // setGifAnimationKey(prevKey => prevKey + 1); // Trigger animation
   }
 
-// ANCHOR handling gemini call - quiz submission ------------------------------------------------------------------------------------------------
+  // ANCHOR handling gemini call - quiz submission ------------------------------------------------------------------------------------------------
 
   const handleGemini = async () => {
     setLoadingMatches(true);
@@ -290,27 +319,28 @@ export default function QuizClient({ clerkdata }: any) {
     }
   };
 
-// ------------------------------------------------------------------------------------------------
+  // ------------------------------------------------------------------------------------------------
 
-  // const handleHomeFunction = () => {
-  //   setCurrentQuestionIndex(0);
-  //   router.push("/");
-  //   setResponses([]);
-  // };
+  const handleGifs = (index: number) => {
+    setGifToShow(gifUrls[index]);
+  }
+
+  useEffect(() => {
+    handleGifs(currentQuestionIndex);
+  }, [currentQuestionIndex]);
+
 
   return (
     <>
       <Header />
+    <AnimatePresence>
 
       <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1.75 }}
         id="question-container"
-        className="w-full px-4 lg:px-[150px] rounded-t-xl shadow-2xl absolute bottom-0 h-full bg-white text-[12px] gap-6 flex flex-col place-items-start place-content-center"
+        className="w-[100%] opacity-[100%]  rounded-t-xl shadow-2xl absolute bottom-0 h-full bg-white text-[12px] gap-6 flex flex-col place-items-end place-content-center"
       >
         <div
-          className={`flex flex-col w-full h-full place-items-start place-content-center px-8 gap-5 ${
+          className={`flex flex-col w-full md:w-[60%] px-[3%] h-full place-items-start  place-content-center gap-5 ${
             loadingMatches ? "blur-sm" : "blur-0"
           }`}
         >
@@ -353,106 +383,135 @@ export default function QuizClient({ clerkdata }: any) {
 
 
           {/* The rest of The quiz */}
-          <div className="w-full h-[60%] flex flex-col gap-4 place-content-center">
+              {/* <Image src= {currentQuestion.gif as string} alt="gif"/> */}
+            <div className="w-full h-[60%] flex flex-col gap-4 place-content-center">
 
-              {currentQuestionIndex == 0 && (
-                <h1 className="w-full w-md text-muted-foreground sm:text-left text-center place-content-center text-[15px]">
-                  Hi {userdata?.name?.split(" ")[0]}, Take the Cityswipe quiz to
-                  find your perfect destination!
-                </h1>
-              )}
-
-              <p className="text-3xl text-center sm:text-left sm:text-[44px] w-full font-bold">
-                {currentQuestion.question}
-              </p>
-
-              {currentQuestion.infoText != "" && (
-                <h1 className=" w-full w-md text-muted-foreground sm:text-left text-center place-content-center text-[15px]">
-                  {currentQuestion.infoText}
-                </h1>
-              )}
-
-              {/* Answer Options */}
-              <div className="flex flex-col w-full place-items-start gap-3 pt-8">
-                {currentQuestion.selectionType != "text" && (
-                  <ToggleGroup
-                    id="toggle-group"
-                    type={currentQuestion.selectionType as "multiple" | "single"}
-                    className="flex w-full sm:w-auto"
-                  >
-                    {currentQuestion.answerOptions.map((answer, i) => {
-                      return (
-                        <ToggleGroupItem
-                          key={`response-option-${i}`}
-                          id={`response-option-${i}`}
-                          className={`${highlightedOptionIndex === i && responses[currentQuestionIndex] === answer ? "bg-gradient-to-t from-cyan-500 to-green-400 !text-white text-muted-foreground" : "!bg-white" }`}
-                          variant="outline"
-                          value={answer}
-                          onClick={() => handleOptionSelection(answer, i)}
-                          size="lg"
-                        >
-                          {answer}
-                        </ToggleGroupItem>
-                      );
-                    })}
-                  </ToggleGroup>
+                {currentQuestionIndex == 0 && (
+                  <motion.h1 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 2.5 }}
+                  className="w-full w-md text-muted-foreground sm:text-left text-center place-content-center text-[15px]">
+                    Hi {userdata?.name?.split(" ")[0]}, Take the Cityswipe quiz to
+                    find your perfect destination!
+                  </motion.h1>
                 )}
 
-                <div className="flex sm:flex w-full pt-0">
-                  <Input
-                    id="response-input"
-                    type="text"
-                    className="w-full text-sm text-center sm:text-left"
-                    autoComplete="off"
-                    placeholder={currentQuestion.additionalStringPlaceholder}
-                    value={responses[currentQuestionIndex]}
-                    onChange={handleInputChange}
-                    ref={inputRef}
-                  />
-                </div>
-              </div>
+                <motion.p 
+                  initial={{ opacity: 0.2, y: -100 }}
+                  animate={{ opacity: 0.8, y: 0 }}
+                  transition={{ duration: 0.75, ease: "circOut" }}
+                  key={currentQuestionIndex}
+                className="text-3xl text-center sm:text-left sm:text-[44px] w-full font-bold">
+                  {currentQuestion.question}
+                </motion.p>
 
-              <div className="flex flex-row gap-2 w-full sm:w-auto">
-                {currentQuestionIndex > 0 && (
-                  <Button
-                    className="hover:scale-[95%] text-[14px] text-white hover:opacity-80 flex place-self-start h-11 w-full sm:w-auto"
-                    onClick={handlePrevious}
-                    disabled={currentQuestionIndex === 0}
-                  >
-                    Back
-                  </Button>
+                {currentQuestion.infoText != "" && (
+                  <motion.h1 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 2.5 }}
+                  className=" w-full w-md text-muted-foreground sm:text-left text-center place-content-center text-[15px]">
+                    {currentQuestion.infoText}
+                  </motion.h1>
                 )}
-                {currentQuestionIndex < quizQuestions.length - 1 && (
-                  <Button
-                    className="hover:scale-[95%] text-[14px] bg-gradient-to-t from-cyan-500 to-green-400  select-none w-full sm:w-auto"
-                    onClick={handleNext}
-                    size="lg"
-                  >
-                    Next
-                  </Button>
-                )}
-              </div>
 
-              {currentQuestionIndex === quizQuestions.length - 1 && (
-                <>
-                  <div className="flex place-self-center w-full px-8 place-items-center place-content-center">
-                    <Button
-                      size="lg"
-                      onClick={() => {
-                        handleGemini();
-                      }}
-                      className="hover:scale-[95%] text-[14px] w-full sm:w-auto bg-gradient-to-t from-cyan-500 to-green-400 select-none "
+                {/* Answer Options */}
+                <div className="flex flex-col w-full place-items-start gap-3 pt-8">
+                  {currentQuestion.selectionType != "text" && (
+                    <ToggleGroup
+                      id="toggle-group"
+                      type={currentQuestion.selectionType as "multiple" | "single"}
+                      className="flex w-full sm:w-auto"
                     >
-                      Find Your Match!
-                    </Button>
-                  </div>
-                </>
-              )}
+                      {currentQuestion.answerOptions.map((answer, i) => {
+                        return (
+                          <ToggleGroupItem
+                            key={`response-option-${i}`}
+                            id={`response-option-${i}`}
+                            className={`${highlightedOptionIndex === i && responses[currentQuestionIndex] === answer ? "bg-gradient-to-t from-cyan-500 to-green-400 !text-white text-muted-foreground" : "!bg-white" }`}
+                            variant="outline"
+                            value={answer}
+                            onClick={() => handleOptionSelection(answer, i)}
+                            size="lg"
+                          >
+                            {answer}
+                          </ToggleGroupItem>
+                        );
+                      })}
+                    </ToggleGroup>
+                  )}
 
-          </div>
+                  <div className="flex sm:flex w-full pt-0">
+                    <Input
+                      id="response-input"
+                      type="text"
+                      className="w-full text-sm text-center sm:text-left"
+                      autoComplete="off"
+                      placeholder={currentQuestion.additionalStringPlaceholder}
+                      value={responses[currentQuestionIndex]}
+                      onChange={handleInputChange}
+                      ref={inputRef}
+                    />
+                  </div>
+                </div>
+
+                <div className="flex flex-row gap-2 w-full sm:w-auto">
+                  {currentQuestionIndex > 0 && (
+                    <Button
+                      className="hover:scale-[95%] text-[14px] text-white hover:opacity-80 flex place-self-start h-11 w-full sm:w-auto"
+                      onClick={handlePrevious}
+                      disabled={currentQuestionIndex === 0}
+                    >
+                      Back
+                    </Button>
+                  )}
+                  {currentQuestionIndex < quizQuestions.length - 1 && (
+                    <Button
+                      className="hover:scale-[95%] text-[14px] bg-gradient-to-t from-cyan-500 to-green-400  select-none w-full sm:w-auto"
+                      onClick={handleNext}
+                      size="lg"
+                    >
+                      Next
+                    </Button>
+                  )}
+                </div>
+
+                {currentQuestionIndex === quizQuestions.length - 1 && (
+                  <>
+                    <div className="flex place-self-center w-full px-8 place-items-center place-content-center">
+                      <Button
+                        size="lg"
+                        onClick={() => {
+                          handleGemini();
+                        }}
+                        className="hover:scale-[95%] text-[14px] w-full sm:w-auto bg-gradient-to-t from-cyan-500 to-green-400 select-none "
+                      >
+                        Find Your Match!
+                      </Button>
+                    </div>
+                  </>
+                )}
+
+            </div>
+        
 
         </div>
-
+      
+        <motion.div 
+        key={gifAnimationKey}
+        initial={{ opacity: 0.5 }}
+        animate={{ opacity: 0.8 }}
+        exit={{ opacity: 0.5 }}
+        className="w-[0%] md:w-[40%] left-0 absolute h-[100%]">
+          <Image
+          src={gifToShow as string}
+            alt="gif"
+            width={1000}
+            height={1000}
+            className="w-full object-cover h-full"
+          />
+        </motion.div>
           {/* BLur loading screen */}
         {currentQuestionIndex === quizQuestions.length - 1 &&
           loadingMatches && (
@@ -465,6 +524,8 @@ export default function QuizClient({ clerkdata }: any) {
             </>
           )}
       </motion.div>
+
+    </AnimatePresence>
     </>
   );
   

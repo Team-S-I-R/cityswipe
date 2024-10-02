@@ -355,13 +355,6 @@ export async function addQuestions(questions: any) {
           a3: questions?.[2],
           a4: questions?.[3],
           a5: questions?.[4],
-          a6: questions?.[5],
-          a7: questions?.[6],
-          a8: questions?.[7],
-          a9: questions?.[8],
-          a10: questions?.[9],
-          a11: questions?.[10],
-          a12: questions?.[11],
           userId: user?.id,
         },
       })
@@ -525,32 +518,70 @@ export async function updateItinerary(blocks: any) {
 // }
 
 // ANCHOR Giphy API --------------------------------------------------------------------
+// export async function QsearchGiphyGif(query: string, limit: number) {
+//   const RATING = "PG";
+//   const DEFAULT_LIMIT = 1;
+
+//   if (!query) {
+//     console.log(`No query was provided, provided query was: ${query}`);
+//   }
+
+//   console.log(`Searching Giphy for: ${query}`);
+
+//   const giphyApiKey = process.env.GIPHY_API_KEY;
+//   const url = `https://api.giphy.com/v1/gifs/search?api_key=${giphyApiKey}&q=${query}&limit=${limit ? limit : DEFAULT_LIMIT}&rating=${RATING}`;
+
+//   try {
+//     const response = await fetch(url)
+//       .then((res) => res.json())
+//       .then((data) => data);
+
+//     if (response.data && response.data.length > 0) {
+//       console.log("GIF Found for the given query:", response.data[0].url);
+//       return response.data[0].url;
+
+//     } else {
+//       console.log("No GIFs found for the given query.");
+//       return null;
+
+//     }
+//   } catch (error: any) {
+//     console.log(`Some Error Occured During Giphy Search: ${error.message}`);
+//   }
+// }
+
 export async function searchGiphyGif(query: string, limit: number) {
   const RATING = "PG";
   const DEFAULT_LIMIT = 1;
 
   if (!query) {
-    console.log(`No query was provided, provided query was: ${query}`);
+    console.error(`No query was provided, provided query was: ${query}`);
+    return null;
   }
+
+  console.log(`Searching Giphy for: ${query}`);
 
   const giphyApiKey = process.env.GIPHY_API_KEY;
   const url = `https://api.giphy.com/v1/gifs/search?api_key=${giphyApiKey}&q=${query}&limit=${limit ? limit : DEFAULT_LIMIT}&rating=${RATING}`;
 
   try {
-    const response = await fetch(url)
-      .then((res) => res.json())
-      .then((data) => data);
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
 
-    if (response.data && response.data.length > 0) {
-      console.log("GIF Found for the given query:", response.data[0].url);
-      return response.data[0].url;
+    const data = await response.json();
 
+    if (data.data && data.data.length > 0) {
+      console.log("data: ", data.data[0]);
+      console.log("GIF Found for the given query:", data.data[0].images.original.url);
+      return data.data[0].images.original.url;
     } else {
       console.log("No GIFs found for the given query.");
       return null;
-
     }
   } catch (error: any) {
-    console.log(`Some Error Occured During Giphy Search: ${error.message}`);
+    console.error(`Some Error Occurred During Giphy Search: ${error.message}`);
+    return null;
   }
 }

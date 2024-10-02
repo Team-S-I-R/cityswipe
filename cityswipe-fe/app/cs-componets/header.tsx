@@ -80,7 +80,7 @@ import useGSAP from '@gsap/react'
             <Link href="/">
             <div className="flex gap-2 place-items-center place-content-center">
                 {/* <img src={clogo.src} className="w-max h-[10px] mt-1"/> */}
-                <h1 className="select-none text-[15px] font-bold ">Cityswipe</h1>
+                <h1 className="select-none text-[15px] font-bold bg-white px-2 rounded-full ">Cityswipe</h1>
             </div>
             </Link>
 
@@ -99,18 +99,18 @@ import useGSAP from '@gsap/react'
                 
                 <SignedIn>
 
-                <div className="flex place-items-center place-content-center text-[12px]">
+                <div className="flex gap-4 place-items-center place-content-center text-[12px]">
 
                   <Link href="/match">
-                    <button className="text-muted-foreground hover:text-black hover:scale-[97%] px-4 py-2 rounded-lg">Match</button>
+                    <button className=" bg-white hover:text-black hover:scale-[97%] px-4 py-2 rounded-lg">Match</button>
                   </Link>
 
                   <Link href="/explore">
-                    <button className="text-muted-foreground hover:text-black hover:scale-[97%] px-4 py-2 rounded-lg">Chat</button>
+                    <button className=" bg-white hover:text-black hover:scale-[97%] px-4 py-2 rounded-lg">Chat</button>
                   </Link>
            
                   <Link href="/pricing">
-                    <button className="text-muted-foreground hover:text-black hover:scale-[97%] px-4 py-2 rounded-lg">Pricing</button>
+                    <button className=" bg-white hover:text-black hover:scale-[97%] px-4 py-2 rounded-lg">Pricing</button>
                   </Link>
                   
               </div>

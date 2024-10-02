@@ -95,6 +95,12 @@ model Itinerary {
   userId String
 }
 
+model QuizGifs {
+  id              String   @id @default(uuid())
+  query           String?
+  url             String?
+}
+
 
 
 

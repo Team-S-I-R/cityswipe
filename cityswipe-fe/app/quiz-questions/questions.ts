@@ -1,9 +1,15 @@
+import { searchGiphyGif } from "../actions";
+import { useState, useEffect } from "react";
+
 // ANCHOR !!! ---- IMPORTANT ---- !!!
 
 // 1. DO NOT CHANGE THE IDS!
     //  - WHY? BECAUSE THE ID'S ARE TIED TO QUESTIONS.THE USER WILL NEED TO UPDATE THESE QUESTIONS SO YOU CANT JUST MESS WITH  --- (CONTND)
             // (CONTND) --- ...MESS WITH THE ID AND THE QUESTION ITSELF.
-  
+
+
+// 
+
 
 
 const quizQuestions = [
@@ -17,6 +23,7 @@ const quizQuestions = [
     defaultValue: "not available",
     selectionType: "text",
     infoText: "",
+    gif: "",
   },
   // ANCHOR THIS IS A2 IN THE SUPABSE DB
   {
@@ -27,6 +34,7 @@ const quizQuestions = [
     defaultValue: "any budget level",
     selectionType: "multiple",
     infoText: "skip for any budget",
+    gif: "",
   },
   // ANCHOR THIS IS A3 IN THE SUPABSE DB
   {
@@ -37,6 +45,7 @@ const quizQuestions = [
     defaultValue: "any experience",
     selectionType: "multiple",
     infoText: "skip for any experience",
+    gif: "",
   },
   // ANCHOR THIS IS A4 IN THE SUPABSE DB
   {
@@ -47,6 +56,7 @@ const quizQuestions = [
     defaultValue: "any mode",
     selectionType: "multiple",
     infoText: "skip for any mode",
+    gif: "",
   },
   // ANCHOR THIS IS A5 IN THE SUPABSE DB
   {
@@ -57,6 +67,7 @@ const quizQuestions = [
     defaultValue: "any priority",
     selectionType: "multiple",
     infoText: "skip for any priority",
+    gif: "",
   },
 ];
 
