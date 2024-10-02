@@ -192,11 +192,22 @@ export default function QuizClient({ clerkdata }: any) {
   const handleGemini = async () => {
     setLoadingMatches(true);
     const startTime = performance.now(); // Start tracking time
-    const prompt = `Based on the following travel preferences, generate a list of exactly 8 travel destinations formatted as json with values City, Country, Compatibility Percentage(based on the user preferences provided), budget(use the users budget preference (low , moderate, or high) and then also this number needs to be an estimate of the cost to vacation per day for ONE PERSON!), a brief description of the city, the pros (based on the user preferences), the cons (based on the user preferences). Example format:
+    const prompt = `Based on the following travel preferences, generate a list of exactly 8 travel destinations formatted as json with values 
+    
+    City, Country, Compatibility Percentage(based on the user preferences provided), 
+    budget(use the users budget preference (low , moderate, or high) 
+    and then also this number needs to be an estimate of the cost to vacation per day for ONE PERSON!), 
+    a brief description of the city, 
+    the pros (based on the user preferences), 
+    the cons (based on the user preferences). 
+    Also, DO NOT under any circumstances include the city that the user is currently located in your list of destinations. 
+    Another tip, Our users want to know more nice places to travel. So if you are going to pick a common city, we want you to pick a more niche area so our users can gain actual insights on where to travel. 
+    
+    Example format:
         [
             {
                 "id": 0
-                "city": "Tokyo",
+                "city": "Ebisu",
                 "country": "Japan",
                 "compatibility": 85,
                 "budget": 200,
@@ -206,7 +217,7 @@ export default function QuizClient({ clerkdata }: any) {
             },
             {
                 "id": 1
-                "city": "Paris",
+                "city": "Champs-Elysées",
                 "country": "France",
                 "compatibility": 78,
                 "budget": 500,
@@ -406,7 +417,7 @@ export default function QuizClient({ clerkdata }: any) {
                   {currentQuestion.question}
                 </motion.p>
 
-                {currentQuestion.infoText != "" && (
+                {/* {currentQuestion.infoText != "" && (
                   <motion.h1 
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
@@ -414,7 +425,7 @@ export default function QuizClient({ clerkdata }: any) {
                   className=" w-full w-md text-muted-foreground sm:text-left text-center place-content-center text-[15px]">
                     {currentQuestion.infoText}
                   </motion.h1>
-                )}
+                )} */}
 
                 {/* Answer Options */}
                 <div className="flex flex-col w-full place-items-start gap-3 pt-8">

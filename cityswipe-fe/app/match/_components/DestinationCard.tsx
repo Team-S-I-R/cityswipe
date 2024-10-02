@@ -221,38 +221,24 @@ const DestinationCard = ({
 
                   <TooltipProvider>
                     <Tooltip>
-
-                      <TooltipTrigger>
-                          <ShinyButton className="w-max pointer-events-none ">
-                        
+                      <TooltipTrigger asChild>
+                        <div className="w-max cursor-pointer">
+                          <ShinyButton className="pointer-events-none">
                             <span className="w-max flex">
-
                               <span className="flex gap-1">
-
-                              <span className="">
-
-                                <span>B</span>
-                                <span className="!lowercase">
-                                  udget:
+                                <span>
+                                  <span>B</span>
+                                  <span className="!lowercase">udget:</span>
                                 </span>
-
-
-                              </span>
-
                                 <span id="budget" className="text-green-500 font-bold w-max h-max">
-                                  ${budget}175
+                                  ${budget}
                                 </span>
-
                               </span>
-
                               <span className="lowercase italic font-bold text-[10px]">(est)</span>
-                            </span> 
-
-
-
+                            </span>
                           </ShinyButton>
+                        </div>
                       </TooltipTrigger>
-
                       <TooltipContent className="w-max">
                         <p className="w-[100px]">This budget is an <span className="font-bold italic">estimate</span> of the cost to vacation per day for <span className="underline font-bold">one</span> person.</p>
                       </TooltipContent>
