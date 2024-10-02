@@ -351,7 +351,7 @@ export default function QuizClient({ clerkdata }: any) {
         className="w-[100%] opacity-[100%]  rounded-t-xl shadow-2xl absolute bottom-0 h-full overflow-hidden bg-white text-[12px] gap-6 flex flex-col place-items-end place-content-center"
       >
         <div
-          className={`flex flex-col w-full md:w-[60%] px-[3%] h-[80dvh] overflow-y-scroll place-items-start  place-content-start gap-5 ${
+          className={`flex flex-col w-full md:w-[60%] px-[3%] h-[80dvh] overflow-y-scroll place-items-start  place-content-start justify-between gap-5 ${
             loadingMatches ? "blur-sm" : "blur-0"
           }`}
         >
@@ -359,7 +359,8 @@ export default function QuizClient({ clerkdata }: any) {
           {/* Progress Bar */}
           
           <div className="w-full px-[3%] h-max flex place-items-end place-content-between flex-col gap-4">
-
+            
+            <div className=""></div>
             <p className="w-full">Your Cityswipe Quiz Progress</p>
 
             <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
@@ -545,6 +546,8 @@ export default function QuizClient({ clerkdata }: any) {
                 )}
 
             </div>
+
+            <div></div>
         
 
         </div>
