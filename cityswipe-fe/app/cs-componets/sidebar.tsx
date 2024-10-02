@@ -1,7 +1,7 @@
 'use client'
 
 import { useCitySwipe } from "../citySwipeContext";
-import { ChevronDown, CreditCard, EllipsisVertical, Home, MessageCircleMore, PanelLeft, PanelRight, Settings } from "lucide-react";
+import { ChevronDown, CreditCard, EllipsisVertical, Home, MessageCircle, MessageCircleMore, PanelLeft, PanelRight, Settings } from "lucide-react";
 import { MessageCircleHeart } from "lucide-react";
 import { House } from "lucide-react";
 import Link from "next/link";
@@ -46,17 +46,18 @@ export default function Sidebar( {clerkdata, matches} : any,) {
     const { chatImg, setChatImg } = useCitySwipe();
     const { usermatches, setUserMatches } = useCitySwipe();
     const [avatar, setAvatar] = useState<string>('');
-
+    const {currentPath, setCurrentPath} = useCitySwipe();
 
 
     useEffect(() => {
         setChatImg?.(usermatches?.[0]?.illustration);
-        setSelectedMatch?.(usermatches?.[0]?.city as string)
-        setSelectedCompatibility?.(usermatches?.[0]?.compatibility as number)
-        setSelectedBio?.(usermatches?.[0]?.description as string)
-        setSelectedPros?.(usermatches?.[0]?.pros as any)
-        setSelectedCons?.(usermatches?.[0]?.cons as any)
-    }, [])
+        setSelectedMatch?.(usermatches?.[0]?.city as string);
+        setSelectedCompatibility?.(usermatches?.[0]?.compatibility as number);
+        setSelectedBio?.(usermatches?.[0]?.description as string);
+        setSelectedPros?.(usermatches?.[0]?.pros as any);
+        setSelectedCons?.(usermatches?.[0]?.cons as any);
+        setCurrentPath?.(window.location.pathname);
+    }, [usermatches, setChatImg, setSelectedMatch, setSelectedCompatibility, setSelectedBio, setSelectedPros, setSelectedCons, setCurrentPath]);
 
 
     // console.log("matches: ", usermatches?.[0]?.illustration)
@@ -114,16 +115,27 @@ export default function Sidebar( {clerkdata, matches} : any,) {
         <>
 
             {/* desktop */}
-            <div className="w-full h-full bg-gray-100 py-[2px] place-items-center place-content-center hidden md:flex flex-col justify-between" >
+            <div className="w-full h-full bg-gray-100  place-items-center place-content-center hidden md:flex flex-col justify-between" >
                 
-                <div className="w-full z-10 flex place-content-center place-items-center h-[6%] border-b border-primary/20">
+                {currentPath === '/match' && (
+                    <>
+                    {/* when we get a logo i want to put it here */}
+                    <div></div>
+                    </>
+                )}
+
+                {currentPath !== '/match' && (
+               
+               <>
+               
+               <div className="w-full z-10 flex place-content-center place-items-center p-[0.73em]">
                     <span onClick={() => setIsItineraryModalOpen?.(!isItineraryModalOpen)} className="hover:cursor-pointer">
                         { isItineraryModalOpen && <PanelRight /> }
                         { !isItineraryModalOpen && <PanelLeft /> }
                     </span>
                 </div>
 
-                <div className="flex py-4 place-items-center flex-col w-max h-[70%] gap-3">
+                <div className="flex place-items-center flex-col w-full h-[50%] gap-3">
 
 
                     {/* selected */}
@@ -155,12 +167,12 @@ export default function Sidebar( {clerkdata, matches} : any,) {
 
 
                     {/* mapped destinations */}
-                    <div className="w-max h-full flex flex-col gap-4 no-scrollbar overflow-y-scroll">
+                    <div className="w-full h-[60%] px-1 flex flex-col gap-4 no-scrollbar overflow-y-scroll">
 
                         {usermatches?.map((dest: DestinationItem, index: number) => {
                             return (
                                 <>
-                                    <div className="w-full flex place-content-center place-items-center">
+                                    <div className="w-full  flex place-content-center place-items-center">
 
                                         <div key={index} onClick={() => handleCityMatch(dest.city, dest.illustration, dest.compatibility || 0, dest.description, dest.pros, dest.cons)} className="w-full relative h-max select-none flex hover:bg-gray-200  py-1 rounded-xl hover:scale-[102%]  overflow-hidden place-items-center place-content-center">
                                             <div className="w-full h-max cursor-pointer place-items-center place-content-center relative flex flex-col"
@@ -176,7 +188,7 @@ export default function Sidebar( {clerkdata, matches} : any,) {
                                                         {/* <h3 className="text-[14px] p-2 rounded-full w-max">{dest.city}</h3> */}
                                                     </div>
 
-                                                    <p className="px-2 text-[9px]">{dest.city}</p>
+                                                    <p className="px-2 text-center text-[9px]">{dest.city}</p>
 
                                                     {/* <p className="text-[10px] p-2 flex flex-col rounded-full font-bold w-max h-max">
                                                         <span className="text-green-500 text-[15px]">{dest.compatibility}% </span>
@@ -214,8 +226,12 @@ export default function Sidebar( {clerkdata, matches} : any,) {
 
                 </div>
 
+               </>
+
+                )}
+
                 {/* settings stuff / upgrade stuff maybe */}
-                <div className="w-max h-max my-6 place-items-center  flex flex-col gap-6">
+                <div className="w-max h-[30%] my-8 place-items-center  flex flex-col gap-6">
 
                     <Link href="/">
 
@@ -225,20 +241,33 @@ export default function Sidebar( {clerkdata, matches} : any,) {
                         </div>
 
                     </Link>
+
+                    <Link href="/explore">
+
+                        <div className="cursor-pointer text-[14px] w-full h-max flex place-items-center gap-3">
+                            <MessageCircle />
+                        </div>
+
+                    </Link>
                   
                     <Link href="/pricing">
                     
                         <CreditCard />
 
                     </Link>  
-                            
-                    {/* <div className="cursor-pointer text-[14px] w-max h-max flex place-items-center gap-3">
-                        <Settings />
-                    </div>  */}
+
+                    <Link href="/settings">
+
+                        <div className="cursor-pointer text-[14px] w-max h-max flex place-items-center gap-3">
+                            <Settings />
+                        </div> 
+
+                    </Link>  
+
 
 
                     {/* user stuff */}
-                    <div className="w-max  h-max">
+                    <div className="w-max  h-[100px]">
 
                         <div className="w-full flex h-[60px]">
                             {/* <div className="w-full flex h-[60px] bg-gradient-to-t from-cyan-500 to-green-400 p-3"> */}
@@ -263,9 +292,18 @@ export default function Sidebar( {clerkdata, matches} : any,) {
         {/* mobile */}
         <div className="w-[50px] z-[100] relative h-full bg-gray-100 py-3 flex md:hidden flex-col place-items-center place-content justify-between" > 
 
-            <div className="cursor-pointer p-2 w-max h-max" onClick={() => setIsSidebarOpen?.(!isSidebarOpen)}>
-                {isSidebarOpen ? <ChevronDown className="rotate-90"/> : <ChevronDown className="-rotate-90"/> }
-            </div>
+            {currentPath === '/match' && (
+                <>
+                {/* when we get a logo i want to put it here */}
+                <div></div>
+                </>
+                )}
+            
+            {currentPath !== '/match' && (
+                        <div className="cursor-pointer p-2 w-max h-max" onClick={() => setIsSidebarOpen?.(!isSidebarOpen)}>
+                            {isSidebarOpen ? <ChevronDown className="rotate-90"/> : <ChevronDown className="-rotate-90"/> }
+                        </div>
+            )}
 
             {/* settings stuff / upgrade stuff maybe */}
             <div className="w-max  h-max my-6  flex flex-col gap-6">
@@ -278,6 +316,14 @@ export default function Sidebar( {clerkdata, matches} : any,) {
 
                 </Link>
 
+                <Link href="/explore">
+
+                    <div className="cursor-pointer text-[14px] w-full h-max flex place-items-center gap-3">
+                        <MessageCircle />
+                    </div>
+
+                </Link>
+
                 <Link href="/pricing">
                     
                     <div className="px-1 cursor-pointer text-[14px] w-full h-max flex place-items-center gap-3">
@@ -285,10 +331,15 @@ export default function Sidebar( {clerkdata, matches} : any,) {
                     </div>
 
                 </Link>  
-{/* 
-                <div className="px-1 cursor-pointer text-[14px] w-full h-max flex place-items-center gap-3">
-                    <Settings size={18}/>
-                </div> */}
+
+                
+                <Link href="/settings">
+
+                    <div className="px-1 cursor-pointer text-[14px] w-full h-max flex place-items-center gap-3">
+                        <Settings size={18}/>
+                    </div>
+
+                </Link>
 
                        {/* user stuff */}
                 <div className="w-full h-max">

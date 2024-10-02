@@ -12,7 +12,14 @@ import {
 import { useDestinationSetContext } from "../../../context/destinationSetContext";
 import { type Destination } from "@/lib/destinationSet.type";
 import { useSavedDestinationContext } from "../../../context/savedDestinationContext";
-import { Dot, Frown, Laugh, MapPin } from "lucide-react";
+import { Dot, Frown, Info, Laugh, MapPin } from "lucide-react";
+import ShinyButton from "../../../components/ui/shiny-button"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 
 type Props = {
   id?: number;
@@ -55,7 +62,7 @@ const DestinationCard = ({
   let cardsAmount = cards.length; //fix
   const [lenofDestinationSet, setLenofDestinationSet] = useState(cardsAmount);
   const [imgLoadingComplete, setImgLoadingComplete] = useState(false);
-  const { city, country, illustration, description, pros, cons } = data;
+  const { city, country, budget, illustration, description, pros, cons } = data;
   const x = useMotionValue(0);
   const isMobile = useMediaQuery("(max-width: 768px)");
   const offsetBoundary = 150;
@@ -65,7 +72,7 @@ const DestinationCard = ({
   const outputRotate = [-40, 0, 40];
   const outputActionScaleBadAnswer = [3, 1, 0.3];
   const outputActionScaleRightAnswer = [0.3, 1, 3];
-  const outputMainBgColor = ["#fcbab6", "#fafafa", "#D4E0B2"];
+  const outputMainBgColor = ["rgba(252, 186, 182, 0.5)", "", "rgba(212, 224, 178, 0.5)"];
 
   let drivenX = useTransform(x, inputX, outputX);
   let drivenY = useTransform(x, inputX, outputY);
@@ -141,7 +148,7 @@ const DestinationCard = ({
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 4 }}
         id={`cardDrivenWrapper-${id}`}
-        className="sm:w-[900px] md:h-[660px] hidden sm:flex absolute !cursor-default p-4 gap-4 flex-row shadow-lg bg-white z-10 rounded-xl text-center  pointer-events-none text-black top-[8%] select-none transform translate-x-1/2 translate-y-1/2"
+        className=" md:w-[700px]  hidden sm:flex absolute !cursor-default p-4 gap-4 flex-row shadow-lg bg-white z-10 rounded-xl text-center  pointer-events-none text-black top-[8%] select-none transform translate-x-1/2 translate-y-1/2"
         style={{
           y: drivenY,
           rotate: drivenRotation,
@@ -179,7 +186,7 @@ const DestinationCard = ({
               </div>
 
               {/* ANCHOR the image of match */}
-              <div className="w-[95%] rounded-lg relative h-full bg-gray-400">
+              <div className="w-[95%] rounded-lg relative h-[200px] bg-gray-400">
                 {illustration.length > 10 && (
                   <Image
                     priority
@@ -197,16 +204,50 @@ const DestinationCard = ({
 
 
           {/* ANCHOR bottom left of card */}
-          <div className="h-[30%] p-4 w-full  z-[2]  flex flex-col gap-2 leading-tight justify-evenly"
+          <div className="h-[30%] py-4 w-full  z-[2]  flex flex-col gap-2 leading-tight justify-evenly"
             id="locationWrapper"
           >
               {/* ANCHOR location/full */}
-              <div className="w-max h-max flex gap-2 place-items-center place-content-center">
-                <MapPin size={15} className="text-muted-foreground"/> 
-                <p id="location" className="text-[15px] text-muted-foreground w-max h-max">
-                  {city}, {country}
-                </p>
-              </div>  
+              <div className="h-max w-full  flex gap-2 place-items-center justify-between">
+                
+                <div className="w-max h-max flex gap-2 place-items-center place-content-center">
+                  <MapPin size={15} className="text-muted-foreground"/> 
+                  <p id="location" className="text-[15px] text-muted-foreground w-max h-max">
+                    {city}, {country}
+                  </p>
+                </div>
+
+                <div className="w-max scale-[90%] gap-2 flex place-items-end pointer-events-auto h-max">
+
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div className="w-max cursor-pointer">
+                          <ShinyButton className="pointer-events-none">
+                            <span className="w-max flex">
+                              <span className="flex gap-1">
+                                <span>
+                                  <span>B</span>
+                                  <span className="!lowercase">udget:</span>
+                                </span>
+                                <span id="budget" className="text-green-500 font-bold w-max h-max">
+                                  ${budget}
+                                </span>
+                              </span>
+                              <span className="lowercase italic font-bold text-[10px]">(est)</span>
+                            </span>
+                          </ShinyButton>
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent className="w-max">
+                        <p className="w-[100px]">This budget is an <span className="font-bold italic">estimate</span> of the cost to vacation per day for <span className="underline font-bold">one</span> person.</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+             
+                </div>  
+
+              </div>
  
               {/* ANCHOR bio/description */}
               <div className="h-max text-left  overflow-hidden no-scrollbar pointer-events-auto w-full">
@@ -318,7 +359,7 @@ const DestinationCard = ({
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 5 }}
         id={`cardDrivenWrapper-${id}`}
-        className="w-full h-full sm:hidden absolute !cursor-default p-4 gap-4 flex flex-row shadow-lg bg-white z-10 rounded-xl text-center  pointer-events-none text-black top-[8%] select-none transform translate-x-1/2 translate-y-1/2"
+        className="w-full h-full sm:hidden absolute !cursor-default p-4 gap-4 flex flex-row shadow-lg bg-white z-[10] rounded-xl text-center  pointer-events-none text-black top-[8%] select-none transform translate-x-1/2 translate-y-1/2"
         style={{
           y: drivenY,
           rotate: drivenRotation,
@@ -328,7 +369,7 @@ const DestinationCard = ({
         {/* inside of card  */}
         <div
           id="illustration"
-          className="w-full h-full rounded-xl relative overflow-hidden z-10 flex flex-col"
+          className="w-full h-full ! rounded-xl relative overflow-hidden z-10 flex flex-col"
         >
 
           <div className="flex flex-col place-items-center w-full relative h-[70%]">

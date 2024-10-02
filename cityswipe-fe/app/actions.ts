@@ -11,8 +11,7 @@ import { currentUser } from "@clerk/nextjs/server";
 import quizQuestions from "./quiz-questions/questions";
 import { createClient } from "pexels";
 
-// ANCHOR gemini stuff --------------------------------------------------------------------
-
+// ANCHOR Gemini Logic --------------------------------------------------------------------
 export interface Message {
   role: "user" | "assistant";
   content: string;
@@ -68,7 +67,7 @@ export async function generateCityBio(city: string) {
     }
 
     stream.done();
-  })().then(() => {});
+  })().then(() => { });
 
   return {
     description: stream.value,
@@ -91,7 +90,7 @@ export async function streamConversation(history: Message[]) {
     }
 
     stream.done();
-  })().then(() => {});
+  })().then(() => { });
 
   return {
     messages: history,
@@ -146,7 +145,7 @@ export async function streamFlirtatiousConversation(
     }
 
     stream.done();
-  })().then(() => {});
+  })().then(() => { });
 
   if (!conversationHistory[city]) {
     conversationHistory[city] = [];
@@ -305,8 +304,7 @@ export async function summerizeItineraryText(itinerarytext: string) {
   return text;
 }
 
-// ANCHOR waiting list form stuff ----------------------------------------------------
-
+// ANCHOR WaitList Forms & Other ----------------------------------------------------
 const generateRandomId = () => {
   return Math.random().toString(36).substring(2, 10);
 };
@@ -358,7 +356,7 @@ export async function submitFormResponse(
   }
 }
 
-// ANCHOR adding questions to database (supabase stuff) ------------------------------------
+// ANCHOR Database Logic & Functions (Supabase) ------------------------------------
 export async function addQuestions(questions: any) {
   let count = 0;
 
@@ -380,23 +378,40 @@ export async function addQuestions(questions: any) {
           a3: questions?.[2],
           a4: questions?.[3],
           a5: questions?.[4],
-          a6: questions?.[5],
-          a7: questions?.[6],
-          a8: questions?.[7],
-          a9: questions?.[8],
-          a10: questions?.[9],
-          a11: questions?.[10],
-          a12: questions?.[11],
           userId: user?.id,
         },
-      });
+      })
 
-      count += 1;
+      count += 1
     }
   }
 }
 
-// adding matches to database
+export async function updateQuestions(questions: any) {
+
+  const user = await currentUser();
+
+  console.log("questions", questions)
+
+  // Ensure this is only run once
+  if (questions.length > 0) {
+    const updatePromises = questions.map((question: any, index: number) => {
+      const dataToUpdate: any = {};
+      dataToUpdate[`a${index + 1}`] = question.value;
+
+      return prisma?.quizAnswer.updateMany({
+        where: {
+          id: question.id,
+          userId: user?.id
+        },
+        data: dataToUpdate
+      });
+    });
+
+    await Promise.all(updatePromises);
+  }
+}
+
 export async function addMatch(savedDestination: any) {
   const user = await currentUser();
 
@@ -424,12 +439,8 @@ export async function addMatch(savedDestination: any) {
       country: destination?.country,
       description: destination?.description,
       illustration: destination?.illustration,
-      pros: Array.isArray(destination?.pros)
-        ? destination?.pros.map(String)
-        : [],
-      cons: Array.isArray(destination?.cons)
-        ? destination?.cons.map(String)
-        : [],
+      pros: Array.isArray(destination?.pros) ? destination?.pros.map(String) : [],
+      cons: Array.isArray(destination?.cons) ? destination?.cons.map(String) : [],
       compatibility: destination?.compatibility,
       userId: user?.id,
     },
@@ -443,112 +454,156 @@ export async function deleteMatch(id: string) {
     },
   });
 
-  revalidatePath("/explore");
-  revalidatePath("/");
+  revalidatePath('/explore');
+  revalidatePath('/');
+
 }
 
-// Destination Generation
-// export const generateDestinations = async (responses: string[]) => {
-//   const prompt = `Based on the following travel preferences, generate a list of exactly 8 travel destinations formatted as json with values City, Country, Compatibility Percentage(based on the user preferences provided), a brief description of the city, the pros (based on the user preferences), the cons (based on the user preferences). Example format:
-//       [
-//           {
-//               "id": 0
-//               "city": "Tokyo",
-//               "country": "Japan",
-//               "compatibility": 85,
-//               "description": "A short description about tokyo",
-//               "pros": ["Rich history", "Modern architecture", "Vibrant nightlife", "Delicious food", "Famous landmarks", "Fashion industry", "Technology industry", "Historical sites", "Cultural attractions", "Entertainment options"],
-//               "cons": ["Crowded", "Expensive", "Pollution", "Language barrier", "Lack of green spaces", "High cost of living", "Long working hours", "Traffic congestion", "Limited public transportation", "Limited public transportation"],
-//           },
-//           {
-//               "id": 1
-//               "city": "Paris",
-//               "country": "France",
-//               "compatibility": 78,
-//               "description": "A short description about paris",
-//               "pros": ["Beautiful architecture", "Delicious food", "Romantic atmosphere", "Art and fashion", "Historical sites", "Cultural attractions", "Entertainment options", "Museums", "Restaurants", "Parks"],
-//               "cons": ["Expensive", "Crowded", "Language barrier", "Lack of green spaces", "High cost of living", "Long working hours", "Traffic congestion", "Limited public transportation", "Limited public transportation"],
-//           },
-//               ... 6 more of the same format
-//       ]
+export async function createItinerary(blocks: any) {
+  const user = await currentUser();
 
-//       Here are tips you must follow when generating this content. THis is important because we will be using JSON.parse to parse this data so it is important to follow this format and to create NO ERRORS.
-      
-//       Every key in the JSON string is enclosed in double quotes ("key").
-//       The values are correctly formatted (e.g., strings should be in double quotes, numbers should not).
-//       There are no trailing commas after the last property of each object or array.
-//       DO NOT ADD ANY MARKDOWN, CODE BLOCKS OR FORMATTING BESIDES THE EXAMPLE JSON FORMAT.
+  console.log("blocks: ", blocks);
 
-//       Make sure the compatibility percentage is a number between 0 and 100. 
-//       Do not include formatting or code blocks, follow example. 
-//       Corelate all the data when making decisions. 
-//       the questions answered by the user (in order) are as follows: \n${console.log(
-//         quizQuestions.map((q) => q.question).join("\n")
-//       )}\n 
-      
-//       Here are the user preference answers in order:\n${responses.join("\n")}`;
+  // ANCHOR THIS ADDS EVERY BLOCK IN THE ITINERARY TO THE DATABASE
+  // THE TEXT IS IN AN ARRAY ALLOWING ME TO MAP IT IN THE FRONT END
+  //  SAME WITH THE TYPES
+  if (blocks && blocks.length > 0) {
+    let blockNum = 1; // Initialize blockNum outside the loop
+    for (const block of blocks) {
 
-//   const conversationHistory: Message[] = [
-//     { role: "user" as const, content: prompt, type: "message" },
-//   ];
+      const blockText = block?.content?.[0]?.text || null;
 
-//   const { newMessage } = await streamConversation(conversationHistory);
-//   let textContent = "";
+      await prisma?.itinerary.create({
+        data: {
+          username: user?.username,
+          blockNum: blockNum,
+          text: blockText,
+          type: block.type,
+          props: block.props,
+          userId: user?.id,
+        },
 
-//   for await (const delta of readStreamableValue(newMessage)) {
-//     textContent += delta;
+      });
+      blockNum += 1; // Increment blockNum after each addition
+
+    }
+    revalidatePath('/explore');
+    revalidatePath('/');
+  }
+}
+
+export async function updateItinerary(blocks: any) {
+
+  const user = await currentUser();
+
+  console.log("blocks: ", blocks);
+
+
+  // I did it this way to stop erros. There will not be any records of previous
+  // saved itineraries for now but it will save whatever the user has done.
+
+
+  // ANCHOR THIS DELETES ALL EXISTING BLOCKS AND CREATES NEW ONES IN THE DATABASE
+  if (blocks && blocks.length > 0) {
+    // Delete all existing blocks for the user
+    await prisma?.itinerary.deleteMany({
+      where: {
+        userId: user?.id,
+      },
+    });
+
+    let blockNum = 1; // Initialize blockNum outside the loop
+    for (const block of blocks) {
+
+      const blockText = block?.content?.[0]?.text || null;
+
+      await prisma?.itinerary.create({
+        data: {
+          username: user?.username,
+          blockNum: blockNum,
+          text: blockText,
+          type: block.type,
+          props: block.props,
+          userId: user?.id,
+        },
+
+      });
+      blockNum += 1; // Increment blockNum after each addition
+
+    }
+    revalidatePath('/explore');
+    revalidatePath('/');
+  }
+}
+
+// export async function newSubscriber(subscriber: string) {
+// }
+
+// ANCHOR Giphy API --------------------------------------------------------------------
+// export async function QsearchGiphyGif(query: string, limit: number) {
+//   const RATING = "PG";
+//   const DEFAULT_LIMIT = 1;
+
+//   if (!query) {
+//     console.log(`No query was provided, provided query was: ${query}`);
 //   }
 
-//   let count = 1;
-//   // added a delay because I noticed we get rate limited by the API easily.
-//   // because of this delay this gives us freedom to add either an add or just a better loading state.
-//   // const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+//   console.log(`Searching Giphy for: ${query}`);
 
-//   const generatedDestinations = [];
+//   const giphyApiKey = process.env.GIPHY_API_KEY;
+//   const url = `https://api.giphy.com/v1/gifs/search?api_key=${giphyApiKey}&q=${query}&limit=${limit ? limit : DEFAULT_LIMIT}&rating=${RATING}`;
 
-//   const destinations = JSON.parse(textContent);
+//   try {
+//     const response = await fetch(url)
+//       .then((res) => res.json())
+//       .then((data) => data);
 
-//   for (const destination of destinations) {
-//     const { city, country, compatibility, description, pros, cons } =
-//       destination;
+//     if (response.data && response.data.length > 0) {
+//       console.log("GIF Found for the given query:", response.data[0].url);
+//       return response.data[0].url;
 
-//     // ANCHOR Fetch image for the current city-country pair
-//     const client = createClient(
-//       "8U6Se7vVT3H9tx1KPZAQTkDUSW0IKi3ldgBTVyh3W9NFF7roIpZxktzY"
-//     );
-//     let illustration = "";
+//     } else {
+//       console.log("No GIFs found for the given query.");
+//       return null;
 
-//     const searchQuery = `${city}, landscape`;
-//     try {
-//       const response = await client.photos.search({
-//         query: `${searchQuery}`,
-//         per_page: 1,
-//       });
-//       if ("photos" in response && response.photos.length > 0) {
-//         illustration = response.photos[0].src.landscape;
-//       }
-//     } catch (error) {
-//       console.error(`Error in fetching photo for ${city}, ${country}:`, error);
 //     }
-
-//     generatedDestinations.push({
-//       id: count++,
-//       city: city.trim(),
-//       country: country.trim(),
-//       compatibility: parseFloat(compatibility),
-//       illustration: illustration,
-//       description: description.trim(),
-//       pros: pros,
-//       cons: cons,
-//     });
+//   } catch (error: any) {
+//     console.log(`Some Error Occured During Giphy Search: ${error.message}`);
 //   }
+// }
 
-//   const validDestinations = generatedDestinations.filter(
-//     (destination) => destination !== null
-//   );
+export async function searchGiphyGif(query: string, limit: number) {
+  const RATING = "PG";
+  const DEFAULT_LIMIT = 1;
 
-//   return {
-//     id: 1,
-//     cards: validDestinations.reverse(),
-//   };
-// };
+  if (!query) {
+    console.error(`No query was provided, provided query was: ${query}`);
+    return null;
+  }
+
+  console.log(`Searching Giphy for: ${query}`);
+
+  const giphyApiKey = process.env.GIPHY_API_KEY;
+  const url = `https://api.giphy.com/v1/gifs/search?api_key=${giphyApiKey}&q=${query}&limit=${limit ? limit : DEFAULT_LIMIT}&rating=${RATING}`;
+
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    if (data.data && data.data.length > 0) {
+      console.log("data: ", data.data[0]);
+      console.log("GIF Found for the given query:", data.data[0].images.original.url);
+      return data.data[0].images.original.url;
+    } else {
+      console.log("No GIFs found for the given query.");
+      return null;
+    }
+  } catch (error: any) {
+    console.error(`Some Error Occurred During Giphy Search: ${error.message}`);
+    return null;
+  }
+}

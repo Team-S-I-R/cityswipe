@@ -29,13 +29,18 @@ async function fetchUserData() {
 async function fetchUserMatches() {
     const clerkuser = await currentUser();
 
-    let matches = prisma?.match.findMany({
+    if (!clerkuser) {
+        redirect("/sign-in");
+        return null; // Ensure function returns null if redirecting
+    }
+
+    let matches = await prisma?.match.findMany({
         where: {
-            userId: clerkuser?.id
+            userId: clerkuser.id
         }
     });
 
-    return matches
+    return matches;
 }
 
 async function fetchQuestions() {
@@ -43,35 +48,58 @@ async function fetchQuestions() {
 
     if (!clerkuser) {
         redirect("/sign-in");
+        return null; // Ensure function returns null if redirecting
     }
 
     let questions = await prisma?.quizAnswer.findMany({
         where: {
-            userId: clerkuser?.id
+            userId: clerkuser.id
         }
-    })
+    });
 
     revalidatePath('/');
     revalidatePath('/quiz');
     revalidatePath('/match');
     revalidatePath('/explore');
 
-
     if (questions.length < 1) {
         redirect("/quiz");
     }
 
-    return questions
+    return questions;
+}
+
+async function fetchItinerary() {
+    const clerkuser = await currentUser();
+
+    if (!clerkuser) {
+        redirect("/sign-in");
+        return null; // Ensure function returns null if redirecting
+    }
+
+    let allItineraryBlocks = await prisma?.itinerary.findMany({
+        where: {
+            userId: clerkuser.id
+        }
+    });
+
+    revalidatePath('/');
+    revalidatePath('/quiz');
+    revalidatePath('/match');
+    revalidatePath('/explore');
+
+    return allItineraryBlocks;
 }
 
 export default async function ExploreServer() {
     const data = await fetchUserData();
     const matches = await fetchUserMatches();
     const questions = await fetchQuestions();
+    const itinerary = await fetchItinerary();
     
     return (
         <main className="w-screen h-screen overflow-y-hidden">
-            <Explore clerkdata={data} matches={matches} questions={questions} />
+            <Explore clerkdata={data} matches={matches} questions={questions} itinerary={itinerary} />
         </main>
     );
 }

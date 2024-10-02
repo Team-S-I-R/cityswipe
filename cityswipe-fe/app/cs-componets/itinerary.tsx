@@ -1,188 +1,140 @@
-'use client'
+'use client';
 
 import { useCitySwipe } from "../citySwipeContext";
-
 import { Calendar as CalendarIcon } from "lucide-react";
-import { useEffect, useState } from "react"
-import { addDays, format, set } from "date-fns"
-import { DateRange } from "react-day-picker" 
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Calendar } from "@/components/ui/calendar"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
+import { useEffect, useState } from "react";
+import { addDays, format, set } from "date-fns";
+import { DateRange } from "react-day-picker";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
-import { AnimatePresence, motion } from "framer-motion"
-
+import { AnimatePresence, motion } from "framer-motion";
 import "@blocknote/core/fonts/inter.css";
 import { BlockNoteView } from "@blocknote/mantine";
 import { Block } from "@blocknote/core";
 import "@blocknote/mantine/style.css";
 import { useCreateBlockNote } from "@blocknote/react";
 import { summerizeItineraryText } from "../actions";
+import { createItinerary, updateItinerary } from "../actions";
 
 type BlockIdentifier = string | Block;
 
-const Itinerary = () => {
+const Itinerary = (itinerary: any) => {
+  const { selectedMatch } = useCitySwipe();
+  const { userquestions } = useCitySwipe();
+  const [blockToMessWith, setBlockToMessWith] = useState("");
+  const { newItineraryItem, setNewItineraryItem } = useCitySwipe();
+  const { usermatches, setUserMatches } = useCitySwipe();
+  const { addingItemToItinerary, setAddingItemToItinerary } = useCitySwipe();
+  const [date, setDate] = useState<DateRange | undefined>({
+    from: new Date(),
+    to: addDays(new Date(), 20),
+  });
+  const { userItinerary, setUserItinerary } = useCitySwipe();
 
-    const { selectedMatch } = useCitySwipe()
-    const { userquestions } = useCitySwipe()
-    const [ blockToMessWith, setBlockToMessWith ] = useState("")
-    const { newItineraryItem, setNewItineraryItem } = useCitySwipe();
-    const {usermatches, setUserMatches} = useCitySwipe();
-    const { addingItemToItinerary, setAddingItemToItinerary } = useCitySwipe();
-    const [date, setDate] = useState<DateRange | undefined>({
-        from: new Date(),
-        to: addDays(new Date(), 20),
-      })
-
-    // Creates a new editor instance.
-    const editor = useCreateBlockNote({
-        initialContent: [
+  // Initialize editor outside of conditional
+  const editor = useCreateBlockNote({
+    initialContent:
+      itinerary.itinerary.length > 0
+        ? itinerary.itinerary.map((item: any) => ({
+            type: item.type,
+            content: item.text,
+            props: item.props,
+            blockNum: item.blockNum,
+            createdAt: item.createdAt,
+            updatedAt: item.updatedAt,
+            userId: item.userId,
+            username: item.username,
+          }))
+        : [
             {
-              type: "paragraph", 
+              type: "paragraph",
               content: `Welcome to your itinerary!`,
             },
             {
-              type: "paragraph", 
-              content: `Here you can further plan out your trip, by jotting down important information you want to remember.
-              `,
+              type: "paragraph",
+              content: `Here you can further plan out your trip by jotting down important information.`,
             },
             {
-              type: "paragraph", 
-              content: `Also, by talking to your match and simply press "Add to itinerary", under the green speech bubble, it will add whatever you are talking about to your itinerary as well!
-              `,
+              type: "paragraph",
+              content: `Also, by talking to your match and pressing "Add to itinerary", you can add your conversations here.`,
             },
-        ]
-    });
-    
-    // gets all "blocks in the itinerary"
-    const blocks = editor.document;
+          ],
+  });
 
-    useEffect(() => {
-        setBlockToMessWith(blocks[blocks.length - 1].id);
-        console.log("blockToMessWith: ", blockToMessWith);
-    });
+  let blocks = editor.document;
 
-    // Function to insert blocks
-    const insertBlocks = (blocksToInsert: any, referenceBlock: any, placement: any) => {
-        
-            try {
-                editor?.insertBlocks(blocksToInsert, referenceBlock, placement);
-                setAddingItemToItinerary?.(false);
-                console.log("Blocks inserted");
-            } catch (error) {
-                console.log(error);
-            }
+  const saveItineraryContent = () => {
+    let latestBlocks = editor.document;
+    console.log("latestBlocks: ", latestBlocks);
+    itinerary.itinerary.length > 0 ? updateItinerary(latestBlocks) : createItinerary(latestBlocks);
+  };
 
+  // Only one useEffect for blockToMessWith logic
+  useEffect(() => {
+    if (blocks.length > 0) {
+      setBlockToMessWith(blocks[blocks.length - 1].id);
+    }
+  }, [blocks]);
 
+  const insertBlocks = (blocksToInsert: any, referenceBlock: any, placement: any) => {
+    try {
+      editor?.insertBlocks(blocksToInsert, referenceBlock, placement);
+      setAddingItemToItinerary?.(false);
+      console.log("Blocks inserted");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    const insertSummarizedText = async () => {
+      if (addingItemToItinerary) {
+        try {
+          const summarizedText = await summerizeItineraryText?.(newItineraryItem as string);
+          insertBlocks([{ type: "paragraph", content: summarizedText }], blockToMessWith, "after");
+        } catch (error) {
+          console.error("Error summarizing itinerary text:", error);
+        }
+      }
     };
-    
-    
 
-    useEffect(() => {
-        const insertSummarizedText = async () => {
-            if (addingItemToItinerary) {
-                console.log("insert blocks is starting....");
-                try {
-                    const summarizedText = await summerizeItineraryText?.(newItineraryItem as string);
-                    console.log("summarizedText: ", summarizedText);
-                    insertBlocks([{type: "paragraph", content: summarizedText}], blockToMessWith, "after");
-                    console.log("false now");
-                } catch (error) {
-                    console.error("Error summarizing itinerary text:", error);
-                }
-            }
-        };
+    insertSummarizedText();
+  }, [addingItemToItinerary, newItineraryItem, blockToMessWith]);
 
-        insertSummarizedText();
-    }, [addingItemToItinerary, newItineraryItem, blockToMessWith]);
+  return (
+    <>
+      <div className="flex flex-col gap-2 h-full border-b border-r border-primary/20 ">
+        <div className="select-none text-[14px] px-2 text-center font-bold flex-nowrap flex p-[1em] border-b  border-primary/20 w-full place-content-center place-items-center gap-2">
+          <p>My</p>
+          <p className="">Itinerary</p>
+          <span className="bg-gradient-to-t from-cyan-400 to-green-400 text-[9px] px-2 py-1 text-white rounded-full  top-[-40%] right-[-70%]">NEW</span>
+        </div>
 
+        <div className="py-2 h-full z-[100] relative w-full">
+          <BlockNoteView className="text-[12px]" theme={"light"} editor={editor} />
 
-    return (
-        <>
-                  <div className="flex flex-col gap-2 h-full border-b border-r border-primary/20 ">
-                    
-                    <div className="select-none text-[14px] px-2 text-center font-bold flex-nowrap flex h-[6%] border-b  border-primary/20 w-full place-content-center place-items-center gap-2">
-                        <p>My</p>
-                        {/* <p>{selectedMatch}</p> */}
-                        <p className="">Itinerary
-                        </p>
-                        <span className="bg-gradient-to-t from-cyan-400 to-green-400 text-[9px] px-2 py-1 text-white rounded-full  top-[-40%] right-[-70%]">NEW</span>
-                    </div>
+          <div className="flex place-items-end w-full justify-between h-max absolute bottom-0 p-4 gap-5 ">
+            {itinerary.itinerary.length > 0 && (
+              <div className="text-[10px] text-muted-foreground" key={itinerary.itinerary[itinerary.itinerary.length - 1].blockNum}>
+                <p>
+                  Latest save at: {new Date(itinerary.itinerary[itinerary.itinerary.length - 1].updatedAt).toLocaleString()}
+                </p>
+              </div>
+            )}
+            <Button
+              className="bg-gradient-to-t from-cyan-500 to-green-400 text-white hover:opacity-90 font-bold py-2 px-4 rounded w-max"
+              onClick={() => saveItineraryContent()}
+            >
+              Save
+            </Button>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
 
-                    {/* <motion.div className="p-4 px-[50px] flex flex-col gap-2">
-                    
-                        <p className="text-[12px]" >
-                            Based on your quiz answers, we have you coming from 
-                            <span className="text-black font-bold"> {userquestions?.[0]?.a1} </span>
-                            and going to <span className="text-black font-bold"> {selectedMatch} </span>.
-                        </p>
-
-                        <p className="text-[12px]">For us to be able to make the most useful itinerary for you, we just need to know when you will start and end your trip:</p>
-
-                        <Popover>
-                            <PopoverTrigger asChild>
-                            <Button
-                                id="date"
-                                variant={"outline"}
-                                className={cn(
-                                "w-full justify-start text-left font-normal",
-                                !date && "text-muted-foreground"
-                                )}
-                            >
-                                <CalendarIcon className="mr-2 h-4 w-4" />
-                                {date?.from ? (
-                                date.to ? (
-                                    <>
-                                    {format(date.from, "LLL dd, y")} -{" "}
-                                    {format(date.to, "LLL dd, y")}
-                                    </>
-                                ) : (
-                                    format(date.from, "LLL dd, y")
-                                )
-                                ) : (
-                                <span>Pick a date</span>
-                                )}
-                            </Button>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-auto p-0" align="start">
-                            <Calendar
-                                initialFocus
-                                mode="range"
-                                defaultMonth={date?.from}
-                                selected={date}
-                                onSelect={setDate}
-                                numberOfMonths={2}
-                            />
-                            </PopoverContent>
-                        </Popover>
-
-                        <p className="text-[12px]">And how many people will be on your trip:</p>
-
-                        <Input placeholder="Number of people on your trip"/>
-
-                        <p className="text-[12px]">Your itinerary will show here.</p>
-
-
-                    </motion.div> */}
-                    
-
-                    <div className="py-2 w-full">
-                        <BlockNoteView 
-                        className="text-[12px]" 
-                        theme={'light'} 
-                        editor={editor} 
-                        />
-                    </div>
-
-                    </div>
-                    {/* <button onClick={() => insertBlocks([{type: "paragraph", content: "Hello World"}], blockToMessWith, "after")}>Submit</button> */}
-        </> 
-    )
-}
-
-export default Itinerary
+export default Itinerary;

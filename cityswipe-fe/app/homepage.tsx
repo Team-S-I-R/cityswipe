@@ -13,9 +13,9 @@ import { Heart } from "lucide-react";
 import { Message } from "./actions";
 import { useRouter } from "next/navigation";
 import { useDestinationSetContext } from "../context/destinationSetContext";
+import { searchGiphyGif } from "./actions";
 
 export default function Hero() {
-  // ANCHOR project variables
   const { isStarted, setIsStarted } = useCitySwipe();
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   // const [responses, setResponses] = useState<string[]>([]);

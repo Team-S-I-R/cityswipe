@@ -12,7 +12,7 @@ import { useEffect, useState } from "react"
 import Itinerary from "../cs-componets/itinerary"
 import { motion, AnimatePresence } from "framer-motion"
 
-export default function Explore({clerkdata, matches, questions}: any) {
+export default function Explore({clerkdata, matches, questions, itinerary}: any) {
     
     const { isChatting } = useCitySwipe();
     const { isMatching } = useCitySwipe();
@@ -20,8 +20,10 @@ export default function Explore({clerkdata, matches, questions}: any) {
     const { usermatches, setUserMatches }  = useCitySwipe()
     const { userquestions, setUserQuestions }  = useCitySwipe()
     const { isItineraryModalOpen, setIsItineraryModalOpen } = useCitySwipe();
+    const { userItinerary, setUserItinerary } = useCitySwipe();
     const { selectedMatch, setSelectedMatch } = useCitySwipe();
     const { chatImg, setChatImg } = useCitySwipe();
+    console.log("itinerary: ", itinerary);
 
     const itinerarVariants = {
         open: { width: "25%", opacity: 1,  },
@@ -36,12 +38,13 @@ export default function Explore({clerkdata, matches, questions}: any) {
     useEffect(() => {
         setUserData?.(clerkdata);
         setUserMatches?.(matches);
-    }, [matches]);
+    }, [clerkdata, matches]);
 
     useEffect(() => {
         setUserQuestions?.(questions);
         setIsItineraryModalOpen?.(true);
-    }, []);
+        setUserItinerary?.(itinerary);
+    }, [questions, setIsItineraryModalOpen, setUserItinerary, itinerary]);
 
 
     // have to upload the header here for now
@@ -67,7 +70,7 @@ export default function Explore({clerkdata, matches, questions}: any) {
                             transition={{ duration: 1.25 }}                                     
                             className={`h-full`} 
                         >
-                            <Itinerary key='3'/>
+                            <Itinerary itinerary={itinerary} key='3'/>
                         </motion.div>
 
                         <motion.div 

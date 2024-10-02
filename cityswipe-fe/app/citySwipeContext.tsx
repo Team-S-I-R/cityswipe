@@ -13,6 +13,8 @@ interface CitySwipeContextType {
   userdata?: any;
   usermatches?: any
   userquestions?: any
+  userItinerary?: any
+  currentPath?: string
   addingItemToItinerary?: boolean
   newItineraryItem?: string
   photoUrl?: string[];
@@ -27,9 +29,11 @@ interface CitySwipeContextType {
   setClearConversation?: (value: number) => void
   setMessage: React.Dispatch<React.SetStateAction<any>>
   setIsStarted: (value: boolean) => void;
+  setCurrentPath?: (value: string) => void;
   setUserData?: (value: any) => void;
   setUserMatches?: (value: any) => void;
   setUserQuestions?: (value: any) => void;
+  setUserItinerary?: (value: any) => void;
   setNewItineraryItem?: (value: string) => void;
   setAddingItemToItinerary?: (value: boolean) => void;
   setSelectedCompatibility?: (value: number) => void;
@@ -53,11 +57,13 @@ export const CitySwipeProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [isChatting, setIsChatting] = useState(false);
   const [isMatching, setIsMatching] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [currentPath, setCurrentPath] = useState<string>('');
   const [photoUrl, setPhotoUrl] = useState<string[]>([]);
   const [isItineraryModalOpen, setIsItineraryModalOpen] = useState(false);
   const [newItineraryItem, setNewItineraryItem] = useState<string>('');
   const [addingItemToItinerary, setAddingItemToItinerary] = useState(false);
   const [userdata, setUserData] = useState<any>({});
+  const [userItinerary, setUserItinerary] = useState<any>({});
   const [selectedCompatibility, setSelectedCompatibility] = useState<number>(0);
   const [selectedBio, setSelectedBio] = useState<string>('');
   const [selectedPros, setSelectedPros] = useState<any[]>([]);
@@ -77,7 +83,9 @@ export const CitySwipeProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       isChatting,
       photoUrl,
       chatImg,
+      userItinerary,
       userdata,
+      currentPath,
       usermatches,
       userquestions,
       newItineraryItem,
@@ -96,8 +104,10 @@ export const CitySwipeProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       setFirstMatch,
       setIsStarted,
       setPhotoUrl,
+      setCurrentPath,
       setIsSidebarOpen,
       setIsItineraryModalOpen,
+      setUserItinerary,
       setUserData,
       setUserMatches,
       setNewItineraryItem,
