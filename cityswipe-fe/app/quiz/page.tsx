@@ -413,7 +413,7 @@ export default function QuizClient({ clerkdata }: any) {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.75, ease: "circOut" }}
                   key={currentQuestionIndex}
-                className="text-xl text-left px-[3%] sm:text-2xl lg:text-4xl w-full font-bold">
+                className="text-xl text-center md:text-left px-[3%] sm:text-2xl lg:text-4xl w-full font-bold">
                   {currentQuestion.question}
                 </motion.p>
 
@@ -483,7 +483,7 @@ export default function QuizClient({ clerkdata }: any) {
                               animate={{ opacity: 1 }}
                               exit={{ opacity: 0 }}
                               transition={{ duration: 1 }}
-                              className="absolute hidden md:block bg-gradient-to-t from-cyan-400 via-green-200 to-[60%] to-transparent z-[-1] bottom-0 left-0 w-full h-[80%]">
+                              className="absolute hidden md:block bg-gradient-to-t from-cyan-400 via-green-200 to-[90%] to-transparent z-[-1] bottom-0 left-0 w-full h-[100%]">
                               </motion.span>
                             )}
 
