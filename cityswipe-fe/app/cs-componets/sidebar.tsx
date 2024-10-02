@@ -135,7 +135,7 @@ export default function Sidebar( {clerkdata, matches} : any,) {
                     </span>
                 </div>
 
-                <div className="flex place-items-center flex-col w-max h-[50%] gap-3">
+                <div className="flex place-items-center flex-col w-full h-[50%] gap-3">
 
 
                     {/* selected */}
@@ -167,7 +167,7 @@ export default function Sidebar( {clerkdata, matches} : any,) {
 
 
                     {/* mapped destinations */}
-                    <div className="w-max h-[60%] flex flex-col gap-4 no-scrollbar overflow-y-scroll">
+                    <div className="w-full h-[60%] px-1 flex flex-col gap-4 no-scrollbar overflow-y-scroll">
 
                         {usermatches?.map((dest: DestinationItem, index: number) => {
                             return (
@@ -188,7 +188,7 @@ export default function Sidebar( {clerkdata, matches} : any,) {
                                                         {/* <h3 className="text-[14px] p-2 rounded-full w-max">{dest.city}</h3> */}
                                                     </div>
 
-                                                    <p className="px-2 text-[9px]">{dest.city}</p>
+                                                    <p className="px-2 text-center text-[9px]">{dest.city}</p>
 
                                                     {/* <p className="text-[10px] p-2 flex flex-col rounded-full font-bold w-max h-max">
                                                         <span className="text-green-500 text-[15px]">{dest.compatibility}% </span>
