@@ -1,6 +1,6 @@
 # The Prosperity Public License 3.0.0
 
-**Contributor**: CitySwipe (Shaurya Bisht, Itwela Ibomu, and Rehan Mohideen)  
+**Contributors**: CitySwipe (Shaurya Bisht, Itwela Ibomu, Rehan Mohideen, Bilal Khan)  
 **Source Code**: [https://github.com/Team-S-I-R/cityswipe](https://github.com/Team-S-I-R/cityswipe)
 
 ## Purpose

@@ -27,7 +27,7 @@ const nextConfig = {
             pathname: '/embed/**',
           },
         ],
-      },
+      }
 };
 
 export default nextConfig;
