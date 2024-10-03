@@ -51,8 +51,10 @@
   },
   "devDependencies": {
     "@types/node": "^20",
+    "@types/phoenix": "^1.6.5",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@types/ws": "^8.5.12",
     "eslint": "^8",
     "eslint-config-next": "14.2.5",
     "postcss": "^8",
