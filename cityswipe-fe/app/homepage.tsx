@@ -12,7 +12,6 @@ import destination4 from "./assets/imgs/destination-img-4.jpg";
 import { Heart } from "lucide-react";
 import { Message } from "./actions";
 import { useRouter } from "next/navigation";
-import { useDestinationSetContext } from "../context/destinationSetContext";
 import { searchGiphyGif } from "./actions";
 
 export default function Hero() {
@@ -39,7 +38,6 @@ export default function Hero() {
   const [destinations, setDestinations] = useState<any[]>([]);
   const [conversation, setConversation] = useState<Message[]>([]);
   const [input, setInput] = useState<string>("");
-  const [destinationSet, setDestinationSet] = useDestinationSetContext();
   const router = useRouter();
   const [loadingMatches, setLoadingMatches] = useState(false);
   // for pexals
