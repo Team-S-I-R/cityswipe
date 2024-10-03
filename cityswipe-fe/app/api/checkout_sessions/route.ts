@@ -6,7 +6,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: '2024-06
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
   const data = await req.json()
-  
+
   try {
     const plan = data.plan
 
@@ -54,9 +54,9 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         'origin',
       )}/results?session_id={CHECKOUT_SESSION_ID}`,
     }
-    
+
     const checkoutSession: Stripe.Checkout.Session = await stripe.checkout.sessions.create(params)
-    
+
     // ANCHOR WILL ADD RESULTS TO DATABASE HERE
 
     return NextResponse.json(checkoutSession, {
