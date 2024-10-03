@@ -90,21 +90,12 @@ export default function QuizClient({ clerkdata }: any) {
   // ----- NOTE (handling form data from a button like this is extremely unreliable and there are better ways just using things like Refs, Props, Etc to handle this..)
   // ----- I handle clearing what I need to clear here but I do not set the data from the form here.
   const handleNext = () => {
-    if (currentQuestion.id == 5 && responses[currentQuestionIndex] == "yes. ") {
-      
-      // Skip the next question
-      setCurrentQuestionIndex((prevIndex) =>
-        Math.min(prevIndex + 2, quizQuestions.length - 1)
-      );
 
-    } else {
 
-      // Go to the next question
-      setCurrentQuestionIndex((prevIndex) =>
-        Math.min(prevIndex + 1, quizQuestions.length - 1)
-      );
-
-    }
+    // Go to the next question
+    setCurrentQuestionIndex((prevIndex) =>
+      Math.min(prevIndex + 1, quizQuestions.length - 1)
+    );
     if (inputRef.current) {
       inputRef.current.value = "";
     }
@@ -153,7 +144,6 @@ export default function QuizClient({ clerkdata }: any) {
     
     // If the same option is clicked again, reset the states
     if (responses[currentQuestionIndex] === option) {
-      
       setHighlightedOptionIndex(null);
       setIsOptionHighlighted(false);
       setResponses((prevState) => {
@@ -202,6 +192,7 @@ export default function QuizClient({ clerkdata }: any) {
         allCards: destinations.reverse(),
         responses: responses,
       });
+      console.log("desti", destinationSet)
 
       await addQuestions(responses);
 

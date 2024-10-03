@@ -11,7 +11,7 @@ export type DestinationSet = {
    country: string;
    description: string;
    compatibility: number|null;
-   budget?: number
+   budget?: number;
    pros: string[];
    cons: string[];
   //  answer: "left" | "right";
