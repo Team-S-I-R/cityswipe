@@ -13,12 +13,10 @@ import {
 } from "@/lib/destinationSet.type";
 import { useSavedDestinationContext } from "../../../context/savedDestinationContext";
 import handleResponse from "../_utils/handleResponse";
-import loadMoreCards from "../_utils/loadCards";
+
 import { Button } from "@/components/ui/button";
 import { useCitySwipe } from "@/app/citySwipeContext";
 import { addMatch } from "@/app/actions";
-import SparklesText from "@/components/magicui/sparkles-text";
-
 import { generateDestinations } from "@/app/quiz/generateDestinations";
 
 export const easeInExpo = [0.7, 0, 0.84, 0];
@@ -29,7 +27,7 @@ const initialDrivenProps = {
   cardWrapperX: 0,
   buttonScaleBadAnswer: 1,
   buttonScaleGoodAnswer: 1,
-  mainBgColor: "",
+  mainBgColor: "#fafafa",
 };
 
 const DestinationCards = () => {
@@ -48,7 +46,25 @@ const DestinationCards = () => {
     setDirection(btn);
   };
 
-  // seting the current image in bg
+  const loadMore = useCallback(async () => {
+    // get responses from saved
+    let responses = destinationSet.responses
+    // store original locations 
+    // pass those into generate destinations => cities and 
+    // tell the function not to include those places
+    const newDestinations = await generateDestinations(responses, destinationSet.allCards.map(card => card.city))
+    // fix ordering
+    const destinations = destinationSet.cards.concat(newDestinations.reverse())
+    await setDestinationSet({
+      id: 1,
+      cards: destinations,
+      allCards: destinationSet.allCards.concat(destinations.reverse()),
+      responses: responses
+    })
+    // console.log(destinationSet.allCards.map(card => card.city))
+
+    // add it as auto request when paid account
+  }, []);
 
   // This controls the cards that people are swiping on. If left or right it removes that card from available cards left to swipe on in the first place
   useEffect(() => {
@@ -82,7 +98,7 @@ const DestinationCards = () => {
     // }
 
     setDirection("");
-  }, [direction, loadMoreCards]);
+  }, [direction, loadMore]);
 
   const cardVariants = {
     current: {
@@ -113,7 +129,7 @@ const DestinationCards = () => {
 
   return (
     <motion.div
-      className={`flex p-5 w-full h-full flex-col justify-center items-center overflow-hidden  ${
+      className={`flex p-5 w-screen h-screen flex-col justify-center items-center overflow-hidden  ${
         isDragging ? "cursor-grabbing" : ""
       }`}
       style={{ backgroundColor: cardDrivenProps.mainBgColor }}
@@ -129,23 +145,11 @@ const DestinationCards = () => {
 
       <div
         id="gameUIWrapper"
-        className="flex flex-col p-5  place-content-center place-items-center justify-between gap-3 w-full h-full relative z-10"
+        className="flex flex-col place-content-center place-items-center gap-3 w-full h-full relative z-10"
       >
-        <div className="w-full h-max flex flex-col">
-
-          <SparklesText
-              className="text-3xl bg-transparent"
-              colors={{ first: "#22d3ee", second: "#4ade80" }}
-              text={`Match`}
-          />
-
-          <p className="text-[15px] text-muted-foreground">Swipe right on a destination to match with it, or swipe left to skip!</p>
-
-        </div>
-
         <div
           id="cardsWrapper"
-          className="w-full relative overflow-hidden place-content-center place-items-center min-h-[200px] h-full flex flex-col"
+          className="w-full relative overflow-hidden place-content-center place-items-center h-full sm:min-h-[600px] flex flex-col"
         >
           <AnimatePresence>
             {cards.map((card, i) => {
@@ -179,12 +183,11 @@ const DestinationCards = () => {
           </AnimatePresence>
         </div>
 
-        <div className="w-max bg-white rounded-lg p-3 px-6 flex flex-col h-max gap-4 place-items-center">
+        <div className="w-full flex flex-col h-max gap-4 place-items-center">
           <div
             id="actions"
             className="flex items-center justify-center w-max h-max gap-4 relative z-10"
           >
-
             <motion.div
               initial={{ opacity: 0, y: 1000 }}
               animate={{ opacity: 1, y: 0 }}
@@ -229,7 +232,6 @@ const DestinationCards = () => {
               </Button>
             </Link>
           </motion.div>
-
         </div>
       </div>
     </motion.div>

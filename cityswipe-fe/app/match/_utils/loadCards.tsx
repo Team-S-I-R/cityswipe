@@ -1,19 +1,14 @@
 import { generateDestinations } from "@/app/quiz/generateDestinations";
 import { useDestinationSetContext } from "@/context/destinationSetContext";
+import { DestinationSet } from "@/lib/destinationSet.type";
 import getStripe from "@/utils/get-stripe";
-import { useCallback } from "react";
+import { Dispatch, SetStateAction, useCallback } from "react";
 import Stripe from "stripe";
 
-
-const [destinationSet, setDestinationSet] = useDestinationSetContext();
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: '2024-06-20' })
-
-
-
-export const loadMoreCards = useCallback(async () => {
-   const subscription = await stripe.subscriptions.retrieve("sub_1Q5X16BQfbTtpxdVPrd6hnXn");
+export const loadMoreCards = useCallback(async (destinationSet:DestinationSet, setDestinationSet: Dispatch<SetStateAction<DestinationSet>>, stripe:Stripe) => {
+   // const subscription = await stripe.subscriptions.retrieve("sub_1Q5X16BQfbTtpxdVPrd6hnXn");
    // console.log(session)
-   console.log(subscription)
+   // console.log(subscription)
    // if (subscription.status !== 'active') {
    //   throw new Error('User is not subscribed');
    // }
@@ -41,5 +36,3 @@ export const loadMoreCards = useCallback(async () => {
    })
    // console.log(destinationSet.allCards.map(card => card.city))
  }, []);
-
- export default loadMoreCards;
