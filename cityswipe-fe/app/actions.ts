@@ -10,6 +10,7 @@ import { revalidatePath } from "next/cache";
 import { currentUser } from "@clerk/nextjs/server";
 import quizQuestions from "./quiz-questions/questions";
 import { createClient } from "pexels";
+import { stripe }  from "../app/api/checkout_sessions/route"
 
 // ANCHOR Gemini Logic --------------------------------------------------------------------
 export interface Message {
@@ -536,68 +537,116 @@ export async function updateItinerary(blocks: any) {
   }
 }
 
-export async function handleSubscriber(subscriberData?: any) {
-  const user = await currentUser();
+// ANCHOR Stipe -------------------------------------------------------------------
 
-  if (!user || !user.id) {
+export async function handleSubscriber(subscriberData?: any) {
+  const clerkuser = await currentUser();
+
+  // find user in database
+  const user = await prisma.user.findUnique({
+    where: {
+      id: clerkuser?.id,
+    },
+  });
+
+  if (!clerkuser || !clerkuser.id) {
     console.log("User not found or user ID is missing.");
   }
 
   // ANCHOR Handling free user
   // If the user has no data in the db for subscriptions,
   // create a new record and make the status "free" because they are a free member
-  if (!subscriberData) {
+  if (subscriberData === undefined && user?.stripeCustomerId == null) {
+
+    const data = await stripe?.customers.create({
+      email: clerkuser?.emailAddresses[0].emailAddress as string,
+    });
+
+    await prisma.user.update({
+      where: {
+        id: clerkuser?.id,
+      },
+      data: {
+        stripeCustomerId: data?.id,
+      },
+    });
+
     await prisma?.subscription.create({
       data: {
         interval: "",
-        planId: "",
         currentPeriodEnd: 0,
-        currentPeriodStart: new Date().getTime(),
-        userId: user?.id || "",
-        stripeSubscriptionId: "",
+        currentPeriodStart: Math.floor(new Date().getTime() / 1000), // Convert to seconds
+        userId: user?.id as string,
+        stripeSubscriptionId: user?.stripeCustomerId || "", 
         // we will reference the subscription status throughout the app
         status: "free",
       },
     });
+
+    console.log("Free user created");
+  }
+
+  // Here I'm handling edge cases for users already in our db, to just make sure that they get a customer id created
+  if (subscriberData === undefined && user?.stripeCustomerId != null) {
+
+
+    await prisma?.subscription.update({
+      where: {
+        userId: clerkuser?.id,
+      },
+      data: {
+        stripeSubscriptionId: user?.stripeCustomerId as string,
+      },
+    });
+
+    console.log("Free user updated");
   }
 
   // ANCHOR Handling paid MONTHLY user
   // If the user has no data in the db for subscriptions,
   // create a new record and make the status "free" because they are a free member
-  if (subscriberData.interval === "month" && subscriberData.status === "active") {
-    await prisma?.subscription.update({
-      where: {
-        stripeSubscriptionId: subscriberData.stripeSubscriptionId,
-      },
-      data: {
-        interval: subscriberData.interval,
-        planId: subscriberData.planId,
-        currentPeriodEnd: new Date().getTime() + 30 * 24 * 60 * 60 * 1000,
-        currentPeriodStart: new Date().getTime(),
-        userId: user?.id || "",
-        status: "active",
-      },
-    });
+  if (subscriberData?.interval === "month" && subscriberData?.status === "active") {
+    try {
+      await prisma?.subscription.update({
+        where: {
+          stripeSubscriptionId: user?.stripeCustomerId as string, 
+        },
+        data: {
+          interval: subscriberData.interval as string,
+          currentPeriodEnd: new Date().getTime() + 30 * 24 * 60 * 60 * 1000,
+          currentPeriodStart: new Date().getTime(),
+          userId: user?.id as string,
+          status: "active",
+        },
+      });
+    } catch (error) {
+      console.error("Error updating monthly subscription:", error);
+    }
   }
 
-  if (subscriberData.interval === "year" && subscriberData.status === "active") {
-    await prisma?.subscription.update({
-      where: {
-        stripeSubscriptionId: subscriberData.stripeSubscriptionId,
-      },
-      data: {
-        interval: subscriberData.interval,
-        planId: subscriberData.planId,
-        currentPeriodEnd: new Date().getTime() + 365 * 24 * 60 * 60 * 1000,
-        currentPeriodStart: new Date().getTime(),
-        userId: user?.id || "",
-        status: "active",
-      },
-    });
+  if (subscriberData?.interval === "year" && subscriberData?.status === "active") {
+    try {
+      await prisma?.subscription.update({
+        where: {
+          stripeSubscriptionId: user?.stripeCustomerId as string,
+        },
+        data: {
+          interval: subscriberData.interval as string,
+          currentPeriodEnd: new Date().getTime() + 365 * 24 * 60 * 60 * 1000,
+          currentPeriodStart: new Date().getTime(),
+          userId: user?.id as string,
+          status: "active",
+        },
+      });
+    } catch (error) {
+      console.error("Error updating yearly subscription:", error);
+    }
   }
 
 
 }
+
+// ----------------------------------------------------------------------------------
 
 
 // ANCHOR Giphy API --------------------------------------------------------------------

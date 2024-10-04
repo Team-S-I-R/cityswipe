@@ -4,13 +4,12 @@ import { NextRequest } from 'next/server'
 import { currentUser } from '@clerk/nextjs/server'
 import { handleSubscriber } from '@/app/actions'
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: '2024-06-20' })
+export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: '2024-06-20' })
 
 
 // essentially the goal is to just set this data and give it to the "handleSubscriber" function
 let stripDataGoingToSupabase = {
   interval: "",
-  planId:"",
   currentPeriodEnd: 0,
   currentPeriodStart: 0,
   userId: "",
@@ -24,6 +23,8 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   
   try {
     const plan = data.plan
+
+    console.log("plan: ", data);
 
     let priceData: Stripe.Checkout.SessionCreateParams.LineItem.PriceData
 
@@ -79,7 +80,6 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     stripDataGoingToSupabase = {
       interval: priceData?.recurring?.interval || "",
       // how do i get this ?
-      planId: "",
       currentPeriodEnd: 0,
       currentPeriodStart: 0,
       userId: "",

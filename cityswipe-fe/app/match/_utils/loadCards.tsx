@@ -4,9 +4,32 @@ import { DestinationSet } from "@/lib/destinationSet.type";
 import getStripe from "@/utils/get-stripe";
 import { Dispatch, SetStateAction, useCallback } from "react";
 import Stripe from "stripe";
+import prisma from "@/lib/db";
+import { currentUser } from "@clerk/nextjs/server";
 
 export const loadMoreCards = useCallback(async (destinationSet:DestinationSet, setDestinationSet: Dispatch<SetStateAction<DestinationSet>>, stripe:Stripe) => {
-   // const subscription = await stripe.subscriptions.retrieve("sub_1Q5X16BQfbTtpxdVPrd6hnXn");
+  
+  const clerkuser = await currentUser();
+
+  // get the current user from supabase:
+  const user = await prisma.user.findUnique({
+    where: {
+      id: clerkuser?.id
+    }
+  })
+
+  // get the current user from supabase:
+  const subscription =await prisma?.subscription?.findUnique({
+    where: {
+      stripeSubscriptionId: user?.stripeCustomerId as string
+    }
+  })
+
+  // you could make something like "if "active" then run the function". it needs to be "active" same casing ans all and it should work
+  // NOTE: We could set this as a global variable to reduce how much we have to write to paywall stuff. Just let me know if this is far enough or if you need me to do more.
+  const subscriptionStatus = subscription?.status as string
+
+  // const subscription = await stripe.subscriptions.retrieve("sub_1Q5X16BQfbTtpxdVPrd6hnXn");
    // console.log(session)
    // console.log(subscription)
    // if (subscription.status !== 'active') {

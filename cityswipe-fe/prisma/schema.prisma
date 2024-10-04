@@ -36,7 +36,6 @@ model Subscription {
   stripeSubscriptionId String   @id @unique
   interval             String
   status               String
-  planId               String
   currentPeriodStart   Int
   currentPeriodEnd     Int
   createdAt            DateTime @default(now())

@@ -32,7 +32,6 @@ async function fetchData() {
           },
       });
   } else {
-      console.log("updating user: ", user);
       const updateData: { name?: string; email?: string; username?: string } = {};
       if (!user.name) updateData.name = clerkuser.fullName || "";
       if (!user.email) updateData.email = clerkuser.emailAddresses[0]?.emailAddress || "";
