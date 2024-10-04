@@ -9,6 +9,7 @@ import { getDestination } from "../api/savedDestination.api";
 import { Analytics } from '@vercel/analytics/react';
 import { ClerkProvider } from "@clerk/nextjs";
 import { Toaster } from "@/components/ui/toaster"
+import { PostHogProviderWrapper } from "./providers";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -25,21 +26,23 @@ export default async function RootLayout({
   const destinationSet = await getDestinationSet(0);
   const savedDestination = await getDestination();
   return (
-    <ClerkProvider
-    signInFallbackRedirectUrl={"/quiz"}
-    signUpFallbackRedirectUrl={"/quiz"}
-    >
-      <html lang="en" className="overflow-hidden">
-        <body className={`${inter.className}`}>
-          <Toaster  />
-        <Analytics />
-          <CitySwipeProvider>
-            <SavedDestinationProvider savedDestination={savedDestination}>
-              <DestinationSetProvider destinationSet={destinationSet}>{children}</DestinationSetProvider>
-            </SavedDestinationProvider>
-          </CitySwipeProvider>
-        </body>
-      </html>
-    </ClerkProvider>
+      <ClerkProvider
+        signInFallbackRedirectUrl={"/quiz"}
+        signUpFallbackRedirectUrl={"/quiz"}
+        >
+          <PostHogProviderWrapper>
+            <html lang="en" className="overflow-hidden">
+              <body className={`${inter.className}`}>
+                  <Toaster  />
+                  <Analytics />
+                    <CitySwipeProvider>
+                      <SavedDestinationProvider savedDestination={savedDestination}>
+                        <DestinationSetProvider destinationSet={destinationSet}>{children}</DestinationSetProvider>
+                      </SavedDestinationProvider>
+                    </CitySwipeProvider>
+              </body>
+            </html>
+          </PostHogProviderWrapper>
+      </ClerkProvider>
   );
 }
