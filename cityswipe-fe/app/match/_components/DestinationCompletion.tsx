@@ -11,6 +11,10 @@ import { useDestinationSetContext } from "../../../context/destinationSetContext
 import Link from "next/link";
 import { generateDestinations } from "@/app/quiz/generateDestinations";
 import Stripe from "stripe";
+// import { currentUser } from "@clerk/nextjs/server";
+// import prisma from "@/lib/db";
+import { loadMoreCards } from "../_utils/loadCards";
+import { checkSubscribed } from "../_utils/checkSubscribed";
 
 const DestinationCompletion = () => {
   const [destinationSet, setDestinationSet] = useDestinationSetContext();
@@ -26,8 +30,9 @@ const DestinationCompletion = () => {
     cardsAmount: structuredClone(cardsAmount),
   });
 
-  const loadMore = useCallback(async () => {
+  const loadMore = async () => {
     setLoading(true)
+    checkSubscribed()
     // const subscription = await stripe.subscriptions.retrieve("sub_1Q5X16BQfbTtpxdVPrd6hnXn");
     // console.log(session)
     // console.log(subscription)
@@ -50,7 +55,7 @@ const DestinationCompletion = () => {
 
     // add it as auto request when paid account
     setLoading(false)
-  }, []);
+  };
 
   return (
     <div

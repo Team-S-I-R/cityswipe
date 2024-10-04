@@ -590,7 +590,7 @@ export async function handleSubscriber(subscriberData?: any) {
   if (subscriberData === undefined && user?.stripeCustomerId != null) {
 
 
-    await prisma?.subscription.update({
+    prisma?.subscription.update({
       where: {
         userId: clerkuser?.id,
       },
