@@ -589,15 +589,40 @@ export async function handleSubscriber(subscriberData?: any) {
   // Here I'm handling edge cases for users already in our db, to just make sure that they get a customer id created
   if (subscriberData === undefined && user?.stripeCustomerId != null) {
 
+      const subscription = await prisma?.subscription.findUnique({
+        where: {
+          userId: clerkuser?.id,
+        },
+      });
 
-    await prisma?.subscription.update({
-      where: {
-        userId: clerkuser?.id,
-      },
-      data: {
-        stripeSubscriptionId: user?.stripeCustomerId as string,
-      },
-    });
+      if (subscription) {
+        // Subscription exists, handle accordingly
+        await prisma?.subscription.update({
+          where: {
+            userId: clerkuser?.id,
+          },
+          data: {
+            stripeSubscriptionId: user?.stripeCustomerId as string,
+          },
+        });
+
+      }
+
+      if (!subscription) {
+        // Subscription does not exist, create it
+        await prisma?.subscription.create({
+          data: {
+            interval: "",
+            currentPeriodEnd: 0,
+            currentPeriodStart: Math.floor(new Date().getTime() / 1000), // Convert to seconds
+            userId: user?.id as string,
+            stripeSubscriptionId: user?.stripeCustomerId || "", 
+            // we will reference the subscription status throughout the app
+            status: "free",
+          },
+        });
+      }
+      
 
     console.log("Free user updated");
   }
