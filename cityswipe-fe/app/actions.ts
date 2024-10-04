@@ -536,8 +536,69 @@ export async function updateItinerary(blocks: any) {
   }
 }
 
-// export async function newSubscriber(subscriber: string) {
-// }
+export async function handleSubscriber(subscriberData?: any) {
+  const user = await currentUser();
+
+  if (!user || !user.id) {
+    throw new Error("User not found or user ID is missing.");
+  }
+
+  // ANCHOR Handling free user
+  // If the user has no data in the db for subscriptions,
+  // create a new record and make the status "free" because they are a free member
+  if (!subscriberData) {
+    await prisma?.subscription.create({
+      data: {
+        interval: "",
+        planId: "",
+        currentPeriodEnd: 0,
+        currentPeriodStart: new Date().getTime(),
+        userId: user.id,
+        stripeSubscriptionId: "",
+        // we will reference the subscription status throughout the app
+        status: "free",
+      },
+    });
+  }
+
+  // ANCHOR Handling paid MONTHLY user
+  // If the user has no data in the db for subscriptions,
+  // create a new record and make the status "free" because they are a free member
+  if (subscriberData.interval === "month" && subscriberData.status === "active") {
+    await prisma?.subscription.update({
+      where: {
+        stripeSubscriptionId: subscriberData.stripeSubscriptionId,
+      },
+      data: {
+        interval: subscriberData.interval,
+        planId: subscriberData.planId,
+        currentPeriodEnd: new Date().getTime() + 30 * 24 * 60 * 60 * 1000,
+        currentPeriodStart: new Date().getTime(),
+        userId: user.id,
+        status: "active",
+      },
+    });
+  }
+
+  if (subscriberData.interval === "year" && subscriberData.status === "active") {
+    await prisma?.subscription.update({
+      where: {
+        stripeSubscriptionId: subscriberData.stripeSubscriptionId,
+      },
+      data: {
+        interval: subscriberData.interval,
+        planId: subscriberData.planId,
+        currentPeriodEnd: new Date().getTime() + 365 * 24 * 60 * 60 * 1000,
+        currentPeriodStart: new Date().getTime(),
+        userId: user.id,
+        status: "active",
+      },
+    });
+  }
+
+
+}
+
 
 // ANCHOR Giphy API --------------------------------------------------------------------
 // export async function QsearchGiphyGif(query: string, limit: number) {

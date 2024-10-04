@@ -9,6 +9,8 @@ import { getDestination } from "../api/savedDestination.api";
 import { Analytics } from '@vercel/analytics/react';
 import { ClerkProvider } from "@clerk/nextjs";
 import { Toaster } from "@/components/ui/toaster"
+import { handleSubscriber } from "./actions";
+import { currentUser } from "@clerk/nextjs/server";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,6 +19,8 @@ export const metadata: Metadata = {
   description: "Allowing you to find your perfect holiday destination match!",
 };
 
+
+
 export default async function RootLayout({
   children,
 }: Readonly<{
@@ -24,6 +28,12 @@ export default async function RootLayout({
 }>) {
   const destinationSet = await getDestinationSet(0);
   const savedDestination = await getDestination();
+  const user = await currentUser();
+
+  if (user) {
+    await handleSubscriber()
+  }
+
   return (
     <ClerkProvider
     signInFallbackRedirectUrl={"/quiz"}

@@ -1,8 +1,23 @@
 import { NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { NextRequest } from 'next/server'
+import { currentUser } from '@clerk/nextjs/server'
+import { handleSubscriber } from '@/app/actions'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: '2024-06-20' })
+
+
+// essentially the goal is to just set this data and give it to the "handleSubscriber" function
+let stripDataGoingToSupabase = {
+  interval: "",
+  planId:"",
+  currentPeriodEnd: 0,
+  currentPeriodStart: 0,
+  userId: "",
+  stripeSubscriptionId: "",
+  // we will reference the subscription status throughout the app
+  status: "",
+}
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
   const data = await req.json()
@@ -23,6 +38,8 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
           interval: 'month',
         },
       }
+
+      
     } else if (plan === 'Pro Yearly') {
       priceData = {
         currency: 'usd',
@@ -34,6 +51,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
           interval: 'year',
         },
       }
+
     } else {
       throw new Error('Invalid plan selected')
     }
@@ -54,10 +72,25 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         'origin',
       )}/results?session_id={CHECKOUT_SESSION_ID}`,
     }
+
     
     const checkoutSession: Stripe.Checkout.Session = await stripe.checkout.sessions.create(params)
     
+    stripDataGoingToSupabase = {
+      interval: priceData?.recurring?.interval || "",
+      // how do i get this ?
+      planId: "",
+      currentPeriodEnd: 0,
+      currentPeriodStart: 0,
+      userId: "",
+      // and how do i get this ?
+      stripeSubscriptionId: "",
+      // we will reference the subscription status throughout the app
+      status: checkoutSession.status || "",
+    }
+
     // ANCHOR WILL ADD RESULTS TO DATABASE HERE
+    await handleSubscriber(stripDataGoingToSupabase)
 
     return NextResponse.json(checkoutSession, {
       status: 200,
@@ -85,6 +118,8 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     }
 
     const checkoutSession: Stripe.Checkout.Session = await stripe.checkout.sessions.retrieve(session_id)
+
+
 
     return NextResponse.json(checkoutSession)
   } catch (error) {
