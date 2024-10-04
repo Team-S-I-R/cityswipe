@@ -540,7 +540,7 @@ export async function handleSubscriber(subscriberData?: any) {
   const user = await currentUser();
 
   if (!user || !user.id) {
-    throw new Error("User not found or user ID is missing.");
+    console.log("User not found or user ID is missing.");
   }
 
   // ANCHOR Handling free user
@@ -553,7 +553,7 @@ export async function handleSubscriber(subscriberData?: any) {
         planId: "",
         currentPeriodEnd: 0,
         currentPeriodStart: new Date().getTime(),
-        userId: user.id,
+        userId: user?.id || "",
         stripeSubscriptionId: "",
         // we will reference the subscription status throughout the app
         status: "free",
@@ -574,7 +574,7 @@ export async function handleSubscriber(subscriberData?: any) {
         planId: subscriberData.planId,
         currentPeriodEnd: new Date().getTime() + 30 * 24 * 60 * 60 * 1000,
         currentPeriodStart: new Date().getTime(),
-        userId: user.id,
+        userId: user?.id || "",
         status: "active",
       },
     });
@@ -590,7 +590,7 @@ export async function handleSubscriber(subscriberData?: any) {
         planId: subscriberData.planId,
         currentPeriodEnd: new Date().getTime() + 365 * 24 * 60 * 60 * 1000,
         currentPeriodStart: new Date().getTime(),
-        userId: user.id,
+        userId: user?.id || "",
         status: "active",
       },
     });
