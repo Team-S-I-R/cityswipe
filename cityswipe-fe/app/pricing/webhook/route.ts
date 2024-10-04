@@ -12,8 +12,9 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 // I dont know what to do to get that Id but if we can then this will work.
 export async function POST(req: NextRequest) {
 
-  const userId = currentUserId()
+  const userId = await currentUserId()
 
+  // i just need this to actually be the id instead of undefined
   console.log("User ID:", userId);
 
   const reqText = await req.text();
