@@ -33,6 +33,18 @@ async function getCustomerEmail(customerId: string): Promise<string | null> {
   }
 }
 
+async function getSubscriptionId(customerId: string): Promise<string | null> {
+  try {
+    const customer = await stripe.customers.retrieve(customerId);
+    const subscriptionId = (customer as Stripe.Customer).subscriptions?.data[0]?.id;
+    console.log("Subscription ID:", subscriptionId);
+    return subscriptionId ?? null;
+  } catch (error) {
+    console.error("Error fetching customer:", error);
+    return null;
+  }
+}
+
 async function handleSubscriptionEvent(
   event: Stripe.Event,
   type: "created" | "updated" | "deleted",
@@ -40,6 +52,9 @@ async function handleSubscriptionEvent(
 ) {
   const subscription = event.data.object as Stripe.Subscription;
   const customerEmail = await getCustomerEmail(subscription.customer as string);
+  const subscriptionId = await getSubscriptionId(subscription.customer as string);
+
+  console.log("Subscription ID:", subscriptionId);
 
   if (!customerEmail) {
     return NextResponse.json({

@@ -6,7 +6,6 @@ import { handleSubscriber } from '@/app/actions'
 
 export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: '2024-06-20' })
 
-
 // essentially the goal is to just set this data and give it to the "handleSubscriber" function
 let stripDataGoingToSupabase = {
   interval: "",
@@ -73,7 +72,6 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         'origin',
       )}/results?session_id={CHECKOUT_SESSION_ID}`,
     }
-
     
     const checkoutSession: Stripe.Checkout.Session = await stripe.checkout.sessions.create(params)
     
@@ -95,6 +93,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     return NextResponse.json(checkoutSession, {
       status: 200,
     })
+    
   } catch (error) {
     console.error('Error creating checkout session:', error)
     if (error instanceof Error) {
