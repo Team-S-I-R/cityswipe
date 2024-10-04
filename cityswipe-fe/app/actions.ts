@@ -358,6 +358,12 @@ export async function submitFormResponse(
 }
 
 // ANCHOR Database Logic & Functions (Supabase) ------------------------------------
+
+export async function currentUserId() {
+  const user = await currentUser();
+  return user?.id;
+}
+
 export async function addQuestions(questions: any) {
   let count = 0;
 
@@ -558,26 +564,14 @@ export async function handleSubscriber(subscriberData?: any) {
   // create a new record and make the status "free" because they are a free member
   if (subscriberData === undefined && user?.stripeCustomerId == null) {
 
-    const data = await stripe?.customers.create({
-      email: clerkuser?.emailAddresses[0].emailAddress as string,
-    });
-
-    await prisma.user.update({
-      where: {
-        id: clerkuser?.id,
-      },
-      data: {
-        stripeCustomerId: data?.id,
-      },
-    });
-
     await prisma?.subscription.create({
       data: {
         interval: "",
+        username: user?.username || "",
         currentPeriodEnd: 0,
         currentPeriodStart: Math.floor(new Date().getTime() / 1000), // Convert to seconds
         userId: user?.id as string,
-        stripeSubscriptionId: user?.stripeCustomerId || "", 
+        stripeCustomerId: "", 
         // we will reference the subscription status throughout the app
         status: "free",
       },
@@ -602,7 +596,8 @@ export async function handleSubscriber(subscriberData?: any) {
             userId: clerkuser?.id,
           },
           data: {
-            stripeSubscriptionId: user?.stripeCustomerId as string,
+            stripeCustomerId: user?.stripeCustomerId as string,
+            username: user?.username as string,
           },
         });
 
@@ -616,7 +611,8 @@ export async function handleSubscriber(subscriberData?: any) {
             currentPeriodEnd: 0,
             currentPeriodStart: Math.floor(new Date().getTime() / 1000), // Convert to seconds
             userId: user?.id as string,
-            stripeSubscriptionId: user?.stripeCustomerId || "", 
+            username: user?.username || "",
+            stripeCustomerId: user?.stripeCustomerId || "", 
             // we will reference the subscription status throughout the app
             status: "free",
           },
@@ -628,19 +624,19 @@ export async function handleSubscriber(subscriberData?: any) {
   }
 
   // ANCHOR Handling paid MONTHLY user
-  // If the user has no data in the db for subscriptions,
-  // create a new record and make the status "free" because they are a free member
   if (subscriberData?.interval === "month" && subscriberData?.status === "active") {
     try {
       await prisma?.subscription.update({
         where: {
-          stripeSubscriptionId: user?.stripeCustomerId as string, 
+          userId: user?.id as string,
         },
         data: {
           interval: subscriberData.interval as string,
           currentPeriodEnd: new Date().getTime() + 30 * 24 * 60 * 60 * 1000,
           currentPeriodStart: new Date().getTime(),
           userId: user?.id as string,
+          username: user?.username as string,
+          stripeCustomerId: user?.stripeCustomerId as string,
           status: "active",
         },
       });
@@ -654,12 +650,15 @@ export async function handleSubscriber(subscriberData?: any) {
       await prisma?.subscription.update({
         where: {
           stripeSubscriptionId: user?.stripeCustomerId as string,
+          userId: user?.id as string,
         },
         data: {
           interval: subscriberData.interval as string,
           currentPeriodEnd: new Date().getTime() + 365 * 24 * 60 * 60 * 1000,
           currentPeriodStart: new Date().getTime(),
           userId: user?.id as string,
+          username: user?.username as string,
+          stripeCustomerId: user?.stripeCustomerId as string,
           status: "active",
         },
       });

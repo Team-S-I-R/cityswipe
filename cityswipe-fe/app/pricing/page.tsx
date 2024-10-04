@@ -9,11 +9,13 @@ import destination2 from "../assets/imgs/destination-img-2.jpg";
 import destination3 from "../assets/imgs/destination-img-3.jpg";
 import destination4 from "../assets/imgs/destination-img-4.jpg";
 import { useRouter } from "next/navigation";
+import { useCitySwipe } from '../citySwipeContext';
 
 const PricingPage = () => {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const images = [destination1, destination2, destination3, destination4];
     const router = useRouter();
+    const {userdata, setUserData} = useCitySwipe();
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -56,12 +58,16 @@ const PricingPage = () => {
         }
     ];
 
+
     const handleSubmit = async (plan: string) => {
       const checkoutSession = await fetch("/api/checkout_sessions", {
         method: "POST",
         headers: { origin: "http://localhost:3000"},
-        body: JSON.stringify({plan: plan})
+        body: JSON.stringify({
+            plan: plan,
+        })
       });
+
       const checkoutSessionJson = await checkoutSession.json();
   
       const stripe = await getStripe();
