@@ -1,5 +1,0 @@
-{
-  "dependencies": {
-    "@supabase/ssr": "^0.5.1"
-  }
-}
