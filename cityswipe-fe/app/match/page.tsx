@@ -5,7 +5,7 @@ import { DestinationCompletion, DestinationCards } from "./_components";
 import { savedDestination as initialDestination } from "../../api/savedDestination.api";
 import { getInitialSet } from "../../api/destinationSets.api";
 import { useDestinationSetContext } from "../../context/destinationSetContext";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSavedDestinationContext } from "../../context/savedDestinationContext";
 import Header from "../cs-componets/header";
 import Sidebar from "../cs-componets/sidebar";
@@ -13,22 +13,24 @@ import destination1 from "../assets/imgs/destination-img-1.jpg"
 import destination2 from "../assets/imgs/destination-img-2.jpg";
 import destination3 from "../assets/imgs/destination-img-3.jpg";
 import destination4 from "../assets/imgs/destination-img-4.jpg";
-import { useState } from "react";
 
 const Match = () => {
-  // "destination" is the list of destinations 
+  // "destination" is the list of destinations
   const [destinationSet, setDestinationSet] = useDestinationSetContext();
   const [_, setDestination] = useSavedDestinationContext();
+  const [loading, setLoading] = useState(true);
 
   const initialDestinationSet = getInitialSet(0);
 
   useEffect(() => {
+    setLoading(true);
     setDestination(initialDestination);
     // setDestination(destination);
     // setDestination({
     //     id: 1,
     //     cards: destination.reverse(),
     // });
+    setLoading(false);
   }, []);
 
   const isCardStockEmpty = destinationSet.cards.length === 0;
@@ -110,7 +112,7 @@ const Match = () => {
             <>
             
             <motion.div
-              // else (if the matching is not done) 
+              // else (if the matching is not done)
               key="destinationScreen1"
               id="destinationScreen"
               variants={destinationScreenVariants}
@@ -124,8 +126,8 @@ const Match = () => {
             </motion.div>
 
             </>
+            ) : (
             /* if the matching is done! */
-          ) : (
             <motion.div
               key="destinationScreen2"
               id="destinationCompletion"
@@ -139,12 +141,9 @@ const Match = () => {
             </motion.div>
           )}
         </AnimatePresence>
-
       </main>
-
-
     </>
-  )
-}
+  );
+};
 
 export default Match;

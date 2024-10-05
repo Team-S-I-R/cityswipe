@@ -33,16 +33,18 @@ model User {
 }
 
 model Subscription {
-  stripeSubscriptionId String   @id @unique
+  stripeSubscriptionId String?  
+  stripeCustomerId     String?
   interval             String
+  planId               String?
   status               String
-  planId               String
+  username             String?
   currentPeriodStart   Int
   currentPeriodEnd     Int
   createdAt            DateTime @default(now())
   updatedAt            DateTime? @updatedAt
-  user                 User     @relation(fields: [userId], references: [id])
-  userId               String   @unique
+  user                 User?    @relation(fields: [userId], references: [id])
+  userId               String @id  @unique
 }
 
 model Match {

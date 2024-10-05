@@ -35,17 +35,19 @@ export const destinationSets: DestinationSet[] = [
         cons: ["Crowded", "Expensive", "Pollution", "Language barrier", "Lack of green spaces", "High cost of living", "Long working hours", "Traffic congestion", "Limited public transportation", "Limited public transportation"],
       },
     ],
+    allCards: [],
+    responses: [],
   },
 ];
 
 export const getDestinationSets = async (): Promise<DestinationSet[]> => destinationSets;
 
 export const getDestinationSet = async (destinationSetId: number): Promise<DestinationSet> => {
-  return { id: destinationSetId, cards: reversedCards(destinationSets[destinationSetId].cards) };
+  return { id: destinationSetId, cards: reversedCards(destinationSets[destinationSetId].cards), allCards: reversedCards(destinationSets[destinationSetId].allCards), responses: destinationSets[destinationSetId].responses};
 };
 
 export const getInitialSet = (destinationSetId: number) => {
-  return { id: destinationSetId, cards: reversedCards(destinationSets[destinationSetId].cards) };
+  return { id: destinationSetId, cards: reversedCards(destinationSets[destinationSetId].cards), allCards: reversedCards(destinationSets[destinationSetId].allCards), responses: destinationSets[destinationSetId].responses};
 };
 
 const reversedCards = (cards: Destination[]) => {

@@ -12,10 +12,26 @@ import destination4 from "./assets/imgs/destination-img-4.jpg";
 import { Heart } from "lucide-react";
 import { Message } from "./actions";
 import { useRouter } from "next/navigation";
-import { useDestinationSetContext } from "../context/destinationSetContext";
 import { searchGiphyGif } from "./actions";
+import logger from "../lib/logger";
 
 export default function Hero() {
+  useEffect(() => {
+    logger.silly("This is a silly log");
+    logger.trace("This is a trace log");
+    logger.debug("This is a debug log");
+    logger.info("This is an info log");
+    logger.warn("This is a warning log");
+    logger.error("This is an error log");
+    logger.fatal("This is a fatal log");
+
+    try {
+      throw new Error("This is a test error");
+    } catch (error) {
+      logger.error("An error occurred:", error);
+    }
+  }, []);
+
   const { isStarted, setIsStarted } = useCitySwipe();
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   // const [responses, setResponses] = useState<string[]>([]);
@@ -39,7 +55,6 @@ export default function Hero() {
   const [destinations, setDestinations] = useState<any[]>([]);
   const [conversation, setConversation] = useState<Message[]>([]);
   const [input, setInput] = useState<string>("");
-  const [destinationSet, setDestinationSet] = useDestinationSetContext();
   const router = useRouter();
   const [loadingMatches, setLoadingMatches] = useState(false);
   // for pexals

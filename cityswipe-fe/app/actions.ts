@@ -2,19 +2,23 @@
 
 import { google } from "@ai-sdk/google";
 import { streamText } from "ai";
-import { generateText } from 'ai';
-import { createStreamableValue } from "ai/rsc";
+import { generateText } from "ai";
+import { createStreamableValue, readStreamableValue } from "ai/rsc";
 import prisma from "@/lib/db";
-import { z } from 'zod';
-import { revalidatePath } from 'next/cache';
+import { z } from "zod";
+import { revalidatePath } from "next/cache";
 import { currentUser } from "@clerk/nextjs/server";
-
+import quizQuestions from "./quiz-questions/questions";
+import { createClient } from "pexels";
+import { stripe }  from "../lib/stripe"
+import { getStripeSession } from "@/lib/stripe";
+import { redirect } from "next/navigation";
 
 // ANCHOR Gemini Logic --------------------------------------------------------------------
 export interface Message {
   role: "user" | "assistant";
   content: string;
-  type: string
+  type: string;
 }
 
 const conversationHistory: Record<string, Message[]> = {};
@@ -41,7 +45,7 @@ export async function generateCityBio(city: string) {
       topK: 50,
     });
 
-    let fullBio = '';
+    let fullBio = "";
 
     for await (const text of textStream) {
       stream.update(text);
@@ -50,14 +54,17 @@ export async function generateCityBio(city: string) {
 
     console.log(`generated bio for ${city}:`, fullBio);
     try {
-      const bioLines = fullBio.split('\n');
+      const bioLines = fullBio.split("\n");
       const bioObject = {
-        age: bioLines[0].split(':')[1].trim(),
-        languages: bioLines[1].split(':')[1].trim(),
-        food: bioLines[2].split(':')[1].trim(),
-        interests: bioLines[3].split(':')[1].trim(),
+        age: bioLines[0].split(":")[1].trim(),
+        languages: bioLines[1].split(":")[1].trim(),
+        food: bioLines[2].split(":")[1].trim(),
+        interests: bioLines[3].split(":")[1].trim(),
       };
-      console.log(`Structured bio for ${city}:`, JSON.stringify(bioObject, null, 2));
+      console.log(
+        `Structured bio for ${city}:`,
+        JSON.stringify(bioObject, null, 2)
+      );
     } catch (error) {
       console.error(`Error parsing bio for ${city}:`, error);
     }
@@ -94,12 +101,16 @@ export async function streamConversation(history: Message[]) {
   };
 }
 
-export async function streamFlirtatiousConversation(city: string, country: string, history: Message[]) {
+export async function streamFlirtatiousConversation(
+  city: string,
+  country: string,
+  history: Message[]
+) {
   const stream = createStreamableValue();
   // const model = google("models/gemini-1.5-pro-latest");
   const model = google("models/gemini-1.5-flash");
 
-  const sanitizeText = (text: string,) => text.replace(/[*_~`]/g, '');
+  const sanitizeText = (text: string) => text.replace(/[*_~`]/g, "");
 
   const prompt = `You are ${city} in ${country}, a charming city in a "dating app" for vacation spots. You have a personality that reflects the unique characteristics of your city. When the user asks about who you are, you must respond as ${city} in ${country}. Your responses should be:
   
@@ -109,7 +120,14 @@ export async function streamFlirtatiousConversation(city: string, country: strin
   
   Make sure to match the style of the user's input. Here's the conversation so far:
   
-  ${history.map(msg => `${msg.role === "user" ? "User" : "Assistant"}: ${sanitizeText(msg.content)}`).join('\n')}
+  ${history
+    .map(
+      (msg) =>
+        `${msg.role === "user" ? "User" : "Assistant"}: ${sanitizeText(
+          msg.content
+        )}`
+    )
+    .join("\n")}
   
   Your response should combine all these elements in a balanced way.
   
@@ -151,12 +169,16 @@ export async function getConversationHistory(city: string) {
   return conversationHistory[city] || [];
 }
 
-export async function makeItinerary(city: string, country: string, history: Message[]) {
+export async function makeItinerary(
+  city: string,
+  country: string,
+  history: Message[]
+) {
   // Use the appropriate Gemini model
   const model = google("models/gemini-1.5-flash");
 
   // Helper function to sanitize text input
-  const sanitizeText = (text: string) => text.replace(/[*_~`]/g, '');
+  const sanitizeText = (text: string) => text.replace(/[*_~`]/g, "");
 
   // Construct the prompt for the API, including the history
   const prompt = `
@@ -219,7 +241,14 @@ export async function makeItinerary(city: string, country: string, history: Mess
   
     Here is the history of the conversation to provide some context.:
 
-  ${history.map(msg => `${msg.role === "user" ? "User" : "Assistant"}: ${sanitizeText(msg.content)}`).join('\n')}
+  ${history
+    .map(
+      (msg) =>
+        `${msg.role === "user" ? "User" : "Assistant"}: ${sanitizeText(
+          msg.content
+        )}`
+    )
+    .join("\n")}
   
 
 
@@ -230,7 +259,6 @@ export async function makeItinerary(city: string, country: string, history: Mess
     model: model,
     prompt: prompt,
   });
-
 
   console.log("cc", text);
 
@@ -243,14 +271,13 @@ export async function makeItinerary(city: string, country: string, history: Mess
   // Return the new message and updated conversation history
   return {
     messages: history,
-    newMessage: text,  // Assuming `response.data.text` contains the generated message
+    newMessage: text, // Assuming `response.data.text` contains the generated message
     type: "itinerary",
   };
 }
 
 export async function summerizeItineraryText(itinerarytext: string) {
   const model = google("models/gemini-1.5-flash");
-
 
   // Construct the prompt for the API, including the history
   const prompt = `
@@ -277,8 +304,7 @@ export async function summerizeItineraryText(itinerarytext: string) {
   // Update conversation history for the city
   console.log("summerizeItineraryText", text);
   // Return the new message and updated conversation history
-  return text
-
+  return text;
 }
 
 // ANCHOR WaitList Forms & Other ----------------------------------------------------
@@ -295,7 +321,10 @@ type FormState = {
   message: string;
 };
 
-export async function submitFormResponse(formData: FormData, formState: FormState) {
+export async function submitFormResponse(
+  formData: FormData,
+  formState: FormState
+) {
   await new Promise((resolve) => setTimeout(resolve, 250));
 
   const city_id = generateRandomId();
@@ -317,33 +346,36 @@ export async function submitFormResponse(formData: FormData, formState: FormStat
       },
     });
 
-    revalidatePath('/');
+    revalidatePath("/");
 
     return {
-      message: 'Message created',
+      message: "Message created",
     };
-
   } catch (error) {
     // Handle the error
     return {
-      message: 'Something went wrong',
+      message: "Something went wrong",
     };
   }
 }
 
 // ANCHOR Database Logic & Functions (Supabase) ------------------------------------
-export async function addQuestions(questions: any) {
 
-  let count = 0
+export async function currentUserId() {
+  const user = await currentUser();
+  return user?.id;
+}
+
+export async function addQuestions(questions: any) {
+  let count = 0;
 
   const user = await currentUser();
 
   const quizResponseCount = await prisma?.quizAnswer.findMany({
     where: {
-      userId: user?.id
-    }
+      userId: user?.id,
+    },
   });
-
 
   // ensure this is only run once
   if (count < 1 && quizResponseCount.length < 1) {
@@ -390,7 +422,6 @@ export async function updateQuestions(questions: any) {
 }
 
 export async function addMatch(savedDestination: any) {
-
   const user = await currentUser();
 
   interface Destination {
@@ -405,7 +436,8 @@ export async function addMatch(savedDestination: any) {
   }
 
   // this is the last destination we then just add this to the database
-  const destination: Destination = savedDestination?.destinations[savedDestination?.destinations?.length - 1];
+  const destination: Destination =
+    savedDestination?.destinations[savedDestination?.destinations?.length - 1];
 
   console.log("destination: ", destination);
 
@@ -425,7 +457,6 @@ export async function addMatch(savedDestination: any) {
 }
 
 export async function deleteMatch(id: string) {
-
   await prisma?.match.delete({
     where: {
       id: id,
@@ -514,8 +545,229 @@ export async function updateItinerary(blocks: any) {
   }
 }
 
-// export async function newSubscriber(subscriber: string) {
+// ANCHOR Stipe -------------------------------------------------------------------
+
+export async function getData(userId: string) {
+
+  const data = await prisma.subscription.findUnique({
+      where: {
+        userId: userId
+      },
+      select: {
+        status: true,
+        user: {
+          select: {
+            stripeCustomerId: true,
+          }
+        }
+      }
+
+    })
+    return data;
+}
+
+export async function createSubscription(plan: string) {
+  const user = await currentUser()
+  const data = await getData(user?.id as string)
+
+  const dbUser = await prisma.user.findUnique({
+    where: {
+      id: user?.id
+    },
+    select: {
+      stripeCustomerId: true
+    }
+  })
+
+  if (!dbUser?.stripeCustomerId){
+    throw new Error('Cant get customer id')
+  }
+
+  let priceData = {}
+
+  if (plan === 'Pro Monthly') {
+
+    priceData = {
+      currency: 'usd',
+      product_data: {
+        name: 'Pro Monthly Subscription',
+      },
+      unit_amount: 500, // $5.00
+      recurring: {
+        interval: 'month',
+      },
+    }
+    
+    const subscriptionUrl = await getStripeSession({
+      priceId: process.env.STRIPE_M_PLAN as string,
+      customerId: dbUser.stripeCustomerId,
+      domainUrl: process.env.NODE_ENV === 'production' ? process.env.PRODUCTION_URL as string : 'http://localhost:3000',
+    })
+    
+    return redirect(subscriptionUrl)
+  }
+
+  if (plan === 'Pro Yearly') {
+
+    priceData = {
+      currency: 'usd',
+      product_data: {
+        name: 'Pro Yearly Subscription',
+      },
+      unit_amount: 5000, // $50.00
+      recurring: {
+        interval: 'year',
+      },
+    }
+    
+    const subscriptionUrl = await getStripeSession({
+      priceId: process.env.STRIPE_Y_PLAN as string,
+      customerId: dbUser.stripeCustomerId,
+      domainUrl: process.env.NODE_ENV === 'production' ? process.env.PRODUCTION_URL as string : 'http://localhost:3000',
+    })
+
+    return redirect(subscriptionUrl)
+  }
+
+}
+
+export async function createCustomerPortal() {
+  const user = await currentUser()
+  const data = await getData(user?.id as string)
+  const session = await stripe.billingPortal.sessions.create({
+    customer: data?.user?.stripeCustomerId as string,
+    return_url: process.env.NODE_ENV === 'production' ? process.env.PRODUCTION_URL as string + '/pricing' : 'http://localhost:3000/pricing'
+  })
+  return redirect(session.url)
+}
+
+// export async function handleSubscriber(subscriberData?: any) {
+//   const clerkuser = await currentUser();
+
+//   // find user in database
+//   const user = await prisma.user.findUnique({
+//     where: {
+//       id: clerkuser?.id,
+//     },
+//   });
+
+//   if (!clerkuser || !clerkuser.id) {
+//     console.log("User not found or user ID is missing.");
+//   }
+
+//   // ANCHOR Handling free user
+//   // If the user has no data in the db for subscriptions,
+//   // create a new record and make the status "free" because they are a free member
+//   if (subscriberData === undefined && user?.stripeCustomerId == null) {
+
+//     await prisma?.subscription.create({
+//       data: {
+//         interval: "",
+//         username: user?.username || "",
+//         currentPeriodEnd: 0,
+//         currentPeriodStart: Math.floor(new Date().getTime() / 1000), // Convert to seconds
+//         userId: user?.id as string,
+//         stripeCustomerId: "", 
+//         // we will reference the subscription status throughout the app
+//         status: "free",
+//       },
+//     });
+
+//     console.log("Free user created");
+//   }
+
+//   // Here I'm handling edge cases for users already in our db, to just make sure that they get a customer id created
+//   if (subscriberData === undefined && user?.stripeCustomerId != null) {
+
+//       const subscription = await prisma?.subscription.findUnique({
+//         where: {
+//           userId: clerkuser?.id,
+//         },
+//       });
+
+//       if (subscription) {
+//         // Subscription exists, handle accordingly
+//         await prisma?.subscription.update({
+//           where: {
+//             userId: clerkuser?.id,
+//           },
+//           data: {
+//             stripeCustomerId: user?.stripeCustomerId as string,
+//             username: user?.username as string,
+//           },
+//         });
+
+//       }
+
+//       if (!subscription) {
+//         // Subscription does not exist, create it
+//         await prisma?.subscription.create({
+//           data: {
+//             interval: "",
+//             currentPeriodEnd: 0,
+//             currentPeriodStart: Math.floor(new Date().getTime() / 1000), // Convert to seconds
+//             userId: user?.id as string,
+//             username: user?.username || "",
+//             stripeCustomerId: user?.stripeCustomerId || "", 
+//             // we will reference the subscription status throughout the app
+//             status: "free",
+//           },
+//         });
+//       }
+      
+
+//     console.log("Free user updated");
+//   }
+
+//   // ANCHOR Handling paid MONTHLY user
+//   if (subscriberData?.interval === "month" && subscriberData?.status === "active") {
+//     try {
+//       await prisma?.subscription.update({
+//         where: {
+//           userId: user?.id as string,
+//         },
+//         data: {
+//           interval: subscriberData.interval as string,
+//           currentPeriodEnd: new Date().getTime() + 30 * 24 * 60 * 60 * 1000,
+//           currentPeriodStart: new Date().getTime(),
+//           userId: user?.id as string,
+//           username: user?.username as string,
+//           stripeCustomerId: user?.stripeCustomerId as string,
+//           status: "active",
+//         },
+//       });
+//     } catch (error) {
+//       console.error("Error updating monthly subscription:", error);
+//     }
+//   }
+
+//   if (subscriberData?.interval === "year" && subscriberData?.status === "active") {
+//     try {
+//       await prisma?.subscription.update({
+//         where: {
+//           stripeSubscriptionId: user?.stripeCustomerId as string,
+//           userId: user?.id as string,
+//         },
+//         data: {
+//           interval: subscriberData.interval as string,
+//           currentPeriodEnd: new Date().getTime() + 365 * 24 * 60 * 60 * 1000,
+//           currentPeriodStart: new Date().getTime(),
+//           userId: user?.id as string,
+//           username: user?.username as string,
+//           stripeCustomerId: user?.stripeCustomerId as string,
+//           status: "active",
+//         },
+//       });
+//     } catch (error) {
+//       console.error("Error updating yearly subscription:", error);
+//     }
+//   }
+
+
 // }
+
+// ----------------------------------------------------------------------------------
+
 
 // ANCHOR Giphy API --------------------------------------------------------------------
 // export async function QsearchGiphyGif(query: string, limit: number) {

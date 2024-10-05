@@ -4,6 +4,7 @@ export interface DestinationItem {
   country: string;
   description: string;
   compatibility: number|null;
+  budget?: number;
   pros: string[];
   cons: string[];
   illustration: string;

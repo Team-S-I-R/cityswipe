@@ -1,4 +1,3 @@
-
 import { NextResponse } from 'next/server';
 import Amadeus from 'amadeus';
 
@@ -11,7 +10,7 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const origin = searchParams.get('origin') || 'NYC';
   const destination = searchParams.get('destination') || 'PAR';
-  const departureDate = searchParams.get('departureDate') || '2024-06-01';
+  const departureDate = searchParams.get('departureDate') || '2024-11-01';
 
   try {
     const response = await amadeus.shopping.flightOffersSearch.get({
