@@ -36,6 +36,7 @@ model Subscription {
   stripeSubscriptionId String?  
   stripeCustomerId     String?
   interval             String
+  planId               String?
   status               String
   username             String?
   currentPeriodStart   Int
