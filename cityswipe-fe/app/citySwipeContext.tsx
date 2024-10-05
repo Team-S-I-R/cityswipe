@@ -10,6 +10,8 @@ interface CitySwipeContextType {
   firstMatch?: string;
   isSidebarOpen: boolean;
   isItineraryModalOpen: boolean;
+  subscriptionStatus?: string
+  subscriptionPlanId?: string
   userdata?: any;
   usermatches?: any
   userquestions?: any
@@ -30,6 +32,8 @@ interface CitySwipeContextType {
   setMessage: React.Dispatch<React.SetStateAction<any>>
   setIsStarted: (value: boolean) => void;
   setCurrentPath?: (value: string) => void;
+  setSubscriptionPlanId?: (value: string) => void;
+  setSubscriptionStatus?: (value: string) => void;
   setUserData?: (value: any) => void;
   setUserMatches?: (value: any) => void;
   setUserQuestions?: (value: any) => void;
@@ -63,11 +67,13 @@ export const CitySwipeProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [newItineraryItem, setNewItineraryItem] = useState<string>('');
   const [addingItemToItinerary, setAddingItemToItinerary] = useState(false);
   const [userdata, setUserData] = useState<any>({});
+  const [subscriptionPlanId, setSubscriptionPlanId] = useState<string>('');
   const [userItinerary, setUserItinerary] = useState<any>({});
   const [selectedCompatibility, setSelectedCompatibility] = useState<number>(0);
   const [selectedBio, setSelectedBio] = useState<string>('');
   const [selectedPros, setSelectedPros] = useState<any[]>([]);
   const [selectedCons, setSelectedCons] = useState<any[]>([]);
+  const [subscriptionStatus, setSubscriptionStatus] = useState<string>('');
   const [usermatches, setUserMatches] = useState<any>([]);
   const [userquestions, setUserQuestions] = useState<any>([]);
   const [chatImg, setChatImg] = useState<string>('');
@@ -84,6 +90,8 @@ export const CitySwipeProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       photoUrl,
       chatImg,
       userItinerary,
+      subscriptionStatus,
+      subscriptionPlanId,
       userdata,
       currentPath,
       usermatches,
@@ -104,10 +112,12 @@ export const CitySwipeProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       setFirstMatch,
       setIsStarted,
       setPhotoUrl,
+      setSubscriptionPlanId,
       setCurrentPath,
       setIsSidebarOpen,
       setIsItineraryModalOpen,
       setUserItinerary,
+      setSubscriptionStatus,
       setUserData,
       setUserMatches,
       setNewItineraryItem,

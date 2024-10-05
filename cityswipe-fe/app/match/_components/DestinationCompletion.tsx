@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 // To be implemented
 // import { Button } from "@/components/ui";
@@ -8,28 +8,54 @@ import { motion } from "framer-motion";
 
 import { useSavedDestinationContext } from "../../../context/savedDestinationContext";
 import { useDestinationSetContext } from "../../../context/destinationSetContext";
-import { getInitialSet } from "@/api/destinationSets.api";
 import Link from "next/link";
+import { generateDestinations } from "@/app/quiz/generateDestinations";
+import Stripe from "stripe";
+// import { currentUser } from "@clerk/nextjs/server";
+// import prisma from "@/lib/db";
+import { loadMoreCards } from "../_utils/loadCards";
+import { checkSubscribed } from "../_utils/checkSubscribed";
 
 const DestinationCompletion = () => {
   const [destinationSet, setDestinationSet] = useDestinationSetContext();
   const { cards } = destinationSet;
-
   // const cardsAmount = games[game.id]?.cards.length;
   const cardsAmount = cards.length;
-  const initialDestinationSet = getInitialSet(0);
   const [destination, setDestination] = useSavedDestinationContext();
+  const [loading, setLoading] = useState(false);
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: '2024-06-20' })
 
   const memoizedStats = useRef({
     destination_count: structuredClone(destination.destinations.length),
     cardsAmount: structuredClone(cardsAmount),
   });
 
-  // const handleReplay = () => {
-  //   setUser(initialUser);
-  //   setGame(initialGame);
-  // };
-  // console.log(destination.destinations[0].toString());
+  const loadMore = async () => {
+    setLoading(true)
+    checkSubscribed()
+    // const subscription = await stripe.subscriptions.retrieve("sub_1Q5X16BQfbTtpxdVPrd6hnXn");
+    // console.log(session)
+    // console.log(subscription)
+
+    // get responses from saved
+    let responses = destinationSet.responses
+    // store original locations 
+    // pass those into generate destinations => cities and 
+    // tell the function not to include those places
+    const newDestinations = await generateDestinations(responses, destinationSet.allCards.map(card => card.city))
+    // fix ordering
+    const destinations = destinationSet.cards.concat(newDestinations.reverse())
+    await setDestinationSet({
+      id: 1,
+      cards: destinations,
+      allCards: destinationSet.allCards.concat(destinations.reverse()),
+      responses: responses
+    })
+    // console.log(destinationSet.allCards.map(card => card.city))
+
+    // add it as auto request when paid account
+    setLoading(false)
+  };
 
   return (
     <div
@@ -49,13 +75,20 @@ const DestinationCompletion = () => {
           Complete!
         </h1>
         <p className="text-2xl font-acuminMedium  text-gray-800/70 z-10">
-          You have added {memoizedStats.current.destination_count} destinations to you saved locations.
+          You have added {memoizedStats.current.destination_count} destinations
+          to you saved locations.
         </p>
-          
-          <Link href="/explore">
-            <button className="bg-gradient-to-t from-cyan-500 to-green-400 text-white hover:opacity-90 font-bold py-2 px-4 rounded mt-8">Chat with my matches!</button>
-          </Link>
-        
+
+        <button onClick={loadMore} className="self-center bg-gradient-to-t from-cyan-500 to-green-400 text-white hover:opacity-90 font-bold py-2 px-4 rounded mt-8">
+          load more
+        </button>
+
+        <Link href="/explore">
+          <button className="bg-gradient-to-t from-cyan-500 to-green-400 text-white hover:opacity-90 font-bold py-2 px-4 rounded mt-8">
+            Chat with my matches!
+          </button>
+        </Link>
+
         {/* <motion.div className="mt-8" whileTap={{ scale: 0.9 }}>
           <Button
             onClick={() => handleReplay()}
