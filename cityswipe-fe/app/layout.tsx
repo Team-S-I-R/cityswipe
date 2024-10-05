@@ -23,7 +23,7 @@ export const metadata: Metadata = {
 async function fetchData() {
 
   const clerkuser = await currentUser();
-
+  
   // select the id and the stripecus id from the user
   const user = await prisma.user.findUnique({
     where: {
@@ -37,7 +37,7 @@ async function fetchData() {
 
   // create user in database
   if (!user) {
-    console.log("No account.")
+    console.log("")
   }
 
   // crete stip customer in database
