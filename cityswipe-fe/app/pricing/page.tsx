@@ -16,6 +16,8 @@ const PricingPage = () => {
     const images = [destination1, destination2, destination3, destination4];
     const router = useRouter();
     const {userdata, setUserData} = useCitySwipe();
+    const [loading, setLoading] = useState(false);
+
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -85,6 +87,30 @@ const PricingPage = () => {
     const handleFreePlan = () => {
       router.push("/quiz");
     };
+
+    // Display a subscription dashboard if they are paid user
+    // NEED TO GET THE SUBSCRIPTION OBJECT FROM SUBSCRIPTION ID FROM THE DASHBOARD.
+    // if (subscription.status === 'active') {
+    //     return (
+    //         <div className="container w-full h-full py-12 flex flex-col items-center justify-center min-h-screen">
+    //             <h1 className="text-4xl font-bold text-center mb-12">Your Subscription Dashboard</h1>
+    //             <Card className="w-full max-w-md">
+    //                 <CardHeader>
+    //                     <CardTitle>Current Plan: {subscription.plan}</CardTitle>
+    //                 </CardHeader>
+    //                 <CardContent>
+    //                     <p>Status: {subscription.status}</p>
+    //                     <p>Next billing date: {new Date(subscription.currentPeriodEnd).toLocaleDateString()}</p>
+    //                 </CardContent>
+    //                 <CardFooter>
+    //                     <Button className="w-full bg-gradient-to-t from-cyan-500 to-green-400">
+    //                         Manage Subscription
+    //                     </Button>
+    //                 </CardFooter>
+    //             </Card>
+    //         </div>
+    //     );
+    // }
 
     return (
         <div className="container w-full h-full py-12 flex flex-col items-center justify-center min-h-screen">
