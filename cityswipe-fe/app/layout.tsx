@@ -23,37 +23,45 @@ export const metadata: Metadata = {
 async function fetchData() {
 
   const clerkuser = await currentUser();
-
-  // select the id and the stripecus id from the user
-  const user = await prisma.user.findUnique({
-    where: {
-      id: clerkuser?.id,
-    },
-    select: {
-      id: true,
-      stripeCustomerId: true,
-    },
-  });
-
-  // create user in database
-  if (!user) {
-    console.log("No account.")
-  }
-
-  // crete stip customer in database
-  if (!user?.stripeCustomerId) {
-    const data = await stripe?.customers?.create({
-      email: clerkuser?.emailAddresses[0].emailAddress as string,
-    });
-
-    await prisma.user.update({
+  
+  if (clerkuser) {
+    
+    const user = await prisma.user.findUnique({
       where: {
         id: clerkuser?.id,
       },
-      data: {
-        stripeCustomerId: data.id,
+      select: {
+        id: true,
+        stripeCustomerId: true,
       },
     });
+    // select the id and the stripecus id from the user
+  
+    // create user in database
+    if (!user) {
+      console.log("")
+    }
+  
+    // crete stip customer in database
+    if (!user?.stripeCustomerId) {
+      const data = await stripe?.customers?.create({
+        email: clerkuser?.emailAddresses[0].emailAddress as string,
+      });
+  
+      await prisma.user.update({
+        where: {
+          id: clerkuser?.id,
+        },
+        data: {
+          stripeCustomerId: data.id,
+        },
+      });
+    }
+
+  }
+
+  if (!clerkuser) {
+    console.log("User not found or user ID is missing.");
   }
 
 
@@ -112,7 +120,6 @@ export default async function RootLayout({
   const destinationSet = await getDestinationSet(0);
   const savedDestination = await getDestination();
   const user = await currentUser();
-  const subscriptionStatus = await getSubscriptionStatus();
 
   if (user) {
     await fetchData();
