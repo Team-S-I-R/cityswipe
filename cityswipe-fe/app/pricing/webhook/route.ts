@@ -110,7 +110,7 @@ export async function POST(req: Request) {
 
       const user = await prisma.user.findUnique({
         where: {
-          stripeCustomerId: customerId,
+          stripeCustomerId: customerId as string,
         },
       });
 
