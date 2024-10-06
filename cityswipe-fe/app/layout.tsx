@@ -134,6 +134,7 @@ export default async function RootLayout({
 
   if (user) {
     await fetchData(user);
+    await getSubscriptionStatus();
   }
 
   return (
