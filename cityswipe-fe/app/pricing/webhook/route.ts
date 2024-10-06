@@ -45,10 +45,10 @@ export async function POST(req: Request) {
           id: true,
         }
       });
+      console.log("userId from webhook: ", userId)
 
       const isSubscribtionInSupabase = await prisma.subscription.findUnique({
         where: {
-          stripeSubscriptionId: subscription.id,
           userId: userId?.id,
         },
       })
