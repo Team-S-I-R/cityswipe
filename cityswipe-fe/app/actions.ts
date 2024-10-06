@@ -10,9 +10,10 @@ import { revalidatePath } from "next/cache";
 import { currentUser } from "@clerk/nextjs/server";
 import quizQuestions from "./quiz-questions/questions";
 import { createClient } from "pexels";
-import { stripe }  from "../lib/stripe"
+import { stripe } from "../lib/stripe"
 import { getStripeSession } from "@/lib/stripe";
 import { redirect } from "next/navigation";
+import logger from "@/lib/logger";
 
 // ANCHOR Gemini Logic --------------------------------------------------------------------
 export interface Message {
@@ -107,7 +108,6 @@ export async function streamFlirtatiousConversation(
   history: Message[]
 ) {
   const stream = createStreamableValue();
-  // const model = google("models/gemini-1.5-pro-latest");
   const model = google("models/gemini-1.5-flash");
 
   const sanitizeText = (text: string) => text.replace(/[*_~`]/g, "");
@@ -121,13 +121,13 @@ export async function streamFlirtatiousConversation(
   Make sure to match the style of the user's input. Here's the conversation so far:
   
   ${history
-    .map(
-      (msg) =>
-        `${msg.role === "user" ? "User" : "Assistant"}: ${sanitizeText(
-          msg.content
-        )}`
-    )
-    .join("\n")}
+      .map(
+        (msg) =>
+          `${msg.role === "user" ? "User" : "Assistant"}: ${sanitizeText(
+            msg.content
+          )}`
+      )
+      .join("\n")}
   
   Your response should combine all these elements in a balanced way.
   
@@ -242,13 +242,13 @@ export async function makeItinerary(
     Here is the history of the conversation to provide some context.:
 
   ${history
-    .map(
-      (msg) =>
-        `${msg.role === "user" ? "User" : "Assistant"}: ${sanitizeText(
-          msg.content
-        )}`
-    )
-    .join("\n")}
+      .map(
+        (msg) =>
+          `${msg.role === "user" ? "User" : "Assistant"}: ${sanitizeText(
+            msg.content
+          )}`
+      )
+      .join("\n")}
   
 
 
@@ -550,20 +550,20 @@ export async function updateItinerary(blocks: any) {
 export async function getData(userId: string) {
 
   const data = await prisma.subscription.findUnique({
-      where: {
-        userId: userId
-      },
-      select: {
-        status: true,
-        user: {
-          select: {
-            stripeCustomerId: true,
-          }
+    where: {
+      userId: userId
+    },
+    select: {
+      status: true,
+      user: {
+        select: {
+          stripeCustomerId: true,
         }
       }
+    }
 
-    })
-    return data;
+  })
+  return data;
 }
 
 export async function createSubscription(plan: string) {
@@ -579,7 +579,7 @@ export async function createSubscription(plan: string) {
     }
   })
 
-  if (!dbUser?.stripeCustomerId){
+  if (!dbUser?.stripeCustomerId) {
     throw new Error('Cant get customer id')
   }
 
@@ -597,13 +597,13 @@ export async function createSubscription(plan: string) {
         interval: 'month',
       },
     }
-    
+
     const subscriptionUrl = await getStripeSession({
       priceId: process.env.STRIPE_M_PLAN as string,
       customerId: dbUser.stripeCustomerId,
       domainUrl: process.env.NODE_ENV === 'production' ? process.env.PRODUCTION_URL as string : 'http://localhost:3000',
     })
-    
+
     return redirect(subscriptionUrl)
   }
 
@@ -619,7 +619,7 @@ export async function createSubscription(plan: string) {
         interval: 'year',
       },
     }
-    
+
     const subscriptionUrl = await getStripeSession({
       priceId: process.env.STRIPE_Y_PLAN as string,
       customerId: dbUser.stripeCustomerId,
@@ -714,7 +714,7 @@ export async function createCustomerPortal() {
 //           },
 //         });
 //       }
-      
+
 
 //     console.log("Free user updated");
 //   }
@@ -807,33 +807,44 @@ export async function searchGiphyGif(query: string, limit: number) {
   const DEFAULT_LIMIT = 1;
 
   if (!query) {
-    console.error(`No query was provided, provided query was: ${query}`);
+    logger.error(`No query was provided, provided query was: ${query}`);
     return null;
   }
 
-  console.log(`Searching Giphy for: ${query}`);
+  logger.info(`Searching Giphy for the following: ${query}`);
 
   const giphyApiKey = process.env.GIPHY_API_KEY;
   const url = `https://api.giphy.com/v1/gifs/search?api_key=${giphyApiKey}&q=${query}&limit=${limit ? limit : DEFAULT_LIMIT}&rating=${RATING}`;
 
   try {
-    const response = await fetch(url);
+    const response = await fetch(url)
+      .then((response) => {
+        if (!response.ok) {
+          logger.error("HTTP error! status:", response.status);
+          return null;
+        }
+
+        return response.json();
+      })
+      .catch((error) => {
+        logger.error("Error fetching data:", error);
+        return null;
+      });
+
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      logger.error("HTTP error! status:", response.status);
     }
 
-    const data = await response.json();
+    if (response.data && response.data.length > 0) {
+      logger.info("GIF Found for the given query:", response.data[0].images.original.url);
+      return response.data[0].images.original.url ;
 
-    if (data.data && data.data.length > 0) {
-      console.log("data: ", data.data[0]);
-      console.log("GIF Found for the given query:", data.data[0].images.original.url);
-      return data.data[0].images.original.url;
     } else {
-      console.log("No GIFs found for the given query.");
+      logger.error("No GIFs found for the given query.");
       return null;
     }
   } catch (error: any) {
-    console.error(`Some Error Occurred During Giphy Search: ${error.message}`);
+    logger.error(`Some Error Occurred During Giphy Search: ${error.message}`);
     return null;
   }
 }

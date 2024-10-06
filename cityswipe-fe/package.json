@@ -14,7 +14,7 @@
     "@blocknote/core": "^0.15.9",
     "@blocknote/mantine": "^0.15.9",
     "@blocknote/react": "^0.15.9",
-    "@clerk/nextjs": "^5.3.7",
+    "@clerk/nextjs": "^4.6.18",
     "@gsap/react": "^2.1.1",
     "@prisma/client": "^5.17.0",
     "@radix-ui/react-dialog": "^1.1.1",
