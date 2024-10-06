@@ -93,6 +93,13 @@ async function getSubId() {
   return subscription?.stripeSubscriptionId;
 }
 
+
+// Subscribe
+
+//  Cancel?
+
+// active month ends
+
 async function getSubscriptionStatus() {
 
   const subscriptionId = await getSubId();
