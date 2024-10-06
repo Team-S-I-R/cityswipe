@@ -28,7 +28,7 @@ export async function POST(req: Request) {
       const subscription = await stripe.subscriptions.retrieve(
         session.subscription as string
       );
-      const customerId = String(session.customer);
+      const customerId = session.customer as string;
 
       const user = await prisma.user.findUnique({
         where: {
@@ -106,7 +106,7 @@ export async function POST(req: Request) {
       const subscription = await stripe.subscriptions.retrieve(
         session.subscription as string
       );
-      const customerId = String(session.customer);
+      const customerId = session.customer as string;
 
       const user = await prisma.user.findUnique({
         where: {
@@ -138,7 +138,7 @@ export async function POST(req: Request) {
       session.subscription as string
     );
     console.log("subscription: ", subscription)
-    const customerId = String(session.customer);
+    const customerId = session.customer as string;
 
     const user = await prisma.user.findUnique({
       where: {

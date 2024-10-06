@@ -31,14 +31,9 @@ export const checkSubscribed = async () => {
     if (!data || !data.stripeSubscriptionId) {
       throw new Error("Subscription data not found from database");
     }
-
-    // get subscription data from stripe of corresponding user subscription
-    console.log(data)
-    const subscription = await stripe.subscriptions.retrieve(data.stripeSubscriptionId);
-    console.log("sub:", subscription)
    
     // Check if the user is not subscribed
-    if (!subscription || subscription.status !== 'active') {
+    if (data.status !== 'active') {
       return false;
     }
   } catch (error) {
@@ -77,9 +72,7 @@ export const getSubscription = async () => {
     }
 
     // get subscription data from stripe of corresponding user subscription
-    console.log(data)
     const subscription = await stripe.subscriptions.retrieve(data.stripeSubscriptionId);
-    console.log("sub:", subscription)
    
     // Check if the user is not subscribed
     if (!subscription) {
