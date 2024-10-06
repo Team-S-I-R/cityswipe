@@ -15,6 +15,7 @@ import Stripe from "stripe";
 // import prisma from "@/lib/db";
 import { loadMoreCards } from "../_utils/loadCards";
 import { checkSubscribed } from "../_utils/checkSubscribed";
+import { useRouter } from "next/navigation";
 
 const DestinationCompletion = () => {
   const [destinationSet, setDestinationSet] = useDestinationSetContext();
@@ -24,6 +25,7 @@ const DestinationCompletion = () => {
   const [destination, setDestination] = useSavedDestinationContext();
   const [loading, setLoading] = useState(false);
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: '2024-06-20' })
+  const router = useRouter();
 
   const memoizedStats = useRef({
     destination_count: structuredClone(destination.destinations.length),
@@ -32,28 +34,13 @@ const DestinationCompletion = () => {
 
   const loadMore = async () => {
     setLoading(true)
-    checkSubscribed()
-    // const subscription = await stripe.subscriptions.retrieve("sub_1Q5X16BQfbTtpxdVPrd6hnXn");
-    // console.log(session)
-    // console.log(subscription)
-
-    // get responses from saved
-    let responses = destinationSet.responses
-    // store original locations 
-    // pass those into generate destinations => cities and 
-    // tell the function not to include those places
-    const newDestinations = await generateDestinations(responses, destinationSet.allCards.map(card => card.city))
-    // fix ordering
-    const destinations = destinationSet.cards.concat(newDestinations.reverse())
-    await setDestinationSet({
-      id: 1,
-      cards: destinations,
-      allCards: destinationSet.allCards.concat(destinations.reverse()),
-      responses: responses
-    })
-    // console.log(destinationSet.allCards.map(card => card.city))
-
-    // add it as auto request when paid account
+    await checkSubscribed() ? loadMoreCards(destinationSet, setDestinationSet) : router.push("/pricing")
+    // if (!checkSubscribed()) {
+    //   router.push("/pricing");
+    //   return;
+    // } else {
+    //   loadMoreCards(destinationSet, setDestinationSet)
+    // }
     setLoading(false)
   };
 
@@ -82,21 +69,12 @@ const DestinationCompletion = () => {
         <button onClick={loadMore} className="self-center bg-gradient-to-t from-cyan-500 to-green-400 text-white hover:opacity-90 font-bold py-2 px-4 rounded mt-8">
           load more
         </button>
-
-        <Link href="/explore">
-          <button className="bg-gradient-to-t from-cyan-500 to-green-400 text-white hover:opacity-90 font-bold py-2 px-4 rounded mt-8">
-            Chat with my matches!
-          </button>
-        </Link>
-
-        {/* <motion.div className="mt-8" whileTap={{ scale: 0.9 }}>
-          <Button
-            onClick={() => handleReplay()}
-            className="bg-blue-500 text-[20px] uppercase px-8 pt-6 pb-5 text-white"
-          >
-            Replay
-          </Button>
-        </motion.div> */}
+        <button 
+          onClick={() => router.push('/explore')} 
+          className="mt-8 self-center py-2 px-4  bg-gradient-to-t from-cyan-500 to-green-400 text-white hover:opacity-90 font-bold rounded"
+        >
+          Chat with my matches!
+        </button>
       </motion.div>
     </div>
   );
