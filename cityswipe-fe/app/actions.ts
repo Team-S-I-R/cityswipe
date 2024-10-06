@@ -545,7 +545,7 @@ export async function updateItinerary(blocks: any) {
   }
 }
 
-// ANCHOR Stipe -------------------------------------------------------------------
+// ANCHOR Stripe -------------------------------------------------------------------
 
 export async function getData(userId: string) {
 

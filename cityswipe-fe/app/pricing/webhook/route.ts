@@ -61,10 +61,20 @@ export async function POST(req: Request) {
       const subscription = await stripe.subscriptions.retrieve(
         session.subscription as string
       );
+      const customerId = String(session.customer);
+
+      const user = await prisma.user.findUnique({
+        where: {
+          stripeCustomerId: customerId,
+        },
+      });
+
+      if (!user) throw new Error("User not found...");
 
       await prisma.subscription.update({
         where: {
           stripeSubscriptionId: subscription.id,
+          userId: user.id,
         },
         data: {
           planId: subscription.items.data[0].price.id,
@@ -82,10 +92,21 @@ export async function POST(req: Request) {
     const subscription = await stripe.subscriptions.retrieve(
       session.subscription as string
     );
+    console.log("subscription: ", subscription)
+    const customerId = String(session.customer);
+
+    const user = await prisma.user.findUnique({
+      where: {
+        stripeCustomerId: customerId,
+      },
+    });
+
+    if (!user) throw new Error("User not found...");
 
     await prisma.subscription.update({
       where: {
         stripeSubscriptionId: subscription.id,
+        userId: user.id,
       },
       data: {
         planId: subscription.items.data[0].price.id,
