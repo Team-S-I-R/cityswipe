@@ -96,6 +96,7 @@ async function getSubId() {
 async function getSubscriptionStatus() {
 
   const subscriptionId = await getSubId();
+  const clerkuser = await currentUser();
 
   if (!subscriptionId) {
     console.error("No subscription ID found.");
@@ -108,6 +109,7 @@ async function getSubscriptionStatus() {
     await prisma?.subscription.update({
       where: {
         stripeSubscriptionId: subscriptionId,
+        userId: clerkuser?.id,
       },
       data: {
         status: subscription.status,
