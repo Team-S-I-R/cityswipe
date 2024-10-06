@@ -36,21 +36,57 @@ export async function POST(req: Request) {
         },
       });
 
+      const isSubscribtionInSupabase = await prisma.subscription.findUnique({
+        where: {
+          stripeSubscriptionId: subscription.id,
+          userId: user?.id,
+        },
+      })
+
       if (!user) throw new Error("User not found...");
 
-      await prisma.subscription.create({
-        data: {
-          stripeSubscriptionId: subscription.id,
-          userId: user.id,
-          username: user.username,
-          currentPeriodStart: subscription.current_period_start,
-          currentPeriodEnd: subscription.current_period_end,
-          status: subscription.status,
-          planId: subscription.items.data[0].plan.id,
-          interval: String(subscription.items.data[0].plan.interval),
-          stripeCustomerId: user.stripeCustomerId,
-        },
-      });
+      // if the user has subscribed to us before
+      if (isSubscribtionInSupabase) {
+
+        await prisma.subscription.update({
+          where: {
+            stripeSubscriptionId: subscription.id,
+            userId: user.id,
+          },
+          data: {
+            stripeSubscriptionId: subscription.id,
+            userId: user.id,
+            username: user.username,
+            currentPeriodStart: subscription.current_period_start,
+            currentPeriodEnd: subscription.current_period_end,
+            status: subscription.status,
+            planId: subscription.items.data[0].plan.id,
+            interval: String(subscription.items.data[0].plan.interval),
+            stripeCustomerId: user.stripeCustomerId,
+          },
+        });
+
+      }
+
+      if (!isSubscribtionInSupabase){
+
+        await prisma.subscription.create({
+          data: {
+            stripeSubscriptionId: subscription.id,
+            userId: user.id,
+            username: user.username,
+            currentPeriodStart: subscription.current_period_start,
+            currentPeriodEnd: subscription.current_period_end,
+            status: subscription.status,
+            planId: subscription.items.data[0].plan.id,
+            interval: String(subscription.items.data[0].plan.interval),
+            stripeCustomerId: user.stripeCustomerId,
+          },
+        });
+
+      }
+
+
     } catch (error: unknown) {
       console.error("Error handling checkout.session.completed:", error);
     }
