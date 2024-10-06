@@ -106,11 +106,11 @@ export async function POST(req: Request) {
       const subscription = await stripe.subscriptions.retrieve(
         session.subscription as string
       );
-      const customerId = String(session.customer);
+      const customerId = session.customer as string;
 
       const user = await prisma.user.findUnique({
         where: {
-          stripeCustomerId: customerId,
+          stripeCustomerId: customerId as string,
         },
       });
 
