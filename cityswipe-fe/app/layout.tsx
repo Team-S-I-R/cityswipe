@@ -20,52 +20,63 @@ export const metadata: Metadata = {
   description: "Allowing you to find your perfect holiday destination match!",
 };
 
-async function fetchData() {
+async function fetchData(clerkuser: any) {
 
-  const clerkuser = await currentUser();
-  
-  if (clerkuser) {
+    console.log("clerkuser: ", clerkuser?.id);
     
-    const user = await prisma.user.findUnique({
-      where: {
-        id: clerkuser?.id,
-      },
-      select: {
-        id: true,
-        stripeCustomerId: true,
-      },
-    });
-    // select the id and the stripecus id from the user
-  
-    // create user in database
-    if (!user) {
-      console.log("")
-    }
-  
-    // crete stip customer in database
-    if (!user?.stripeCustomerId) {
-      const data = await stripe?.customers?.create({
-        email: clerkuser?.emailAddresses[0].emailAddress as string,
-      });
-  
-      await prisma.user.update({
+    try {
+
+      const user = await prisma.user.findUnique({
         where: {
           id: clerkuser?.id,
         },
-        data: {
-          stripeCustomerId: data.id,
+        select: {
+          id: true,
+          stripeCustomerId: true,
         },
       });
+
+      console.log("user: ", user);
+
+      // create user in database
+      if (user === null) {
+        await prisma.user.create({
+          data: {
+            id: clerkuser?.id,
+            email: clerkuser?.emailAddresses[0].emailAddress as string,
+            username: clerkuser?.username as string,
+            name: clerkuser?.fullName as string,
+            profileImg: clerkuser?.imageUrl as string,
+            stripeCustomerId: "",
+          },
+        });
+
+        console.log("user creation: ", user);
+
+      }
+    
+      // create stripe customer in database
+      if (!user?.stripeCustomerId) {
+        
+        const data = await stripe?.customers?.create({
+          email: clerkuser?.emailAddresses[0].emailAddress as string,
+        });
+
+        console.log("data: ", clerkuser?.id)
+    
+        await prisma.user.update({
+          where: {
+            id: clerkuser?.id,
+          },
+          data: {
+            stripeCustomerId: data.id,
+          },
+        });
+      }
+    } catch (error) {
+      console.error("Error in fetchData:", error);
     }
-
   }
-
-  if (!clerkuser) {
-    console.log("User not found or user ID is missing.");
-  }
-
-
-}
 
 async function getSubId() {
   const user = await currentUser();
@@ -122,7 +133,7 @@ export default async function RootLayout({
   const user = await currentUser();
 
   if (user) {
-    await fetchData();
+    await fetchData(user);
   }
 
   return (
