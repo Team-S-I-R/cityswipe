@@ -837,7 +837,7 @@ export async function searchGiphyGif(query: string, limit: number) {
 
     if (response.data && response.data.length > 0) {
       logger.info("GIF Found for the given query:", response.data[0].images.original.url);
-      return response.data[0].images.original.url;
+      return response.data[0].images.original.url ;
 
     } else {
       logger.error("No GIFs found for the given query.");
