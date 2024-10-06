@@ -35,11 +35,21 @@ export async function POST(req: Request) {
           stripeCustomerId: customerId,
         },
       });
+      
+      // 
+      const userId = await prisma.user.findUnique({
+        where: {
+          stripeCustomerId: customerId,
+        },
+        select: {
+          id: true,
+        }
+      });
 
       const isSubscribtionInSupabase = await prisma.subscription.findUnique({
         where: {
           stripeSubscriptionId: subscription.id,
-          userId: user?.id,
+          userId: userId?.id,
         },
       })
 
@@ -50,8 +60,7 @@ export async function POST(req: Request) {
 
         await prisma.subscription.update({
           where: {
-            stripeSubscriptionId: subscription.id,
-            userId: user.id,
+            userId: userId?.id,
           },
           data: {
             stripeSubscriptionId: subscription.id,
