@@ -30,10 +30,6 @@ async function fetchData(clerkuser: any) {
         where: {
           id: clerkuser?.id,
         },
-        select: {
-          id: true,
-          stripeCustomerId: true,
-        },
       });
 
       console.log("user: ", user);
@@ -141,7 +137,7 @@ export default async function RootLayout({
   const savedDestination = await getDestination();
   const user = await currentUser();
 
-  if (user) {
+  if (user != null) {
     await fetchData(user);
     await getSubscriptionStatus();
   }

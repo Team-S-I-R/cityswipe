@@ -42,7 +42,7 @@ export default function PricingClientElements({ status, planId }: any) {
   useEffect(() => {
     setSubscriptionStatus?.(status?.status);
     setSubscriptionPlanId?.(planId?.planId);
-  }, [subscriptionStatus]);
+  }, [status?.status, planId?.planId, setSubscriptionStatus, setSubscriptionPlanId]);
 
   useEffect(() => {
     if (subscriptionStatus === "active" && subscriptionPlanId) {
