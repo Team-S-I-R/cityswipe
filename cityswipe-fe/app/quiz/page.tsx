@@ -19,6 +19,9 @@ import gif2 from "../assets/gifs/gif2.gif";
 import gif3 from "../assets/gifs/gif3.gif";
 import gif4 from "../assets/gifs/gif4.gif";
 import gif5 from "../assets/gifs/gif5.gif";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Loader2 } from "lucide-react";
+import Loading from "@/components/ui/loading";
 
 export default function QuizClient({ clerkdata }: any) {
   const { isStarted, setIsStarted } = useCitySwipe();
@@ -180,7 +183,7 @@ export default function QuizClient({ clerkdata }: any) {
 
       console.log(`handleGemini took ${endTime - startTime} milliseconds`);
 
-      router.push("/match");
+      // router.push("/match");
       setLoadingMatches(false);
     } catch (error) {
       setLoadingMatches(false);
@@ -211,9 +214,7 @@ export default function QuizClient({ clerkdata }: any) {
           className="w-[100%] opacity-[100%]  rounded-t-xl shadow-2xl absolute bottom-0 h-full overflow-hidden bg-white text-[12px] gap-6 flex flex-col place-items-end place-content-center"
         >
           <div
-            className={`flex flex-col w-full md:w-[60%] px-[3%] h-[80dvh] overflow-y-scroll place-items-start  place-content-start justify-between gap-5 ${
-              loadingMatches ? "blur-sm" : "blur-0"
-            }`}
+            className={`flex flex-col w-full md:w-[60%] px-[3%] h-[80dvh] overflow-y-scroll place-items-start  place-content-start justify-between gap-5 blur-0`}
           >
             {/* Progress Bar */}
 
@@ -430,15 +431,7 @@ export default function QuizClient({ clerkdata }: any) {
           </motion.div>
           {/* BLur loading screen */}
           {currentQuestionIndex === quizQuestions.length - 1 &&
-            loadingMatches && (
-              <>
-                <div className="absolute w-full h-max self-center flex place-items-center place-content-center">
-                  <span className="text-[22px] sm:text-[26px] animate-pulse font-bold text-center">
-                    Scouring the globe for your destinations...
-                  </span>
-                </div>
-              </>
-            )}
+            Loading(loadingMatches, "Scouring the globe for your destinations...")}
         </motion.div>
       </AnimatePresence>
     </>
