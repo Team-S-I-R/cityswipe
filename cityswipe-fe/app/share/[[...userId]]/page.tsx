@@ -46,7 +46,7 @@ export default function SharedItineraryPage() {
         <>
         <div className="w-full h-[100dvh] p-8">
 
-            <h1>Itinerary</h1>
+            <h1 className="text-3xl font-bold mb-4">Itinerary</h1>
             {itineraryData.itinerary && itineraryData.itinerary.map((item: any) => (
                 <div key={item.id} className={`bg-[${item.props.backgroundColor}] text-${item.props.textAlignment}`}>
                     <p className={`text-[${item.props.textColor}]`}>{item.text}</p>
