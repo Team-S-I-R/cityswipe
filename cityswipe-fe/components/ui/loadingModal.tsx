@@ -1,7 +1,12 @@
 import { Loader2 } from "lucide-react";
 import * as React from "react";
 
-const Loading = (show: boolean, text: string = "") => {
+interface props {
+  show: boolean;
+  text?: string;
+}
+
+const LoadingModal = ({show, text = ""}: props) => {
   return (
     show && (
       <>
@@ -17,4 +22,4 @@ const Loading = (show: boolean, text: string = "") => {
   );
 };
 
-export default Loading;
+export default LoadingModal;
