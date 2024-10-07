@@ -84,8 +84,8 @@ async function getSubId() {
     select: {
       stripeSubscriptionId: true,
     },
-  });
-
+  })
+  
   return subscription?.stripeSubscriptionId;
 }
 
