@@ -81,7 +81,10 @@ const Itinerary = (itinerary: any, clerkdata: any) => {
 
   const handleShareItinerary = (uId: string) => {
 
-    router.push(`/share/${uId}`);
+    if (uId != undefined) {
+      router.push(`/share/${uId}`);
+    }
+
   };
 
   // Only one useEffect for blockToMessWith logic
