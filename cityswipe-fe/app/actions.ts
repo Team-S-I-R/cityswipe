@@ -545,7 +545,21 @@ export async function updateItinerary(blocks: any) {
   }
 }
 
-// ANCHOR Stipe -------------------------------------------------------------------
+export async function getItinerary(userId: any) {
+
+  const uid = userId?.userId;
+
+  const itineraryBlocks = await prisma.itinerary.findMany({
+    where: {
+      userId: uid
+    }
+  })
+
+  return itineraryBlocks
+
+}
+
+// ANCHOR Stripe -------------------------------------------------------------------
 
 export async function getData(userId: string) {
 
@@ -837,7 +851,7 @@ export async function searchGiphyGif(query: string, limit: number) {
 
     if (response.data && response.data.length > 0) {
       logger.info("GIF Found for the given query:", response.data[0].images.original.url);
-      return response.data[0].images.original.url;
+      return response.data[0].images.original.url ;
 
     } else {
       logger.error("No GIFs found for the given query.");

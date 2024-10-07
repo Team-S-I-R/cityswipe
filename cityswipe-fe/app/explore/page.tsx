@@ -70,7 +70,7 @@ export default function Explore({clerkdata, matches, questions, itinerary}: any)
                             transition={{ duration: 1.25 }}                                     
                             className={`h-full`} 
                         >
-                            <Itinerary itinerary={itinerary} key='3'/>
+                            <Itinerary itinerary={itinerary} clerkdata={userdata} key='3'/>
                         </motion.div>
 
                         <motion.div 

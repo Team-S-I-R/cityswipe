@@ -5,37 +5,85 @@ import { currentUser } from "@clerk/nextjs/server";
 import Stripe from "stripe";
 
 export const checkSubscribed = async () => {
-  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: '2024-06-20' })
-  const clerkuser = await currentUser();
+  try {
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: '2024-06-20' })
+    const clerkuser = await currentUser();
 
-  // get the current user from supabase:
-  const user = await prisma.user.findUnique({
-    where: {
-      id: clerkuser?.id
+    // get the current user from supabase:
+    const user = await prisma.user.findUnique({
+      where: {
+        id: clerkuser?.id
+      }
+    })
+
+    if (!user) {
+      throw new Error("User not found from clerk");
     }
-  })
 
-  // get the current user from supabase:
-  const subscription1 =await prisma?.subscription?.findUnique({
-    where: {
-      stripeSubscriptionId: user?.stripeCustomerId as string
+    // get the current user subscription data from supabase:
+    const data = await prisma?.subscription?.findUnique({
+      where: {
+        stripeCustomerId: user.stripeCustomerId as string,
+        userId: user.id as string
+      }
+    })
+
+    if (!data || !data.stripeSubscriptionId) {
+      throw new Error("Subscription data not found from database");
     }
-  })
-  const customer = await stripe.customers.retrieve(user?.stripeCustomerId as string)
-  console.log(customer)
-  console.log(subscription1)
-  const subscription = await stripe.subscriptions.retrieve("sub_1Q6EgsBQfbTtpxdVZ9ol0ere");
-  //  console.log(session)
-   console.log("sub:",subscription)
    
-   // Check if user is subscribed
-   // const session = await stripe.checkout.sessions.retrieve(destinationSet.sessionId);
-   // const subscription = await stripe.subscriptions.retrieve(session.subscription as string);
+    // Check if the user is not subscribed
+    if (data.status !== 'active') {
+      return false;
+    }
+  } catch (error) {
+    console.error("Error checking subscription status:", error);
+    return false;
+  }
+  return true;
+}
+
+export const getSubscription = async () => {
+  try {
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: '2024-06-20' })
+    const clerkuser = await currentUser();
+
+    // get the current user from supabase:
+    const user = await prisma.user.findUnique({
+      where: {
+        id: clerkuser?.id
+      }
+    })
+
+    if (!user) {
+      throw new Error("User not found from clerk");
+    }
+
+    // get the current user subscription data from supabase:
+    const data = await prisma?.subscription?.findUnique({
+      where: {
+        stripeCustomerId: user.stripeCustomerId as string,
+        userId: user.id as string
+      }
+    })
+
+    if (!data || !data.stripeSubscriptionId) {
+      throw new Error("Subscription data not found from database");
+    }
+
+    // get subscription data from stripe of corresponding user subscription
+    const subscription = await stripe.subscriptions.retrieve(data.stripeSubscriptionId);
    
-   if (!subscription || subscription.status !== 'active') {
-     return false;
-   }
+    // Check if the user is not subscribed
+    if (!subscription) {
+      return null;
+    }
+    
+    const product = await stripe.products.retrieve((subscription as any).plan.product as string);
 
-  return true
-
+    return {status: subscription.status, current_period_end:subscription.current_period_end, plan:product.name}
+  } catch (error) {
+    console.error("Error checking subscription status:", error);
+    return null;
+  }
 }

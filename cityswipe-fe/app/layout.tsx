@@ -93,9 +93,17 @@ async function getSubId() {
   return subscription?.stripeSubscriptionId;
 }
 
+
+// Subscribe
+
+//  Cancel?
+
+// active month ends
+
 async function getSubscriptionStatus() {
 
   const subscriptionId = await getSubId();
+  const clerkuser = await currentUser();
 
   if (!subscriptionId) {
     console.error("No subscription ID found.");
@@ -108,6 +116,7 @@ async function getSubscriptionStatus() {
     await prisma?.subscription.update({
       where: {
         stripeSubscriptionId: subscriptionId,
+        userId: clerkuser?.id,
       },
       data: {
         status: subscription.status,
@@ -134,6 +143,7 @@ export default async function RootLayout({
 
   if (user) {
     await fetchData(user);
+    await getSubscriptionStatus();
   }
 
   return (

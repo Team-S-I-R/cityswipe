@@ -28,29 +28,74 @@ export async function POST(req: Request) {
       const subscription = await stripe.subscriptions.retrieve(
         session.subscription as string
       );
-      const customerId = String(session.customer);
+      const customerId = session.customer as string;
 
       const user = await prisma.user.findUnique({
         where: {
           stripeCustomerId: customerId,
         },
       });
+      
+      // 
+      const userId = await prisma.user.findUnique({
+        where: {
+          stripeCustomerId: customerId,
+        },
+        select: {
+          id: true,
+        }
+      });
+      console.log("userId from webhook: ", userId)
+
+      const isSubscribtionInSupabase = await prisma.subscription.findUnique({
+        where: {
+          userId: userId?.id,
+        },
+      })
 
       if (!user) throw new Error("User not found...");
 
-      await prisma.subscription.create({
-        data: {
-          stripeSubscriptionId: subscription.id,
-          userId: user.id,
-          username: user.username,
-          currentPeriodStart: subscription.current_period_start,
-          currentPeriodEnd: subscription.current_period_end,
-          status: subscription.status,
-          planId: subscription.items.data[0].plan.id,
-          interval: String(subscription.items.data[0].plan.interval),
-          stripeCustomerId: user.stripeCustomerId,
-        },
-      });
+      // if the user has subscribed to us before
+      if (isSubscribtionInSupabase) {
+
+        await prisma.subscription.update({
+          where: {
+            userId: userId?.id,
+          },
+          data: {
+            stripeSubscriptionId: subscription.id,
+            userId: user.id,
+            username: user.username,
+            currentPeriodStart: subscription.current_period_start,
+            currentPeriodEnd: subscription.current_period_end,
+            status: subscription.status,
+            planId: subscription.items.data[0].plan.id,
+            interval: String(subscription.items.data[0].plan.interval),
+            stripeCustomerId: user.stripeCustomerId,
+          },
+        });
+
+      }
+
+      if (!isSubscribtionInSupabase){
+
+        await prisma.subscription.create({
+          data: {
+            stripeSubscriptionId: subscription.id,
+            userId: user.id,
+            username: user.username,
+            currentPeriodStart: subscription.current_period_start,
+            currentPeriodEnd: subscription.current_period_end,
+            status: subscription.status,
+            planId: subscription.items.data[0].plan.id,
+            interval: String(subscription.items.data[0].plan.interval),
+            stripeCustomerId: user.stripeCustomerId,
+          },
+        });
+
+      }
+
+
     } catch (error: unknown) {
       console.error("Error handling checkout.session.completed:", error);
     }
@@ -61,10 +106,20 @@ export async function POST(req: Request) {
       const subscription = await stripe.subscriptions.retrieve(
         session.subscription as string
       );
+      const customerId = session.customer as string;
+
+      const user = await prisma.user.findUnique({
+        where: {
+          stripeCustomerId: customerId as string,
+        },
+      });
+
+      if (!user) throw new Error("User not found...");
 
       await prisma.subscription.update({
         where: {
           stripeSubscriptionId: subscription.id,
+          userId: user.id,
         },
         data: {
           planId: subscription.items.data[0].price.id,
@@ -82,10 +137,21 @@ export async function POST(req: Request) {
     const subscription = await stripe.subscriptions.retrieve(
       session.subscription as string
     );
+    console.log("subscription: ", subscription)
+    const customerId = session.customer as string;
+
+    const user = await prisma.user.findUnique({
+      where: {
+        stripeCustomerId: customerId,
+      },
+    });
+
+    if (!user) throw new Error("User not found...");
 
     await prisma.subscription.update({
       where: {
         stripeSubscriptionId: subscription.id,
+        userId: user.id,
       },
       data: {
         planId: subscription.items.data[0].price.id,
