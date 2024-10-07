@@ -546,11 +546,12 @@ export async function updateItinerary(blocks: any) {
 }
 
 export async function getItinerary(userId: any) {
-  const user = await currentUser()
+
+  const uid = userId?.userId;
 
   const itineraryBlocks = await prisma.itinerary.findMany({
     where: {
-      userId: userId
+      userId: uid
     }
   })
 

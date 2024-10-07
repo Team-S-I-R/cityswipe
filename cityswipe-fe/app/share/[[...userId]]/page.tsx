@@ -3,10 +3,9 @@
 import { useEffect, useState } from "react";
 import { usePathname } from 'next/navigation';
 
-export default function SharedItineraryPage() {
+export default function SharedItineraryPage(userId: any) {
     
     const pathname = usePathname();
-    const userId = pathname.split('/').pop();
     const [itineraryData, setItineraryData] = useState<any>({});
     console.log(userId);
 

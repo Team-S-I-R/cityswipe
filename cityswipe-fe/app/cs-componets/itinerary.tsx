@@ -36,6 +36,7 @@ const Itinerary = (itinerary: any, clerkdata: any) => {
   const { userItinerary, setUserItinerary } = useCitySwipe();
   const {userdata, setUserData} = useCitySwipe();
   const router = useRouter();
+  const {  } = useCitySwipe();
 
   useEffect(() => {
     setUserData?.(clerkdata);
@@ -76,6 +77,11 @@ const Itinerary = (itinerary: any, clerkdata: any) => {
     let latestBlocks = editor.document;
     console.log("latestBlocks: ", latestBlocks);
     itinerary.itinerary.length > 0 ? updateItinerary(latestBlocks) : createItinerary(latestBlocks);
+  };
+
+  const handleShareItinerary = (uId: string) => {
+
+    router.push(`/share/${uId}`);
   };
 
   // Only one useEffect for blockToMessWith logic
@@ -134,7 +140,7 @@ const Itinerary = (itinerary: any, clerkdata: any) => {
        
               <Button
                 className="bg-gradient-to-t from-cyan-500 to-green-400 text-white hover:opacity-90 font-bold py-2 px-4 rounded w-full"
-                onClick={() => router.push(`/share/${userdata?.id}`)}
+                onClick={() => handleShareItinerary(userdata?.id)}
               >
                 Share
               </Button>
