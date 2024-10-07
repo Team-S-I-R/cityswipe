@@ -122,7 +122,7 @@ export default function PricingClientElements({ status, planId }: any) {
               <CardHeader>
                 <CardTitle>My Subscription</CardTitle>
                 <CardDescription>
-                  If you'd like, you can deactivate your Cityswipe subscription.
+                  If you would like, you can deactivate your Cityswipe subscription.
                   <br />
                   <em>
                     Theses changes will take affect at the end of the current
