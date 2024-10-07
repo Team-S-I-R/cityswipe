@@ -18,10 +18,11 @@ import "@blocknote/mantine/style.css";
 import { useCreateBlockNote } from "@blocknote/react";
 import { summerizeItineraryText } from "../actions";
 import { createItinerary, updateItinerary } from "../actions";
+import { useRouter } from "next/navigation";
 
 type BlockIdentifier = string | Block;
 
-const Itinerary = (itinerary: any) => {
+const Itinerary = (itinerary: any, clerkdata: any) => {
   const { selectedMatch } = useCitySwipe();
   const { userquestions } = useCitySwipe();
   const [blockToMessWith, setBlockToMessWith] = useState("");
@@ -33,7 +34,13 @@ const Itinerary = (itinerary: any) => {
     to: addDays(new Date(), 20),
   });
   const { userItinerary, setUserItinerary } = useCitySwipe();
+  const {userdata, setUserData} = useCitySwipe();
+  const router = useRouter();
+  const {  } = useCitySwipe();
 
+  useEffect(() => {
+    setUserData?.(clerkdata);
+  }, [clerkdata])
   // Initialize editor outside of conditional
   const editor = useCreateBlockNote({
     initialContent:
@@ -70,6 +77,11 @@ const Itinerary = (itinerary: any) => {
     let latestBlocks = editor.document;
     console.log("latestBlocks: ", latestBlocks);
     itinerary.itinerary.length > 0 ? updateItinerary(latestBlocks) : createItinerary(latestBlocks);
+  };
+
+  const handleShareItinerary = (uId: string) => {
+
+    router.push(`/share/${uId}`);
   };
 
   // Only one useEffect for blockToMessWith logic
@@ -124,12 +136,23 @@ const Itinerary = (itinerary: any) => {
                 </p>
               </div>
             )}
-            <Button
-              className="bg-gradient-to-t from-cyan-500 to-green-400 text-white hover:opacity-90 font-bold py-2 px-4 rounded w-max"
-              onClick={() => saveItineraryContent()}
-            >
-              Save
-            </Button>
+            <div className="w-max h-max flex flex-col gap-2">
+       
+              <Button
+                className="bg-gradient-to-t from-cyan-500 to-green-400 text-white hover:opacity-90 font-bold py-2 px-4 rounded w-full"
+                onClick={() => handleShareItinerary(userdata?.id)}
+              >
+                Share
+              </Button>
+
+              <Button
+                className="bg-gradient-to-t from-cyan-500 to-green-400 text-white hover:opacity-90 font-bold py-2 px-4 rounded w-full"
+                onClick={() => saveItineraryContent()}
+              >
+                Save
+              </Button>
+
+            </div>
           </div>
         </div>
       </div>
