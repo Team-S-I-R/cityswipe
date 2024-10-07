@@ -545,6 +545,19 @@ export async function updateItinerary(blocks: any) {
   }
 }
 
+export async function getItinerary(userId: any) {
+  const user = await currentUser()
+
+  const itineraryBlocks = await prisma.itinerary.findMany({
+    where: {
+      userId: userId
+    }
+  })
+
+  return itineraryBlocks
+
+}
+
 // ANCHOR Stipe -------------------------------------------------------------------
 
 export async function getData(userId: string) {

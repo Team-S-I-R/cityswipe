@@ -49,6 +49,7 @@ model Subscription {
 
 model Match {
   id              String   @id @default(uuid())
+  title           String?
   username        String?
   city            String
   country         String
