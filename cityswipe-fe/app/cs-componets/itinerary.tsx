@@ -1,7 +1,7 @@
 'use client';
 
 import { useCitySwipe } from "../citySwipeContext";
-import { Calendar as CalendarIcon } from "lucide-react";
+import { Calendar as CalendarIcon, ToggleLeftIcon, Wrench } from "lucide-react";
 import { useEffect, useState } from "react";
 import { addDays, format, set } from "date-fns";
 import { DateRange } from "react-day-picker";
@@ -30,6 +30,7 @@ const Itinerary = (itinerary: any, clerkdata: any) => {
   const { newItineraryItem, setNewItineraryItem } = useCitySwipe();
   const { usermatches, setUserMatches } = useCitySwipe();
   const { addingItemToItinerary, setAddingItemToItinerary } = useCitySwipe();
+  const [showTools, setShowTools] = useState(false);
   const [date, setDate] = useState<DateRange | undefined>({
     from: new Date(),
     to: addDays(new Date(), 20),
@@ -37,6 +38,7 @@ const Itinerary = (itinerary: any, clerkdata: any) => {
   const { userItinerary, setUserItinerary } = useCitySwipe();
   const {userdata, setUserData} = useCitySwipe();
   const router = useRouter();
+
 
   useEffect(() => {
     setUserData?.(clerkdata);
@@ -130,26 +132,39 @@ const Itinerary = (itinerary: any, clerkdata: any) => {
 
   return (
     <>
-      <div className="flex flex-col gap-2 h-full border-b border-r border-primary/20 ">
-        <div className="select-none text-[14px] px-2 text-center font-bold flex-nowrap flex p-[1em] border-b  border-primary/20 w-full place-content-center place-items-center gap-2">
+      <div className="flex h-full relative overflow-hidden flex-col gap-2 h-full border-b border-r border-primary/20 ">
+        
+        <div className="flex flex-col gap-2 w-full">
+
+
+          {itinerary.itinerary.length > 0 && (
+                <div className="text-[10px] h-max text-muted-foreground px-2 py-4" key={itinerary.itinerary[itinerary.itinerary.length - 1].blockNum}>
+                  <p>
+                    <span className="italic text-[9px]">Latest save at: </span><strong>{new Date(itinerary.itinerary[itinerary.itinerary.length - 1].updatedAt).toLocaleString()}</strong>
+                  </p>
+                </div>
+            )}
+
+        <div className="select-none h-max text-[14px] px-2 text-center font-bold flex-nowrap flex pb-[1em] border-b  border-primary/20 w-full place-content-center place-items-center gap-2">
           <p>My</p>
           <p className="">Itinerary</p>
           <span className="bg-gradient-to-t from-cyan-400 to-green-400 text-[9px] px-2 py-1 text-white rounded-full  top-[-40%] right-[-70%]">NEW</span>
         </div>
 
-        <div className="py-2 h-full z-[100] relative w-full">
-          <BlockNoteView className="text-[12px]" theme={"light"} editor={editor} />
+        </div>
 
-          <div className="flex place-items-end w-full justify-between h-max absolute bottom-0 p-4 gap-5 ">
-            {itinerary.itinerary.length > 0 && (
-              <div className="text-[10px] text-muted-foreground" key={itinerary.itinerary[itinerary.itinerary.length - 1].blockNum}>
-                <p>
-                  <span className="italic text-[9px]">Latest save at: </span><strong>{new Date(itinerary.itinerary[itinerary.itinerary.length - 1].updatedAt).toLocaleString()}</strong>
-                </p>
-              </div>
-            )}
-            <div className="w-max h-max flex flex-col gap-2">
+        <div className="py-2 h-full overflow-y-scroll z-[100] relative w-full">
+          <BlockNoteView className="text-[12px]" theme={"light"} editor={editor} /> 
+        </div>
+
+        {showTools === true && (
+          <div className="flex z-[100] bg-white py-4 place-items-end w-full px-4 right-0 justify-between h-max absolute bottom-0 gap-5 ">
+            <div className="w-full h-max flex flex-col gap-2">
        
+              <div onClick={() => setShowTools(false)} className="w-full flex place-content-end">
+                <p className="underline cursor-pointer">Close</p>
+              </div>
+
               {itinerary.itinerary.length > 0 && (
                 
                 <Button
@@ -170,7 +185,14 @@ const Itinerary = (itinerary: any, clerkdata: any) => {
 
             </div>
           </div>
-        </div>
+        )}
+
+        {showTools === false && (
+          <div onClick={() => setShowTools(true)} className="cursor-pointer w-10 h-10 absolute flex place-items-center place-content-center text-white p-2 bottom-10 right-10 rounded-full bg-gradient-to-t from-cyan-500 to-green-400 z-[100]">
+            <Wrench/>
+          </div>
+        )}
+
       </div>
     </>
   );

@@ -366,6 +366,35 @@ export async function currentUserId() {
   return user?.id;
 }
 
+export async function currentUserName(userId: any) {
+  
+  const uid = userId?.userId;
+
+  const user = await prisma?.user.findUnique({
+    where: {
+      id: uid,
+    },
+  });
+
+  return user?.name;
+
+}
+
+export async function currentUserMatches(userId: any) {
+  
+  const uid = userId?.userId;
+
+  const matches = await prisma?.match.findMany({
+    where: {
+      userId: uid,
+    },
+  });
+
+  return matches
+}
+
+
+
 export async function addQuestions(questions: any) {
   let count = 0;
 
@@ -850,8 +879,9 @@ export async function searchGiphyGif(query: string, limit: number) {
     }
 
     if (response.data && response.data.length > 0) {
-      logger.info("GIF Found for the given query:", response.data[0].images.original.url);
-      return response.data[0].images.original.url ;
+      const randomNumber = Math.floor(Math.random() * 3) + 1;
+      logger.info("GIF Found for the given query:", response.data[randomNumber].images.original.url);
+      return response.data[randomNumber].images.original.url;
 
     } else {
       logger.error("No GIFs found for the given query.");

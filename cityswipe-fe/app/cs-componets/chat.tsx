@@ -171,7 +171,7 @@ export default function Chat({matches}: any) {
   return (
     <>
       <div className="relative hidden sm:flex px-[10%] text-[14px] flex-col place-content-center place-items-center w-full h-[100dvh]">
-        <div className="absolute border-b border-primary/20 top-0 w-full p-[1em] flex justify-between place-items-center p-5">
+        <div className="absolute  top-0 w-full p-[1em] flex justify-between place-items-center p-5">
           {selectedMatch == "" ? (
             <h2 className="select-none">
               You are a{" "}
