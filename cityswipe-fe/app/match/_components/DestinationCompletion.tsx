@@ -8,14 +8,10 @@ import { motion } from "framer-motion";
 
 import { useSavedDestinationContext } from "../../../context/savedDestinationContext";
 import { useDestinationSetContext } from "../../../context/destinationSetContext";
-import Link from "next/link";
-import { generateDestinations } from "@/app/quiz/generateDestinations";
-import Stripe from "stripe";
-// import { currentUser } from "@clerk/nextjs/server";
-// import prisma from "@/lib/db";
 import { loadMoreCards } from "../_utils/loadCards";
 import { checkSubscribed } from "../_utils/checkSubscribed";
 import { useRouter } from "next/navigation";
+import LoadingModal from "@/components/ui/loadingModal";
 
 const DestinationCompletion = () => {
   const [destinationSet, setDestinationSet] = useDestinationSetContext();
@@ -24,7 +20,6 @@ const DestinationCompletion = () => {
   const cardsAmount = cards.length;
   const [destination, setDestination] = useSavedDestinationContext();
   const [loading, setLoading] = useState(false);
-  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: '2024-06-20' })
   const router = useRouter();
 
   const memoizedStats = useRef({
@@ -35,12 +30,6 @@ const DestinationCompletion = () => {
   const loadMore = async () => {
     setLoading(true)
     await checkSubscribed() ? loadMoreCards(destinationSet, setDestinationSet) : router.push("/pricing")
-    // if (!checkSubscribed()) {
-    //   router.push("/pricing");
-    //   return;
-    // } else {
-    //   loadMoreCards(destinationSet, setDestinationSet)
-    // }
     setLoading(false)
   };
 
@@ -48,6 +37,7 @@ const DestinationCompletion = () => {
     <div
       className={`flex p-5 w-full min-h-screen h-full flex-col place-content-center justify-center text-gray-700`}
     >
+      <LoadingModal show={loading} text="Scouring the globe for your destinations..."/>
       {/* <BgPattern /> */}
       <motion.div
         initial={{ opacity: 0, scale: 0.5 }}
