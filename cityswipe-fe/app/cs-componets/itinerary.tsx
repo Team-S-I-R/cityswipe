@@ -19,6 +19,7 @@ import { useCreateBlockNote } from "@blocknote/react";
 import { summerizeItineraryText } from "../actions";
 import { createItinerary, updateItinerary } from "../actions";
 import { useRouter } from "next/navigation";
+import { it } from "node:test";
 
 type BlockIdentifier = string | Block;
 
@@ -36,7 +37,6 @@ const Itinerary = (itinerary: any, clerkdata: any) => {
   const { userItinerary, setUserItinerary } = useCitySwipe();
   const {userdata, setUserData} = useCitySwipe();
   const router = useRouter();
-  const {  } = useCitySwipe();
 
   useEffect(() => {
     setUserData?.(clerkdata);
@@ -78,6 +78,15 @@ const Itinerary = (itinerary: any, clerkdata: any) => {
     console.log("latestBlocks: ", latestBlocks);
     itinerary.itinerary.length > 0 ? updateItinerary(latestBlocks) : createItinerary(latestBlocks);
   };
+
+  // useEffect that auto-saves every 30 seconds
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      saveItineraryContent();
+    }, 30000);
+
+    return () => clearInterval(intervalId);
+  }, []);
 
   const handleShareItinerary = (uId: string) => {
 
@@ -135,18 +144,22 @@ const Itinerary = (itinerary: any, clerkdata: any) => {
             {itinerary.itinerary.length > 0 && (
               <div className="text-[10px] text-muted-foreground" key={itinerary.itinerary[itinerary.itinerary.length - 1].blockNum}>
                 <p>
-                  Latest save at: {new Date(itinerary.itinerary[itinerary.itinerary.length - 1].updatedAt).toLocaleString()}
+                  <span className="italic text-[9px]">Latest save at: </span><strong>{new Date(itinerary.itinerary[itinerary.itinerary.length - 1].updatedAt).toLocaleString()}</strong>
                 </p>
               </div>
             )}
             <div className="w-max h-max flex flex-col gap-2">
        
-              <Button
-                className="bg-gradient-to-t from-cyan-500 to-green-400 text-white hover:opacity-90 font-bold py-2 px-4 rounded w-full"
-                onClick={() => handleShareItinerary(userdata?.id)}
-              >
-                Share
-              </Button>
+              {itinerary.itinerary.length > 0 && (
+                
+                <Button
+                  className="bg-gradient-to-t from-cyan-500 to-green-400 text-white hover:opacity-90 font-bold py-2 px-4 rounded w-full"
+                  onClick={() => handleShareItinerary(userdata?.id)}
+                >
+                  Share
+                </Button>
+
+              )}
 
               <Button
                 className="bg-gradient-to-t from-cyan-500 to-green-400 text-white hover:opacity-90 font-bold py-2 px-4 rounded w-full"
