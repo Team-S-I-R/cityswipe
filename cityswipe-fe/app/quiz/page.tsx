@@ -172,7 +172,6 @@ export default function QuizClient({ clerkdata }: any) {
         allCards: destinations.reverse(),
         responses: responses,
       });
-      console.log("desti", destinationSet);
 
       await addQuestions(responses);
 

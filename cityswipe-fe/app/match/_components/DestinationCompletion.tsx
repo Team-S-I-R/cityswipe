@@ -24,7 +24,9 @@ const DestinationCompletion = () => {
   const cardsAmount = cards.length;
   const [destination, setDestination] = useSavedDestinationContext();
   const [loading, setLoading] = useState(false);
-  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: '2024-06-20' })
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+    apiVersion: "2024-06-20",
+  });
   const router = useRouter();
 
   const memoizedStats = useRef({
@@ -33,15 +35,17 @@ const DestinationCompletion = () => {
   });
 
   const loadMore = async () => {
-    setLoading(true)
-    await checkSubscribed() ? loadMoreCards(destinationSet, setDestinationSet) : router.push("/pricing")
+    setLoading(true);
+    (await checkSubscribed())
+      ? loadMoreCards(destinationSet, setDestinationSet)
+      : router.push("/pricing");
     // if (!checkSubscribed()) {
     //   router.push("/pricing");
     //   return;
     // } else {
     //   loadMoreCards(destinationSet, setDestinationSet)
     // }
-    setLoading(false)
+    setLoading(false);
   };
 
   return (
@@ -59,21 +63,35 @@ const DestinationCompletion = () => {
         className="flex flex-col w-full place-content-center justify-center text-center relative z-10"
       >
         <h1 className="text-5xl md:text-[60px] leading-tight font-acuminMedium">
-          Complete!
+          {destinationSet.id == 0
+            ? "Take the quiz to generate Matches!"
+            : "Complete!"}
         </h1>
-        <p className="text-2xl font-acuminMedium  text-gray-800/70 z-10">
+        <p className="text-2xl font-acuminMedium  text-gray-800/70 z-10 py-4">
           You have added {memoizedStats.current.destination_count} destinations
           to you saved locations.
         </p>
 
-        <button onClick={loadMore} className="self-center bg-gradient-to-t from-cyan-500 to-green-400 text-white hover:opacity-90 font-bold py-2 px-4 rounded mt-8">
-          load more
-        </button>
-        <button 
-          onClick={() => router.push('/explore')} 
-          className="mt-8 self-center py-2 px-4  bg-gradient-to-t from-cyan-500 to-green-400 text-white hover:opacity-90 font-bold rounded"
+        {destinationSet.id != 0 ? (
+          <button
+            onClick={loadMore}
+            className="self-center bg-gradient-to-t from-cyan-500 to-green-400 text-white hover:opacity-90 font-bold py-2 px-4 rounded mt-10"
+          >
+            load more
+          </button>
+        ) : (
+          <button
+            onClick={() => router.push("/quiz")}
+            className="self-center bg-gradient-to-t from-cyan-500 to-green-400 text-white hover:opacity-90 font-bold py-2 px-4 rounded mt-10"
+          >
+            take quiz
+          </button>
+        )}
+        <button
+          onClick={() => router.push("/explore")}
+          className="mt-4 self-center py-2 px-4  bg-gradient-to-t from-cyan-500 to-green-400 text-white hover:opacity-90 font-bold rounded"
         >
-          Chat with my matches!
+          chat with my matches!
         </button>
       </motion.div>
     </div>
