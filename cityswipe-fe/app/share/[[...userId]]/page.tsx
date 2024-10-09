@@ -109,12 +109,16 @@ export default function SharedItineraryPage(userId: any) {
           {/* NOTE: This is an easter egg, dont remove this, this doubles to give me the right spacing as far as the formattting of this page. */}
           <div className="text-transparent">
             <p>You found an easter egg!</p>              
+            <p>You found an easter egg!</p>              
+            <p>You found an easter egg!</p>              
           </div>
             
             {itineraryIsLoading === false && (
               
               <>
-                <div className="w-full px-[5%] flex place-content-center place-items-center justify-between">
+              <div className="hidden md:block h-full w-full">
+
+                <div className="w-full px-[5%] mb-4 flex place-content-center place-items-center justify-between">
                   <div className="flex flex-col">
                         <h1 className="text-xl font-bold mb-2 text-muted-foreground">Explore</h1>
                         <SparklesText
@@ -198,6 +202,61 @@ export default function SharedItineraryPage(userId: any) {
 
                   
                 </div>
+
+              </div>
+            
+              {/* mobile */}
+              <div className="md:hidden h-full w-full">
+
+                <div className="w-full px-[5%] mb-4 flex place-content-center place-items-center justify-between">
+                  <div className="flex flex-col">
+                        <h1 className="text-xl font-bold mb-2 text-muted-foreground">Explore</h1>
+                        <SparklesText
+                          className="text-5xl"
+                          colors={{ first: "#22d3ee", second: "#4ade80" }}
+                          text={`${usersName}'s Itinerary`}
+                        />
+                  </div>
+
+                </div>
+
+                <div className="px-[5%] flex flex-col justify-between gap-8 h-[70%]">
+
+                  {/* grid 1 */}
+                  <div className="flex h-full flex-col gap-4 overflow-y-scroll no-scrollbar">
+                    
+                    <div className="w-full h-max flex flex-col gap-6">
+
+                        {gifs && gifs.length > 0 && (
+                          <div className="w-full h-[200px] flex overflow-x-scroll no-scrollbar">
+                            {gifs?.map((gif: any, index: number) => (
+                              <div key={index} className="flex-none w-full h-full" style={{ backgroundImage: `url(${gif})`, backgroundSize: 'cover', backgroundPosition: 'center' }}></div>
+                            ))}
+                          </div>
+                        )}
+            
+                  
+                        {itineraryData && itineraryData.map((item: any) => (
+                            <div key={item.id} className={`bg-[${item.props.backgroundColor}] text-${item.props.textAlignment}`}>
+                                <p className={` text-[${item.props.textColor}]`}>{item.text}</p>
+                            </div>
+                        ))}
+
+                    </div>
+
+                  </div>
+
+                  <div style={{ backgroundImage: `url(${dImg1.src})`, backgroundSize: 'cover', backgroundPosition: "bottom" }} className={`rounded-lg p-3 flex flex-col gap-2 place-items-center place-content-center w-full`}>
+                    <h1 className="text-white text-xl">Want to find <strong>YOUR</strong> perfect match?</h1>
+                    <Link href="/sign-up" target="_blank">
+                      <button className="bg-gradient-to-t from-[#22d3ee] to-[#4ade80] text-white font-bold py-2 px-4 rounded">Sign up today!</button>
+                    </Link>
+                  </div>
+                  
+                  
+                </div>
+
+              </div>
               </>
             )}
 
