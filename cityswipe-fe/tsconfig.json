@@ -34,6 +34,7 @@
     ".next/types/**/*.ts",
     "app/results/page.tsx",
     "api/checkout_sessions/route.js",
+    "types/**/*.d.ts"
   ],
   "exclude": [
     "node_modules"
