@@ -85,7 +85,7 @@ const Itinerary = (itinerary: any, clerkdata: any) => {
   useEffect(() => {
     const intervalId = setInterval(() => {
       saveItineraryContent();
-    }, 30000);
+    }, 15000);
 
     return () => clearInterval(intervalId);
   }, []);
