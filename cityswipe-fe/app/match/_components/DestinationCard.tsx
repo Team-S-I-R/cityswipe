@@ -14,12 +14,15 @@ import { type Destination } from "@/lib/destinationSet.type";
 import { useSavedDestinationContext } from "../../../context/savedDestinationContext";
 import { Dot, Frown, Info, Laugh, MapPin } from "lucide-react";
 import ShinyButton from "../../../components/ui/shiny-button"
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Autoplay, EffectFade } from 'swiper/modules';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import 'swiper/css';
 
 type Props = {
   id?: number;
@@ -186,19 +189,34 @@ const DestinationCard = ({
               </div>
 
               {/* ANCHOR the image of match */}
-              <div className="w-[95%] rounded-lg relative h-[200px] bg-gray-400">
+              
+              {/* <div className="w-[95%] rounded-lg relative h-[200px] bg-gray-400"> */}
+              <Swiper
+                autoplay={{
+                  delay: 2500,
+                  disableOnInteraction: false,
+                }}
+                centeredSlides={true}
+                effect={'fade'}
+                modules={[Autoplay, EffectFade]}
+                className="w-[95%] rounded-lg relative h-[200px]"
+              >
                 {illustration.length > 10 && (
-                  <Image
-                    priority
-                    className="rounded w-full absolute h-full object-cover"
-                    // src={data.illustration || placeholderImg}
-                    src={illustration}
-                    fill
-                    sizes="100%"
-                    alt="car"
-                  />
-              )}
-              </div>
+                  <SwiperSlide className="h-full w-full flex items-center justify-center">
+                    <Image
+                      priority
+                      className="rounded w-full absolute h-full object-cover"
+                      // src={data.illustration || placeholderImg}
+                      src={illustration}
+                      fill
+                      sizes="100%"
+                      alt="car"
+                    />
+                  </SwiperSlide>
+                )}
+              </Swiper>
+
+              {/* </div> */}
           
           </div>
 
