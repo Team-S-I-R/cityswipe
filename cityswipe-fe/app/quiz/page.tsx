@@ -164,6 +164,42 @@ export default function QuizClient({ clerkdata }: any) {
   const handleGemini = async () => {
     setLoadingMatches(true);
     const startTime = performance.now(); // Start tracking time
+
+    //NOTE: this right here will add the default values to the responses if there are empty responses after the user submits
+    // Check if there are any unanswered questions in the responses array
+    if (responses.some(response => response === "")) {
+      // Update the responses array to fill in default values for unanswered questions
+      setResponses((prevState) => {
+        return prevState.map((response, index) => {
+          // If the response is empty, assign a default value based on the question index
+          if (response === "") {
+            switch (index) {
+              case 0:
+                // Default value for the first question
+                return "United States";
+              case 1:
+                // Default value for the second question
+                return "Any Budget";
+              case 2:
+                // Default value for the third question
+                return "Open to All Experiences";
+              case 3:
+                // Default value for the fourth question
+                return "Open to All Forms of Travel";
+              case 4:
+                // Default value for the fifth question
+                return "Open to All";
+              default:
+                // Default value for any additional questions
+                return `Default Value ${index}`;
+            }
+          }
+          // Return the existing response if it's not empty
+          return response;
+        });
+      });
+    }
+    
     // console.log(`responses`);
     try {
       const destinations = await generateDestinations(responses);
@@ -190,6 +226,7 @@ export default function QuizClient({ clerkdata }: any) {
         itemID: "error",
       });
     }
+    
   };
 
   // ------------------------------------------------------------------------------------------------
