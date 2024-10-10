@@ -23,6 +23,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import 'swiper/css';
+import { getImage } from "../_utils/getImage";
 
 type Props = {
   id?: number;
@@ -66,6 +67,7 @@ const DestinationCard = ({
   const [lenofDestinationSet, setLenofDestinationSet] = useState(cardsAmount);
   const [imgLoadingComplete, setImgLoadingComplete] = useState(false);
   const { city, country, budget, illustration, description, pros, cons } = data;
+  const [imageList, setImageList] = useState<string[]>([illustration]);
   const x = useMotionValue(0);
   const isMobile = useMediaQuery("(max-width: 768px)");
   const offsetBoundary = 150;
@@ -141,6 +143,16 @@ const DestinationCard = ({
     setShowMobilePro(false)
     setShowMobileCon(false)
   };
+ 
+  // useEffect(()=>{
+  //   setImageList([illustration])
+    // console.log(getImage(city, country));
+    // const setImages = async () => {
+    //   setImageList(await getImage(city, country));
+    // }
+    // setImages();
+    // return;
+  // });
 
   return (
     <>
@@ -201,19 +213,22 @@ const DestinationCard = ({
                 modules={[Autoplay, EffectFade]}
                 className="w-[95%] rounded-lg relative h-[200px]"
               >
-                {illustration.length > 10 && (
-                  <SwiperSlide className="h-full w-full flex items-center justify-center">
-                    <Image
-                      priority
-                      className="rounded w-full absolute h-full object-cover"
-                      // src={data.illustration || placeholderImg}
-                      src={illustration}
-                      fill
-                      sizes="100%"
-                      alt="car"
-                    />
-                  </SwiperSlide>
-                )}
+                {/* {imageList.map((illustration)=> { */}
+                  {illustration.length > 10 && (
+                    <SwiperSlide className="h-full w-full flex items-center justify-center">
+                      <Image
+                        priority
+                        className="rounded w-full absolute h-full object-cover"
+                        // src={data.illustration || placeholderImg}
+                        src={illustration}
+                        fill
+                        sizes="100%"
+                        alt="car"
+                      />
+                    </SwiperSlide>
+                  )}
+                {/* })} */}
+                
               </Swiper>
 
               {/* </div> */}
