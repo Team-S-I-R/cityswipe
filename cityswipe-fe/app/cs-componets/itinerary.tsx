@@ -81,16 +81,9 @@ const Itinerary = (itinerary: any, clerkdata: any) => {
     itinerary.itinerary.length > 0 ? updateItinerary(latestBlocks) : createItinerary(latestBlocks);
   };
 
-  // useEffect that auto-saves every 30 seconds
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      saveItineraryContent();
-    }, 15000);
-
-    return () => clearInterval(intervalId);
-  }, []);
-
   const handleShareItinerary = (uId: string) => {
+
+    saveItineraryContent();
 
     if (uId != undefined) {
       router.push(`/share/${uId}`);

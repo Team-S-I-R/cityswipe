@@ -41,7 +41,7 @@ export default function Chat({matches}: any) {
     const { newItineraryItem, setNewItineraryItem } = useCitySwipe();
     const [itineraryModalOpen, setItineraryModalOpen] = useState<boolean>(false);
     const [wantsItinerary, setWantsItinerary] = useState<boolean>(false);
-
+  
 
   const variants = {
     open: { opacity: 1, x: 0 },
