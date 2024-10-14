@@ -16,7 +16,7 @@ export type DestinationSet = {
    cons: string[];
   //  answer: "left" | "right";
   //  revised: string;
-   illustration: string;
+   illustrations: string[];
  };
  
  export type CardSwipeDirection = "left" | "right";

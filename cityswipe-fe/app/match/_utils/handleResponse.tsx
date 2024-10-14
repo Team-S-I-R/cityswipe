@@ -13,7 +13,7 @@ const handleResponse = ({ direction, cards, destinations }: Props) => {
   // Determine if the direction is "right" and set choice accordingly
   const choice = "right" === direction ? "true" : "false";
   // Get the image URL from the current card or set to empty string if not available
-  const imgUrl = currentCard.illustration ? currentCard.illustration : '';
+  const imgUrl = currentCard.illustrations[0] ? currentCard.illustrations[0] : '';
   // If the choice is "true", add the current card details to destinations array
   // choice ? destinations.push({id:cards.length-1, location:currentCard.location, rating:currentCard.rating, img:imgUrl}) : null;
   choice ? destinations.push(currentCard) : null;

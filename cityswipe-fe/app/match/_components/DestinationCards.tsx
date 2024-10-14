@@ -66,7 +66,7 @@ const DestinationCards = () => {
     // add it as auto request when paid account
   }, []);
 
-  // This controls the cards that people are swiping on. If left or right it removes that card from available cards left to swipe on in the first place
+  // This controls the cards that people are swiping on. If left or right it removes that card from available cards
   useEffect(() => {
     if (["left", "right"].includes(direction)) {
       setDestinationSet({

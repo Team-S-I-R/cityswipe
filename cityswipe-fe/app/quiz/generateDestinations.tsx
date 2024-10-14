@@ -92,16 +92,18 @@ export const generateDestinations = async (
     const client = createClient(
       "8U6Se7vVT3H9tx1KPZAQTkDUSW0IKi3ldgBTVyh3W9NFF7roIpZxktzY"
     );
-    let illustration = "";
+    let illustration:string[] = [];
 
     const searchQuery = `${city}, landscape`;
     try {
       const response = await client.photos.search({
         query: `${searchQuery}`,
-        per_page: 1,
+        per_page: 4,
       });
       if ("photos" in response && response.photos.length > 0) {
-        illustration = response.photos[0].src.landscape;
+         response.photos.map((photo)=>{
+          illustration.push(photo.src.landscape)
+        })
       }
     } catch (error) {
       console.error(`Error in fetching photo for ${city}, ${country}:`, error);
@@ -113,7 +115,7 @@ export const generateDestinations = async (
       country: country.trim(),
       compatibility: parseFloat(compatibility),
       budget: parseInt(budget),
-      illustration: illustration,
+      illustrations: illustration,
       description: description.trim(),
       pros: pros,
       cons: cons,

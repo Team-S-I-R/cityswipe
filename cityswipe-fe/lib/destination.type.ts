@@ -7,7 +7,7 @@ export interface DestinationItem {
   budget?: number;
   pros: string[];
   cons: string[];
-  illustration: string;
+  illustrations: string[];
 }
 
 export interface Destination {

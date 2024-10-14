@@ -458,7 +458,7 @@ export async function addMatch(savedDestination: any) {
     username: string;
     country: string;
     description: string;
-    illustration: string;
+    illustrations: string;
     pros: string[];
     cons: string[];
     compatibility: number;
@@ -476,7 +476,7 @@ export async function addMatch(savedDestination: any) {
       username: user?.username || "",
       country: destination?.country,
       description: destination?.description,
-      illustration: destination?.illustration,
+      illustration: destination?.illustrations[0],
       pros: Array.isArray(destination?.pros) ? destination?.pros.map(String) : [],
       cons: Array.isArray(destination?.cons) ? destination?.cons.map(String) : [],
       compatibility: destination?.compatibility,

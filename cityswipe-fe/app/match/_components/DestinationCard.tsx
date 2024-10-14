@@ -12,17 +12,22 @@ import {
 import { useDestinationSetContext } from "../../../context/destinationSetContext";
 import { type Destination } from "@/lib/destinationSet.type";
 import { useSavedDestinationContext } from "../../../context/savedDestinationContext";
-import { Dot, Frown, Info, Laugh, MapPin } from "lucide-react";
-import ShinyButton from "../../../components/ui/shiny-button"
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay, EffectFade } from 'swiper/modules';
+import { Dot, Frown, Info, Laugh, MapPin, Navigation } from "lucide-react";
+import ShinyButton from "../../../components/ui/shiny-button";
+import { Swiper, SwiperSlide } from "swiper/react";
+import {
+  Autoplay,
+  EffectFade,
+  Navigation as nav,
+  Pagination,
+} from "swiper/modules";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip"
-import 'swiper/css';
+} from "@/components/ui/tooltip";
+import "swiper/css";
 import { getImage } from "../_utils/getImage";
 
 type Props = {
@@ -56,18 +61,18 @@ const DestinationCard = ({
   const [showPros, setShowPros] = useState(false);
   const [showCons, setShowCons] = useState(false);
   const [showFullDescription, setShowFullDescription] = useState(true);
-  
+
   const [showMobilePro, setShowMobilePro] = useState(false);
   const [showMobileCon, setShowMobileCon] = useState(false);
   const [showMobileDescription, setShowMobileDescription] = useState(false);
-  
+
   const { cards } = destinationSet;
-  
+
   let cardsAmount = cards.length; //fix
   const [lenofDestinationSet, setLenofDestinationSet] = useState(cardsAmount);
   const [imgLoadingComplete, setImgLoadingComplete] = useState(false);
-  const { city, country, budget, illustration, description, pros, cons } = data;
-  const [imageList, setImageList] = useState<string[]>([illustration]);
+  const { city, country, budget, illustrations, description, pros, cons } =
+    data;
   const x = useMotionValue(0);
   const isMobile = useMediaQuery("(max-width: 768px)");
   const offsetBoundary = 150;
@@ -77,7 +82,11 @@ const DestinationCard = ({
   const outputRotate = [-40, 0, 40];
   const outputActionScaleBadAnswer = [3, 1, 0.3];
   const outputActionScaleRightAnswer = [0.3, 1, 3];
-  const outputMainBgColor = ["rgba(252, 186, 182, 0.5)", "", "rgba(212, 224, 178, 0.5)"];
+  const outputMainBgColor = [
+    "rgba(252, 186, 182, 0.5)",
+    "rgba(0, 0, 0, 0)",
+    "rgba(212, 224, 178, 0.5)",
+  ];
 
   let drivenX = useTransform(x, inputX, outputX);
   let drivenY = useTransform(x, inputX, outputY);
@@ -109,55 +118,44 @@ const DestinationCard = ({
   // ANCHOR DESKTOP SHOW HANDLERS
   const showBioHandler = () => {
     setShowFullDescription(!showFullDescription);
-    setShowPros(false)
-    setShowCons(false)
+    setShowPros(false);
+    setShowCons(false);
   };
 
   const showProsHandler = () => {
-    setShowPros(!showPros)
-    setShowFullDescription(false)
-    setShowCons(false)
+    setShowPros(!showPros);
+    setShowFullDescription(false);
+    setShowCons(false);
   };
 
   const showConsHandler = () => {
-    setShowCons(!showCons)
-    setShowFullDescription(false)
-    setShowPros(false)
+    setShowCons(!showCons);
+    setShowFullDescription(false);
+    setShowPros(false);
   };
 
   // ANCHOR MOBILE SHOW HANDLERS
   const showMobileConsHandler = () => {
-    setShowMobileCon(!showMobileCon)
-    setShowMobileDescription(false)
-    setShowMobilePro(false)
+    setShowMobileCon(!showMobileCon);
+    setShowMobileDescription(false);
+    setShowMobilePro(false);
   };
 
   const showMobileProsHandler = () => {
-    setShowMobilePro(!showMobilePro)
-    setShowMobileDescription(false)
-    setShowMobileCon(false)
+    setShowMobilePro(!showMobilePro);
+    setShowMobileDescription(false);
+    setShowMobileCon(false);
   };
 
   const showMobileDescriptionHandler = () => {
-    setShowMobileDescription(!showMobileDescription)
-    setShowMobilePro(false)
-    setShowMobileCon(false)
+    setShowMobileDescription(!showMobileDescription);
+    setShowMobilePro(false);
+    setShowMobileCon(false);
   };
- 
-  // useEffect(()=>{
-  //   setImageList([illustration])
-    // console.log(getImage(city, country));
-    // const setImages = async () => {
-    //   setImageList(await getImage(city, country));
-    // }
-    // setImages();
-    // return;
-  // });
 
   return (
     <>
-
-    {/* desktop */}
+      {/* desktop */}
       <motion.div
         initial={{ opacity: 0, y: 1000 }}
         animate={{ opacity: 1, y: 0 }}
@@ -175,124 +173,122 @@ const DestinationCard = ({
           id="illustration"
           className="w-full h-full rounded-xl relative overflow-hidden z-10 flex flex-col"
         >
-
           <div className="flex flex-col place-items-center w-full relative h-[70%]">
-        
-              {/* ANCHOR NAME 1 out of whatever card youre on */}
-              <div
-                id="metrics"
-                className="relative p-4 z-[2] flex place-items-center place-content-center w-full justify-between items-baseline"
-              >
+            {/* ANCHOR NAME 1 out of whatever card youre on */}
+            <div
+              id="metrics"
+              className="relative p-4 z-[2] flex place-items-center place-content-center w-full justify-between items-baseline"
+            >
+              <p id="location" className="text-[25px] font-bold w-max h-max">
+                {city}
+              </p>
 
-                <p id="location" className="text-[25px] font-bold w-max h-max">
-                  {city}
-                </p>
-
-                {/* number of cards out of 50 */}
-                <div className="rounded-xl bg-gradient-to-t from-cyan-400 to-green-400 px-3 w-max h-max">
-                  <span className="text-[15px]">
-                    {id}
-                  </span>
-                  <span className="">
-                    /<span className="">{lenofDestinationSet}</span>
-                  </span>
-                </div>
-
+              {/* number of cards out of 50 */}
+              <div className="rounded-xl bg-gradient-to-t from-cyan-400 to-green-400 px-3 w-max h-max">
+                <span className="text-[15px]">{id}</span>
+                <span className="">
+                  /<span className="">{lenofDestinationSet}</span>
+                </span>
               </div>
+            </div>
 
-              {/* ANCHOR the image of match */}
-              
-              {/* <div className="w-[95%] rounded-lg relative h-[200px] bg-gray-400"> */}
-              <Swiper
-                autoplay={{
-                  delay: 2500,
-                  disableOnInteraction: false,
-                }}
-                centeredSlides={true}
-                effect={'fade'}
-                modules={[Autoplay, EffectFade]}
-                className="w-[95%] rounded-lg relative h-[200px]"
-              >
-                {/* {imageList.map((illustration)=> { */}
-                  {illustration.length > 10 && (
-                    <SwiperSlide className="h-full w-full flex items-center justify-center">
-                      <Image
-                        priority
-                        className="rounded w-full absolute h-full object-cover"
-                        // src={data.illustration || placeholderImg}
-                        src={illustration}
-                        fill
-                        sizes="100%"
-                        alt="car"
-                      />
-                    </SwiperSlide>
-                  )}
-                {/* })} */}
-                
-              </Swiper>
-
-              {/* </div> */}
-          
+            {/* ANCHOR the image of match */}
+            <Swiper
+              autoplay={{
+                delay: 2500,
+                disableOnInteraction: true,
+              }}
+              centeredSlides={true}
+              effect={"fade"}
+              pagination={{
+                clickable: true,
+              }}
+              modules={[Autoplay, EffectFade, Pagination]}
+              className="w-[95%] rounded-lg relative h-[200px]"
+            >
+              {illustrations.map((illustration, index) => (
+                <SwiperSlide
+                  key={index}
+                  className="h-full w-full flex items-center justify-center"
+                >
+                  <Image
+                    priority
+                    className="rounded w-full absolute h-full object-cover"
+                    src={illustration}
+                    fill
+                    sizes="100%"
+                    alt="car"
+                  />
+                </SwiperSlide>
+              ))}
+            </Swiper>
           </div>
 
-
           {/* ANCHOR bottom left of card */}
-          <div className="h-[30%] py-4 w-full  z-[2]  flex flex-col gap-2 leading-tight justify-evenly"
+          <div
+            className="h-[30%] py-4 w-full  z-[2]  flex flex-col gap-2 leading-tight justify-evenly"
             id="locationWrapper"
           >
-              {/* ANCHOR location/full */}
-              <div className="h-max w-full  flex gap-2 place-items-center justify-between">
-                
-                <div className="w-max h-max flex gap-2 place-items-center place-content-center">
-                  <MapPin size={15} className="text-muted-foreground"/> 
-                  <p id="location" className="text-[15px] text-muted-foreground w-max h-max">
-                    {city}, {country}
-                  </p>
-                </div>
+            {/* ANCHOR location/full */}
+            <div className="h-max w-full  flex gap-2 place-items-center justify-between">
+              <div className="w-max h-max flex gap-2 place-items-center place-content-center">
+                <MapPin size={15} className="text-muted-foreground" />
+                <p
+                  id="location"
+                  className="text-[15px] text-muted-foreground w-max h-max"
+                >
+                  {city}, {country}
+                </p>
+              </div>
 
-                <div className="w-max scale-[90%] gap-2 flex place-items-end pointer-events-auto h-max">
-
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <div className="w-max cursor-pointer">
-                          <ShinyButton className="pointer-events-none">
-                            <span className="w-max flex">
-                              <span className="flex gap-1">
-                                <span>
-                                  <span>B</span>
-                                  <span className="!lowercase">udget:</span>
-                                </span>
-                                <span id="budget" className="text-green-500 font-bold w-max h-max">
-                                  ${budget}
-                                </span>
+              <div className="w-max scale-[90%] gap-2 flex place-items-end pointer-events-auto h-max">
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="w-max cursor-pointer">
+                        <ShinyButton className="pointer-events-none">
+                          <span className="w-max flex">
+                            <span className="flex gap-1">
+                              <span>
+                                <span>B</span>
+                                <span className="!lowercase">udget:</span>
                               </span>
-                              <span className="lowercase italic font-bold text-[10px]">(est)</span>
+                              <span
+                                id="budget"
+                                className="text-green-500 font-bold w-max h-max"
+                              >
+                                ${budget}
+                              </span>
                             </span>
-                          </ShinyButton>
-                        </div>
-                      </TooltipTrigger>
-                      <TooltipContent className="w-max">
-                        <p className="w-[100px]">This budget is an <span className="font-bold italic">estimate</span> of the cost to vacation per day for <span className="underline font-bold">one</span> person.</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-             
-                </div>  
-
+                            <span className="lowercase italic font-bold text-[10px]">
+                              (est)
+                            </span>
+                          </span>
+                        </ShinyButton>
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent className="w-max">
+                      <p className="w-[100px]">
+                        This budget is an{" "}
+                        <span className="font-bold italic">estimate</span> of
+                        the cost to vacation per day for{" "}
+                        <span className="underline font-bold">one</span> person.
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </div>
- 
-              {/* ANCHOR bio/description */}
-              <div className="h-max text-left  overflow-hidden no-scrollbar pointer-events-auto w-full">
-                    <p>{description}</p>
-              </div>
+            </div>
 
-              {/* ANCHOR Pros and Cons */}
-              <div className="w-max h-max">
-            
-                  <div className="pointer-events-auto text-[12px] flex gap-4 place-items-center place-content-center">
-                    
-                    {/* <button onClick={showBioHandler} className="font-bold w-max flex place-items-center gap-2 shadow-lg  px-3 py-2 rounded-lg">
+            {/* ANCHOR bio/description */}
+            <div className="h-max text-left  overflow-hidden no-scrollbar pointer-events-auto w-full">
+              <p>{description}</p>
+            </div>
+
+            {/* ANCHOR Pros and Cons */}
+            <div className="w-max h-max">
+              <div className="pointer-events-auto text-[12px] flex gap-4 place-items-center place-content-center">
+                {/* <button onClick={showBioHandler} className="font-bold w-max flex place-items-center gap-2 shadow-lg  px-3 py-2 rounded-lg">
                       Full Bio
                     </button>
                     
@@ -305,15 +301,9 @@ const DestinationCard = ({
                       <Frown size={20} className=""/>
                       Cons
                     </button> */}
-                  
-                  </div>
-
               </div>
-        
+            </div>
           </div>
-
-
-
         </div>
         {/* images end */}
 
@@ -326,18 +316,21 @@ const DestinationCard = ({
             id="benefitsWrapper"
             className="h-full w-full text-left rounded p-4 z-[2] text-black flex flex-col gap-2 place-items-start leading-tight"
           >
-    
             {/* the description will be shown by default */}
-            {showFullDescription === false && showPros === false && showCons === false && (
+            {showFullDescription === false &&
+              showPros === false &&
+              showCons === false && (
                 <>
-                <p id="description" className="text-[15px] font-bold">
-                  Bio
-                </p>
+                  <p id="description" className="text-[15px] font-bold">
+                    Bio
+                  </p>
 
-                <p className="w-full h-[1px] bg-gray-200"></p>
-                <p className="text-[15px] text-muted-foreground">{description}</p>
-              </>
-            )}
+                  <p className="w-full h-[1px] bg-gray-200"></p>
+                  <p className="text-[15px] text-muted-foreground">
+                    {description}
+                  </p>
+                </>
+              )}
 
             {/* {showFullDescription && (
               <>
@@ -351,31 +344,38 @@ const DestinationCard = ({
             )} */}
 
             <div className="flex flex-col w-full h-full place-content-evenly pb-4">
-            {(
-              <>
-                <p id="pros" className="text-[15px] font-bold">
-                  Pros
-                </p>
-                <p className="w-full h-[1px] bg-gray-200"></p>
-                {pros.slice(0, 5).map((pro, index) => {
-                  return <p key={index} className="text-[15px] flex gap-2"><Dot/> {pro}</p>;
-                })}
-              </>
-            )}
+              {
+                <>
+                  <p id="pros" className="text-[15px] font-bold">
+                    Pros
+                  </p>
+                  <p className="w-full h-[1px] bg-gray-200"></p>
+                  {pros.slice(0, 5).map((pro, index) => {
+                    return (
+                      <p key={index} className="text-[15px] flex gap-2">
+                        <Dot /> {pro}
+                      </p>
+                    );
+                  })}
+                </>
+              }
 
-            { (
-              <>
-                <p id="cons" className="text-[15px] font-bold pt-4">
-                  Cons
-                </p>
-                <p className="w-full h-[1px] bg-gray-200"></p>
-                {cons.slice(0, 5).map((con, index) => {
-                  return <p key={index} className="text-[15px] flex gap-2"><Dot/> {con}</p>;
-                })}
-              </>
-            )}
+              {
+                <>
+                  <p id="cons" className="text-[15px] font-bold pt-4">
+                    Cons
+                  </p>
+                  <p className="w-full h-[1px] bg-gray-200"></p>
+                  {cons.slice(0, 5).map((con, index) => {
+                    return (
+                      <p key={index} className="text-[15px] flex gap-2">
+                        <Dot /> {con}
+                      </p>
+                    );
+                  })}
+                </>
+              }
             </div>
-
           </div>
 
           {/* branding */}
@@ -383,7 +383,6 @@ const DestinationCard = ({
             Cityswipe
           </p>
         </motion.div>
-
       </motion.div>
 
       {/* mobile */}
@@ -404,136 +403,176 @@ const DestinationCard = ({
           id="illustration"
           className="w-full h-full ! rounded-xl relative overflow-hidden z-10 flex flex-col"
         >
-
           <div className="flex flex-col place-items-center w-full relative h-[70%]">
-        
-              {/* ANCHOR NAME 1 out of whatever card youre on */}
-              <div
-                id="metrics"
-                className="relative p-4 z-[2] flex place-items-center place-content-center w-full justify-between items-baseline"
-              >
+            {/* ANCHOR NAME 1 out of whatever card youre on */}
+            <div
+              id="metrics"
+              className="relative p-4 z-[2] flex place-items-center place-content-center w-full justify-between items-baseline"
+            >
+              <p id="location" className="text-[25px] font-bold w-max h-max">
+                {city}
+              </p>
 
-                <p id="location" className="text-[25px] font-bold w-max h-max">
-                  {city}
-                </p>
-
-                {/* number of cards out of 50 */}
-                <div className="rounded-xl bg-gradient-to-t from-cyan-400 to-green-400 px-3 w-max h-max">
-                  <span className="text-[15px]">
-                    {id}
-                  </span>
-                  <span className="">
-                    /<span className="">{lenofDestinationSet}</span>
-                  </span>
-                </div>
-
+              {/* number of cards out of 50 */}
+              <div className="rounded-xl bg-gradient-to-t from-cyan-400 to-green-400 px-3 w-max h-max">
+                <span className="text-[15px]">{id}</span>
+                <span className="">
+                  /<span className="">{lenofDestinationSet}</span>
+                </span>
               </div>
+            </div>
 
-              {/* ANCHOR the image of match */}
-                <div className="w-[95%] flex place-items-center rounded-lg relative h-full">
-                  {showMobilePro === false && showMobileCon === false && showMobileDescription === false && (
-                   <>
-                   
-                    {illustration.length > 10 && (
-                        <Image
-                          priority
-                          className="rounded w-full absolute h-full object-cover"
-                          // src={data.illustration || placeholderImg}
-                          src={illustration}
-                          fill
-                          sizes="100%"
-                          alt="car"
-                        />
-                      )}
+            {/* ANCHOR the image of match */}
+            {/* <div className="w-[95%] flex place-items-center rounded-lg relative h-full">
+              {showMobilePro === false &&
+                showMobileCon === false &&
+                showMobileDescription === false && (
+                  <>
+                    {illustrations[0].length > 10 && (
+                      <Image
+                        priority
+                        className="rounded w-full absolute h-full object-cover"
+                        // src={data.illustration || placeholderImg}
+                        src={illustrations[0]}
+                        fill
+                        sizes="100%"
+                        alt="car"
+                      />
+                    )}
+                  </>
+                )}
 
-                   </>
-                   )}
+              {showMobileDescription && (
+                <>
+                  <div className="w-full h-[120px] pointer-events-auto no-scrollbar overflow-y-scroll">
+                    <div className="w-full h-full">
+                      <p>{description}</p>
+                    </div>
+                  </div>
+                </>
+              )}
 
-                   {showMobileDescription && (
-                     <>
-                     <div className="w-full h-[120px] pointer-events-auto no-scrollbar overflow-y-scroll">
-                      <div className="w-full h-full">
-                        <p>{description}</p>
-                      </div>
-                     </div>
-                     </>
-                   )}
+              {showMobilePro && (
+                <>
+                  <div className="w-full h-[120px] pointer-events-auto no-scrollbar overflow-y-scroll">
+                    <div className="w-full h-full">
+                      <p
+                        id="pros"
+                        className="text-[15px] w-full text-left font-bold"
+                      >
+                        Pros
+                      </p>
+                      <p className="w-full h-[1px] bg-gray-200"></p>
+                      {pros.slice(0, 5).map((pro, index) => {
+                        return (
+                          <p key={index} className="text-[15px] flex gap-2">
+                            <Dot /> {pro}
+                          </p>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </>
+              )}
 
-                  {showMobilePro && (
-                     <>
-                     <div className="w-full h-[120px] pointer-events-auto no-scrollbar overflow-y-scroll">
-                      <div className="w-full h-full">
-                        <p id="pros" className="text-[15px] w-full text-left font-bold">
-                          Pros
-                        </p>
-                         <p className="w-full h-[1px] bg-gray-200"></p>
-                          {pros.slice(0, 5).map((pro, index) => {
-                            return <p key={index} className="text-[15px] flex gap-2"><Dot/> {pro}</p>;
-                          })}
-                      </div>
-                     </div>
-                     </>
-                   )}
-
-                    {showMobileCon && (
-                     <>
-                     <div className="w-full h-[120px] pointer-events-auto no-scrollbar overflow-y-scroll">
-                      <div className="w-full h-full">
-                        <p id="pros" className="text-[15px] w-full text-left font-bold">
-                          Cons
-                        </p>
-                        <p className="w-full h-[1px] bg-gray-200"></p>
-                          {cons.slice(0, 5).map((con, index) => {
-                            return <p key={index} className="text-[15px] flex gap-2"><Dot/> {con}</p>;
-                          })}
-                      </div>
-                     </div>
-                     </>
-                   )}
-                </div>
-          
+              {showMobileCon && (
+                <>
+                  <div className="w-full h-[120px] pointer-events-auto no-scrollbar overflow-y-scroll">
+                    <div className="w-full h-full">
+                      <p
+                        id="pros"
+                        className="text-[15px] w-full text-left font-bold"
+                      >
+                        Cons
+                      </p>
+                      <p className="w-full h-[1px] bg-gray-200"></p>
+                      {cons.slice(0, 5).map((con, index) => {
+                        return (
+                          <p key={index} className="text-[15px] flex gap-2">
+                            <Dot /> {con}
+                          </p>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </>
+              )}
+            </div> */}
+            <Swiper
+              autoplay={{
+                delay: 2500,
+                disableOnInteraction: true,
+              }}
+              centeredSlides={true}
+              effect={"fade"}
+              pagination={{
+                clickable: true,
+              }}
+              modules={[Autoplay, EffectFade, Pagination]}
+              className="w-[95%] rounded-lg relative h-[200px]"
+            >
+              {illustrations.map((illustration, index) => (
+                <SwiperSlide
+                  key={index}
+                  className="h-full w-full flex items-center justify-center"
+                >
+                  <Image
+                    priority
+                    className="rounded w-full absolute h-full object-cover"
+                    src={illustration}
+                    fill
+                    sizes="100%"
+                    alt="car"
+                  />
+                </SwiperSlide>
+              ))}
+            </Swiper>
           </div>
-
 
           {/* ANCHOR bottom of card */}
-          <div className="h-[30%] p-4 w-full  z-[2]  flex flex-col gap-4 leading-tight justify-evenly"
+          <div
+            className="h-[30%] p-4 w-full  z-[2]  flex flex-col gap-4 leading-tight justify-evenly"
             id="locationWrapper"
           >
-              {/* ANCHOR location/full */}
-              <div className="w-max h-max flex gap-2 place-items-center place-content-center">
-                <MapPin size={15} className="text-muted-foreground"/> 
-                <p id="location" className="text-[15px] text-muted-foreground w-max h-max">
-                  {city}, {country}
-                </p>
-              </div>  
- 
-              {/* ANCHOR Pros and Cons */}
-              <div className="w-full h-max">
-            
-                  <div className="pointer-events-auto text-[12px] flex gap-4 place-items-center place-content-center">
-                    
-                    <button onClick={showMobileDescriptionHandler} className="font-bold w-max flex place-items-center gap-2 shadow-lg  px-3 py-2 rounded-lg">
-                      Bio
-                    </button>
-                    
-                    <button onClick={showMobileProsHandler}  className="font-bold w-max flex place-items-center gap-2 bg-gradient-to-t from-cyan-400/30 to-green-400/30 text-green-400 hover:text-white hover:from-cyan-400 hover:to-green-400 px-3 py-2 rounded-lg">
-                      <Laugh size={20} className=""/>
-                      Pros
-                    </button>
-                    
-                    <button onClick={showMobileConsHandler} className="font-bold w-max flex place-items-center gap-2 bg-gradient-to-t from-red-400/30 to-orange-400/30 text-red-400 hover:text-white hover:from-red-400 hover:to-orange-400 px-3 py-2 rounded-lg">
-                      <Frown size={20} className=""/>
-                      Cons
-                    </button>
-                  
-                  </div>
+            {/* ANCHOR location/full */}
+            <div className="w-max h-max flex gap-2 place-items-center place-content-center">
+              <MapPin size={15} className="text-muted-foreground" />
+              <p
+                id="location"
+                className="text-[15px] text-muted-foreground w-max h-max"
+              >
+                {city}, {country}
+              </p>
+            </div>
 
+            {/* ANCHOR Pros and Cons */}
+            <div className="w-full h-max">
+              <div className="pointer-events-auto text-[12px] flex gap-4 place-items-center place-content-center">
+                <button
+                  onClick={showMobileDescriptionHandler}
+                  className="font-bold w-max flex place-items-center gap-2 shadow-lg  px-3 py-2 rounded-lg"
+                >
+                  Bio
+                </button>
+
+                <button
+                  onClick={showMobileProsHandler}
+                  className="font-bold w-max flex place-items-center gap-2 bg-gradient-to-t from-cyan-400/30 to-green-400/30 text-green-400 hover:text-white hover:from-cyan-400 hover:to-green-400 px-3 py-2 rounded-lg"
+                >
+                  <Laugh size={20} className="" />
+                  Pros
+                </button>
+
+                <button
+                  onClick={showMobileConsHandler}
+                  className="font-bold w-max flex place-items-center gap-2 bg-gradient-to-t from-red-400/30 to-orange-400/30 text-red-400 hover:text-white hover:from-red-400 hover:to-orange-400 px-3 py-2 rounded-lg"
+                >
+                  <Frown size={20} className="" />
+                  Cons
+                </button>
               </div>
-        
+            </div>
           </div>
-
-
-
         </div>
         {/* images end */}
 
@@ -599,7 +638,6 @@ const DestinationCard = ({
             Cityswipe
           </p>
         </motion.div> */}
-
       </motion.div>
 
       <motion.div
