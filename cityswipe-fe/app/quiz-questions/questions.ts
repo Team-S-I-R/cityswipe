@@ -11,8 +11,8 @@ import soloImg from '../assets/imgs/soloOptionImg.png'
 import familyImg from '../assets/imgs/familyOptionImg.png'
 import groupImg from '../assets/imgs/groupOptionImg.jpg'
 import safeImg from '../assets/imgs/safeOptionImg.png'
-import affordableImg from '../assets/imgs/affordableOptionImg.png'
-import attractionsImg from '../assets/imgs/attractionsOptionImg.png'
+import affordableImg from '../assets/imgs/affordableOptionImg.jpg'
+import attractionsImg from '../assets/imgs/attractionsOptionImg.jpg'
 
 
 // ANCHOR !!! ---- IMPORTANT ---- !!!
