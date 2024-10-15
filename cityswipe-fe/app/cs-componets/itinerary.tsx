@@ -138,6 +138,14 @@ const Itinerary = (itinerary: any, clerkdata: any) => {
                 </div>
             )}
 
+          {itinerary.itinerary.length > 0 && (
+                <div className="text-[10px] h-max text-muted-foreground px-2 py-4" key={itinerary.itinerary[itinerary.itinerary.length - 1].blockNum}>
+                  <p>
+                    <span className="italic text-[9px]">Latest save at: </span><strong>{new Date(itinerary.itinerary[itinerary.itinerary.length - 1].updatedAt).toLocaleString()}</strong>
+                  </p>
+                </div>
+          )}
+
         <div className="select-none h-max text-[14px] px-2 text-center font-bold flex-nowrap flex pb-[1em] border-b  border-primary/20 w-full place-content-center place-items-center gap-2">
           <p>My</p>
           <p className="">Itinerary</p>
