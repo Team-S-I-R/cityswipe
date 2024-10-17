@@ -130,10 +130,10 @@ const Itinerary = (itinerary: any, clerkdata: any) => {
         <div className="flex flex-col gap-2 w-full">
 
 
-          {itinerary.itinerary.length > 0 && (
-                <div className="text-[10px] h-max text-muted-foreground px-2 py-4" key={itinerary.itinerary[itinerary.itinerary.length - 1].blockNum}>
+          {itinerary.itinerary.length < 1 && (
+                <div className="h-max text-muted-foreground px-2 py-4">
                   <p>
-                    <span className="italic text-[9px]">Latest save at: </span><strong>{new Date(itinerary.itinerary[itinerary.itinerary.length - 1].updatedAt).toLocaleString()}</strong>
+                    <span className="italic text-[9px]">Make sure to save your itinerary. (click the green wrench)</span>
                   </p>
                 </div>
             )}

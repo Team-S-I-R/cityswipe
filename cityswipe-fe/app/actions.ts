@@ -14,6 +14,7 @@ import { stripe } from "../lib/stripe"
 import { getStripeSession } from "@/lib/stripe";
 import { redirect } from "next/navigation";
 import logger from "@/lib/logger";
+import { TypeValidationError } from 'ai';
 
 // ANCHOR Gemini Logic --------------------------------------------------------------------
 export interface Message {
@@ -26,7 +27,7 @@ const conversationHistory: Record<string, Message[]> = {};
 
 export async function generateCityBio(city: string) {
   const stream = createStreamableValue();
-  const model = google("models/gemini-1.5-flash-latest");
+  const model = google("models/gemini-1.5-flash");
 
   const prompt = `Generate a bio for the city ${city}. Include the following details:
   - Age: The actual or estimated age of the city.
@@ -107,62 +108,78 @@ export async function streamFlirtatiousConversation(
   country: string,
   history: Message[]
 ) {
-  const stream = createStreamableValue();
-  const model = google("models/gemini-1.5-flash");
+  const model = google("models/gemini-1.5-flash-latest");
 
   const sanitizeText = (text: string) => text.replace(/[*_~`]/g, "");
 
-  const prompt = `You are ${city} in ${country}, a charming city in a "dating app" for vacation spots. You have a personality that reflects the unique characteristics of your city. When the user asks about who you are, you must respond as ${city} in ${country}. Your responses should be:
+  const systemPrompt = `You are an expert on ${city}, a charming city in a "travel recommendation app" for vacation spots. You have a personality that reflects the unique characteristics of your city. When the user asks about who you are, you must respond as ${city} in ${country}. Your responses should be:
   
   - Informative: Provide interesting facts and highlights about your city.
-  - Creative and Funny: Include humor and wit to make the conversation engaging.
-  - Romantic/Flirtatious: Add romantic and flirtatious jokes and emojis (safe for work) where appropriate.
+  - Creative and Friendly: Include humor and wit to make the conversation engaging.
+  - Welcoming: Add warm and inviting comments to make the user feel welcome (keep it family-friendly).
   
   Make sure to match the style of the user's input. Here's the conversation so far:
   
-  ${history
-      .map(
-        (msg) =>
-          `${msg.role === "user" ? "User" : "Assistant"}: ${sanitizeText(
-            msg.content
-          )}`
-      )
-      .join("\n")}
+  ${history.slice(-3).map((msg) => `${msg.role === "user" ? "User" : "Assistant"}: ${sanitizeText(msg.content)}`).join("\n")}
   
   Your response should combine all these elements in a balanced way.
   
   If the user asks anything else, just try to be nice, friendly and make sure you answer everything in complete sentences.
+  YOU MUST ANSWER EVERYTHING IN COMPLETE SENTENCES. NO EXCEPTIONS.
   `;
 
-  (async () => {
-    const { textStream } = await streamText({
+  console.log("system prompt: ", systemPrompt);
+
+  const userPrompt = history.length > 0 ? sanitizeText(history[history.length - 1].content) : "";
+
+  console.log("user prompt: ", userPrompt);
+
+  try {
+    const { text } = await generateText({
       model: model,
-      messages: [{ role: "user", content: prompt }],
-      temperature: 0.9,
-      topP: 0.85,
-      topK: 40,
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: userPrompt },
+      ],
+      temperature: 0.7,
+      topP: 0.95,
+      maxTokens: 500,
     });
 
-    for await (const text of textStream) {
-      stream.update(sanitizeText(text));
+    if (!conversationHistory[city]) {
+      conversationHistory[city] = [];
     }
 
-    stream.done();
-  })().then(() => { });
+    conversationHistory[city].push(...history);
 
-  if (!conversationHistory[city]) {
-    conversationHistory[city] = [];
+    return {
+      messages: history,
+      newMessage: text,
+      type: "message",
+    };
+  } catch (error) {
+    // if (error instanceof TypeValidationError) {
+    //   console.error('AI response validation error:', error);
+    //   if (error.value?.candidates?.[0]?.safetyRatings) {
+    //     const safetyIssue = error.value.candidates[0].safetyRatings.find(
+    //       rating => rating.probability === 'HIGH'
+    //     );
+    //     if (safetyIssue) {
+    //       return {
+    //         messages: history,
+    //         newMessage: `I apologize, but I can't respond to that due to content concerns. Let's talk about something else related to ${city}!`,
+    //         type: "message",
+    //       };
+    //     }
+    //   }
+    // }
+    console.error('Unexpected error:', error);
+    return {
+      messages: history,
+      newMessage: `I'm sorry, but I'm having trouble responding right now. Can you please try again?`,
+      type: "message",
+    };
   }
-
-  conversationHistory[city].push(...history);
-
-  console.log("cc", stream.value);
-
-  return {
-    messages: history,
-    newMessage: stream.value,
-    type: "message",
-  };
 }
 
 export async function getConversationHistory(city: string) {

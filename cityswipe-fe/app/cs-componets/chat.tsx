@@ -73,29 +73,37 @@ export default function Chat({matches}: any) {
 
   const startChat = async () => {
     const split = selectedMatch?.split(" ");
+    console.log(split);
+    console.log(selectedMatch);
 
     // this will handle normal conversation
     if (wantsItinerary != true) {
       const { messages, newMessage, type } =
-        await streamFlirtatiousConversation(
-          split == undefined ? "" : split[0],
-          split == undefined ? "" : split[1],
+        await streamFlirtatiousConversation( split == undefined ? "" : split[0], split == undefined ? "" : split[1],
           [...conversation, { role: "user", content: input, type: "message" }]
         );
 
-      let textContent = "";
+      console.log(newMessage);
+
+      let textContent = newMessage;
       setCurrentMessegeType(type);
 
-      for await (const delta of readStreamableValue(newMessage)) {
-        textContent = `${textContent}${delta}`;
+      
+      setConversation([
+        ...messages,
+        { role: "assistant", content: textContent, type: "message" },
+      ]);
 
-        setConversation([
-          ...messages,
-          { role: "assistant", content: textContent, type: "message" },
-        ]);
-      }
+      // for await (const delta of readStreamableValue(newMessage)) {
+      //   textContent = `${textContent}${delta}`;
 
-      console.log(textContent);
+      //   setConversation([
+      //     ...messages,
+      //     { role: "assistant", content: textContent, type: "message" },
+      //   ]);
+      // }
+
+  
 
       setInput(""); // Clear the input field after submitting
     }
@@ -518,7 +526,7 @@ export default function Chat({matches}: any) {
                     >
                       <span className="font-bold w-max">
                         {message.role === "user"
-                          ? `${userdata?.name.split(" ")[0]}`
+                          ? `${userdata?.name?.split(" ")[0]}`
                           : `${selectedMatch}`}
                         :
                       </span>
@@ -733,7 +741,7 @@ export default function Chat({matches}: any) {
                   >
                     <span className="font-bold w-max">
                       {message.role === "user"
-                        ? `${userdata?.name.split(" ")[0]}`
+                        ? `${userdata?.name?.split(" ")[0]}`
                         : `${selectedMatch}`}
                       :
                     </span>
