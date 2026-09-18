@@ -133,6 +133,21 @@ export default function SettingsClient({clerkdata, matches, questions}: any) {
                             ))}  
                     </div> 
 
+                    <div className="h-[1px] w-full bg-slate-300"/>
+                    <p className="font-bold text-xl">Your Profile</p>
+
+                    <div className="flex flex-col gap-3">
+                        <div className="flex w-full justify-between">
+                            <p className="font-bold">Username</p>
+                            <p>{userdata?.name}</p>
+                        </div>
+                        <div className="flex w-full justify-between">
+                            <p className="font-bold">Email</p>
+                            <p>{userdata?.email}</p>
+                        </div>
+                    </div>
+
+
                 </div>
 
                 </div>

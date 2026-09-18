@@ -115,56 +115,28 @@ export async function streamFlirtatiousConversation(
   history: Message[]
 ) {
   await requireUser();
-  const stream = createStreamableValue();
-  const model = google(GEMINI_MODEL);
+  const systemPrompt = `You are an expert on ${city} in ${country}, a charming city in a travel recommendation app.
+You have a personality that reflects the unique characteristics of your city.
+Be informative, creative, friendly, and welcoming. Keep your replies family-friendly, match the user's style,
+and always answer in complete sentences.`;
 
-  const sanitizeText = (text: string) => text.replace(/[*_~`]/g, "");
-
-  const prompt = `You are ${city} in ${country}, a charming city in a "dating app" for vacation spots. You have a personality that reflects the unique characteristics of your city. When the user asks about who you are, you must respond as ${city} in ${country}. Your responses should be:
-  
-  - Informative: Provide interesting facts and highlights about your city.
-  - Creative and Funny: Include humor and wit to make the conversation engaging.
-  - Romantic/Flirtatious: Add romantic and flirtatious jokes and emojis (safe for work) where appropriate.
-  
-  Make sure to match the style of the user's input. Here's the conversation so far:
-  
-  ${history
-      .map(
-        (msg) =>
-          `${msg.role === "user" ? "User" : "Assistant"}: ${sanitizeText(
-            msg.content
-          )}`
-      )
-      .join("\n")}
-  
-  Your response should combine all these elements in a balanced way.
-  
-  If the user asks anything else, just try to be nice, friendly and make sure you answer everything in complete sentences.
-  `;
-
-  (async () => {
-    const { textStream } = await streamText({
-      model: model,
-      messages: [{ role: "user", content: prompt }],
-      temperature: 0.9,
-      topP: 0.85,
-      topK: 40,
+  try {
+    // Return a complete reply, preserving main's fix for chat messages that cut off mid-stream.
+    const { text } = await generateText({
+      model: google(GEMINI_MODEL),
+      system: systemPrompt,
+      messages: history.slice(-12).map(({ role, content }) => ({ role, content })),
+      temperature: 0.7,
+      topP: 0.95,
+      maxTokens: 2048,
+      maxRetries: 1,
+      abortSignal: AbortSignal.timeout(60000),
     });
-
-    for await (const text of textStream) {
-      stream.update(sanitizeText(text));
-    }
-
-    stream.done();
-  })().catch(() => stream.error(new Error("Unable to contact the travel assistant. Please try again.")));
-
-  console.log("cc", stream.value);
-
-  return {
-    messages: history,
-    newMessage: stream.value,
-    type: "message",
-  };
+    if (!text.trim()) throw new Error("Empty assistant response");
+    return { messages: history, newMessage: text, type: "message" };
+  } catch {
+    throw new Error("Unable to contact the travel assistant. Please try again.");
+  }
 }
 
 export async function makeItinerary(

@@ -14,7 +14,6 @@ import {
   makeItinerary,
 } from "../actions";
 import { useEffect } from "react";
-import { readStreamableValue } from "ai/rsc";
 import { ArrowUp } from "lucide-react";
 import { savedDestination } from "../../api/savedDestination.api";
 import { DestinationItem } from "@/lib/destination.type";
@@ -86,13 +85,9 @@ export default function Chat({matches}: any) {
     setConversation(history);
     try {
       const { messages, newMessage } = await streamFlirtatiousConversation(destination.city, destination.country, history);
-      let textContent = "";
-      for await (const delta of readStreamableValue(newMessage)) {
-        if (requestId !== activeRequest.current) return;
-        textContent += delta ?? "";
-        setConversation([...messages, { role: "assistant", content: textContent, type: "message" }]);
-      }
-      if (requestId === activeRequest.current) setInput("");
+      if (requestId !== activeRequest.current) return;
+      setConversation([...messages, { role: "assistant", content: newMessage, type: "message" }]);
+      setInput("");
     } catch {
       if (requestId === activeRequest.current) {
         setConversation(history.slice(0, -1));
@@ -469,7 +464,7 @@ export default function Chat({matches}: any) {
                     >
                       <span className="font-bold w-max">
                         {message.role === "user"
-                          ? `${userdata?.name.split(" ")[0]}`
+                          ? `${userdata?.name?.split(" ")[0]}`
                           : `${selectedMatch}`}
                         :
                       </span>
@@ -685,7 +680,7 @@ export default function Chat({matches}: any) {
                   >
                     <span className="font-bold w-max">
                       {message.role === "user"
-                        ? `${userdata?.name.split(" ")[0]}`
+                        ? `${userdata?.name?.split(" ")[0]}`
                         : `${selectedMatch}`}
                       :
                     </span>

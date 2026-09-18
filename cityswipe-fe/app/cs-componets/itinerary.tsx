@@ -142,6 +142,12 @@ const Itinerary = ({ itinerary: savedBlocks = [], clerkdata }: any) => {
         <div className="flex flex-col gap-2 w-full">
 
 
+          {savedBlocks.length === 0 && !savedAt && (
+            <p className="text-xs text-muted-foreground px-2 py-4">
+              Use the green wrench to save or share your itinerary.
+            </p>
+          )}
+
           {savedBlocks.length > 0 && (
                 <div className="text-[10px] h-max text-muted-foreground px-2 py-4" key={savedBlocks[savedBlocks.length - 1].blockNum}>
                   <p>
