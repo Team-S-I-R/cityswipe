@@ -35,6 +35,12 @@ Authentication keys are needed for page rendering. A reachable database and a Go
 
 Never commit `.env` or put private provider keys in client components.
 
+## Netlify deployment
+
+The root `netlify.toml` builds the app in `cityswipe-fe`, generates Prisma Client, and publishes `.next` using Netlify’s Next.js runtime. Node 22 and pnpm 11.7.0 match the local setup. The production branch is `main`.
+
+Set the application variables from `.env.sample` in Netlify’s environment settings, including build and function scopes. Set `APP_URL` to the deployed site origin. Keep secrets in Netlify, not in the repository. Local `.env` files are not deployed.
+
 ## Tech Stack
 
 - [Next.js](https://nextjs.org/) - React framework for building server-side rendered and statically generated web apps.
