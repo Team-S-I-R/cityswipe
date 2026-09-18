@@ -1,15 +1,15 @@
 
 import React from 'react';
 import Header from '../cs-componets/header';
-import PricingPage from './page';
-export default async function PricingLayout() {
+
+export default async function PricingLayout({ children }: { children: React.ReactNode }) {
 
 
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
       <main className="flex-grow">
-        <PricingPage />
+        {children}
       </main>
     </div>
   )

@@ -2,7 +2,8 @@
 
 import { useCitySwipe } from "../citySwipeContext";
 import { Calendar as CalendarIcon, ToggleLeftIcon, Wrench } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 import { addDays, format, set } from "date-fns";
 import { DateRange } from "react-day-picker";
 import { cn } from "@/lib/utils";
@@ -17,13 +18,17 @@ import { Block } from "@blocknote/core";
 import "@blocknote/mantine/style.css";
 import { useCreateBlockNote } from "@blocknote/react";
 import { summerizeItineraryText } from "../actions";
-import { createItinerary, updateItinerary } from "../actions";
+import { updateItinerary } from "../actions";
 import { useRouter } from "next/navigation";
-import { it } from "node:test";
+
 
 type BlockIdentifier = string | Block;
 
-const Itinerary = (itinerary: any, clerkdata: any) => {
+const Itinerary = ({ itinerary: savedBlocks = [], clerkdata }: any) => {
+  const { toast } = useToast();
+  const [savedAt, setSavedAt] = useState<string | null>(null);
+  const saving = useRef<Promise<void> | null>(null);
+  const lastSavedDocument = useRef<string>("");
   const { selectedMatch } = useCitySwipe();
   const { userquestions } = useCitySwipe();
   const [blockToMessWith, setBlockToMessWith] = useState("");
@@ -46,16 +51,11 @@ const Itinerary = (itinerary: any, clerkdata: any) => {
   // Initialize editor outside of conditional
   const editor = useCreateBlockNote({
     initialContent:
-      itinerary.itinerary.length > 0
-        ? itinerary.itinerary.map((item: any) => ({
-            type: item.type,
-            content: item.text,
+      savedBlocks.length > 0
+        ? savedBlocks.map((item: any) => item.props?._cityswipeBlock ?? ({
+            type: item.type || "paragraph",
+            content: item.text || "",
             props: item.props,
-            blockNum: item.blockNum,
-            createdAt: item.createdAt,
-            updatedAt: item.updatedAt,
-            userId: item.userId,
-            username: item.username,
           }))
         : [
             {
@@ -75,27 +75,32 @@ const Itinerary = (itinerary: any, clerkdata: any) => {
 
   let blocks = editor.document;
 
-  const saveItineraryContent = () => {
-    let latestBlocks = editor.document;
-    console.log("latestBlocks: ", latestBlocks);
-    itinerary.itinerary.length > 0 ? updateItinerary(latestBlocks) : createItinerary(latestBlocks);
-  };
+  const saveItineraryContent = useCallback(async () => {
+    if (saving.current) await saving.current;
+    const document = JSON.stringify(editor.document);
+    if (document === lastSavedDocument.current) return;
+    const save = updateItinerary(editor.document).then(() => {
+      lastSavedDocument.current = document;
+      setSavedAt(new Date().toLocaleTimeString());
+    });
+    saving.current = save;
+    try { await save; } finally { if (saving.current === save) saving.current = null; }
+  }, [editor]);
 
-  // useEffect that auto-saves every 30 seconds
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      saveItineraryContent();
-    }, 15000);
-
-    return () => clearInterval(intervalId);
-  }, []);
-
-  const handleShareItinerary = (uId: string) => {
-
-    if (uId != undefined) {
-      router.push(`/share/${uId}`);
+  const saveWithFeedback = useCallback(async () => {
+    try { await saveItineraryContent(); return true; } catch {
+      toast({ title: "Itinerary could not be saved", description: "Please try saving again.", variant: "destructive" });
+      return false;
     }
+  }, [saveItineraryContent, toast]);
 
+  useEffect(() => {
+    const intervalId = setInterval(() => { void saveWithFeedback(); }, 15000);
+    return () => clearInterval(intervalId);
+  }, [saveWithFeedback]);
+
+  const handleShareItinerary = async (userId: string) => {
+    if (userId && await saveWithFeedback()) router.push(`/share/${userId}`);
   };
 
   // Only one useEffect for blockToMessWith logic
@@ -137,10 +142,10 @@ const Itinerary = (itinerary: any, clerkdata: any) => {
         <div className="flex flex-col gap-2 w-full">
 
 
-          {itinerary.itinerary.length > 0 && (
-                <div className="text-[10px] h-max text-muted-foreground px-2 py-4" key={itinerary.itinerary[itinerary.itinerary.length - 1].blockNum}>
+          {savedBlocks.length > 0 && (
+                <div className="text-[10px] h-max text-muted-foreground px-2 py-4" key={savedBlocks[savedBlocks.length - 1].blockNum}>
                   <p>
-                    <span className="italic text-[9px]">Latest save at: </span><strong>{new Date(itinerary.itinerary[itinerary.itinerary.length - 1].updatedAt).toLocaleString()}</strong>
+                    <span className="italic text-[9px]">Latest save at: </span><strong>{new Date(savedBlocks[savedBlocks.length - 1].updatedAt).toLocaleString()}</strong>
                   </p>
                 </div>
             )}
@@ -154,6 +159,7 @@ const Itinerary = (itinerary: any, clerkdata: any) => {
         </div>
 
         <div className="py-2 h-full overflow-y-scroll z-[100] relative w-full">
+          {savedAt && <p className="px-4 text-xs text-muted-foreground" role="status">Saved at {savedAt}</p>}
           <BlockNoteView className="text-[12px]" theme={"light"} editor={editor} /> 
         </div>
 
@@ -165,11 +171,11 @@ const Itinerary = (itinerary: any, clerkdata: any) => {
                 <p className="underline cursor-pointer">Close</p>
               </div>
 
-              {itinerary.itinerary.length > 0 && (
+              {clerkdata?.id && (
                 
                 <Button
                   className="bg-gradient-to-t from-cyan-500 to-green-400 text-white hover:opacity-90 font-bold py-2 px-4 rounded w-full"
-                  onClick={() => handleShareItinerary(userdata?.id)}
+                  onClick={() => void handleShareItinerary(clerkdata.id)}
                 >
                   Share
                 </Button>
@@ -178,7 +184,7 @@ const Itinerary = (itinerary: any, clerkdata: any) => {
 
               <Button
                 className="bg-gradient-to-t from-cyan-500 to-green-400 text-white hover:opacity-90 font-bold py-2 px-4 rounded w-full"
-                onClick={() => saveItineraryContent()}
+                onClick={() => void saveWithFeedback()}
               >
                 Save
               </Button>

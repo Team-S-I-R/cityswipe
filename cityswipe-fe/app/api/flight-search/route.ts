@@ -1,44 +1,28 @@
-import { NextResponse } from 'next/server';
-import Amadeus from 'amadeus';
+import { NextResponse } from "next/server";
+import Amadeus from "amadeus";
+import { z } from "zod";
 
-const AMADEUS_API_KEY = process.env.AMADEUS_API_KEY || '';
-const AMADEUS_API_SECRET = process.env.AMADEUS_API_SECRET || '';
-const amadeus = new Amadeus({
-  clientId: AMADEUS_API_KEY,
-  clientSecret: AMADEUS_API_SECRET
+const searchSchema = z.object({
+  originLocationCode: z.string().regex(/^[A-Z]{3}$/),
+  destinationLocationCode: z.string().regex(/^[A-Z]{3}$/),
+  departureDate: z.string().date().refine(value => value >= new Date().toISOString().slice(0, 10)),
+  adults: z.coerce.number().int().min(1).max(9).default(1),
 });
 
 export async function GET(request: Request) {
-  if (!AMADEUS_API_KEY || !AMADEUS_API_SECRET) {
-    return NextResponse.json({ error: 'Amadeus API credentials are not set' }, { status: 500 });
+  const parsed = searchSchema.safeParse(Object.fromEntries(new URL(request.url).searchParams));
+  if (!parsed.success) return NextResponse.json({ error: "Provide valid airport codes, a future departure date, and 1–9 adults" }, { status: 400 });
+  const clientId = process.env.AMADEUS_API_KEY;
+  const clientSecret = process.env.AMADEUS_API_SECRET;
+  if (!clientId || !clientSecret || clientId === "..." || clientSecret === "...") {
+    return NextResponse.json({ error: "Flight search is currently unavailable" }, { status: 503 });
   }
-
-  const { searchParams } = new URL(request.url);
-  const originLocationCode = searchParams.get('originLocationCode');
-  const destinationLocationCode = searchParams.get('destinationLocationCode');
-  const departureDate = searchParams.get('departureDate');
-  const adults = searchParams.get('adults') || '1';
-
-  if (!originLocationCode || !destinationLocationCode || !departureDate) {
-    return NextResponse.json({ error: 'Missing required parameters' }, { status: 400 });
-  }
-
   try {
-    const response = await amadeus.client.get('/v2/shopping/flight-offers', {
-      originLocationCode,
-      destinationLocationCode,
-      departureDate,
-      adults: parseInt(adults,10),
-      max: 10
-    });
-
-    if (!response || !response.result) {
-      throw new Error('invalid response from Amadeus API');
-    }
-
+    const amadeus = new Amadeus({ clientId, clientSecret });
+    const response = await amadeus.client.get("/v2/shopping/flight-offers", { ...parsed.data, max: 10 });
+    if (!response?.result) throw new Error("Invalid flight response");
     return NextResponse.json(response.result);
-  } catch (error) {
-    console.error('amadeus API error:', error);
-    return NextResponse.json({ error: 'error fetching flight offers', details: error instanceof Error ? error.message : 'Unknown error' }, { status: 500 });
+  } catch {
+    return NextResponse.json({ error: "Unable to fetch flight offers" }, { status: 502 });
   }
 }

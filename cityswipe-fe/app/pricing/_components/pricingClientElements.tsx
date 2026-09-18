@@ -18,9 +18,17 @@ import { useRouter } from "next/navigation";
 import { useCitySwipe } from "@/app/citySwipeContext";
 import { createSubscription, createCustomerPortal } from "../../actions";
 import { getSubscription } from "@/app/match/_utils/checkSubscribed";
-import Stripe from "stripe";
+import { useToast } from "@/hooks/use-toast";
 
-export default function PricingClientElements({ status, planId }: any) {
+export default function PricingClientElements({ status, planId, billingEnabled }: any) {
+  const { toast } = useToast();
+  const [pending, setPending] = useState(false);
+  const runBillingAction = async (action: () => Promise<unknown>) => {
+    setPending(true);
+    try { await action(); } catch {
+      toast({ title: "Unable to open billing", description: "Please try again later.", variant: "destructive" });
+    } finally { setPending(false); }
+  };
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const images = [destination1, destination2, destination3, destination4];
   const router = useRouter();
@@ -152,7 +160,8 @@ export default function PricingClientElements({ status, planId }: any) {
               <CardFooter>
                 <Button
                   className="w-full bg-gradient-to-t from-cyan-500 to-green-400"
-                  onClick={() => createCustomerPortal()}
+                  disabled={!billingEnabled || pending}
+                  onClick={() => runBillingAction(createCustomerPortal)}
                 >
                   Manage Subscription
                 </Button>
@@ -211,13 +220,14 @@ export default function PricingClientElements({ status, planId }: any) {
                 <CardFooter>
                   <Button
                     className="w-full bg-gradient-to-t from-cyan-500 to-green-400"
+                    disabled={pending || (plan.title !== "Free" && !billingEnabled)}
                     onClick={() =>
                       plan.title !== "Free"
-                        ? createSubscription(plan.title)
+                        ? runBillingAction(() => createSubscription(plan.title))
                         : handleFreePlan()
                     }
                   >
-                    {plan.title === "Free" ? "Get Started" : "Choose Plan"}
+                    {plan.title === "Free" ? "Get Started" : billingEnabled ? "Choose Plan" : "Currently unavailable"}
                   </Button>
                 </CardFooter>
               </Card>

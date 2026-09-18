@@ -11,6 +11,7 @@ import { useDestinationSetContext } from "../../../context/destinationSetContext
 import { loadMoreCards } from "../_utils/loadCards";
 import { checkSubscribed } from "../_utils/checkSubscribed";
 import { useRouter } from "next/navigation";
+import { useToast } from "@/hooks/use-toast";
 import LoadingModal from "@/components/ui/loadingModal";
 
 const DestinationCompletion = () => {
@@ -21,6 +22,7 @@ const DestinationCompletion = () => {
   const [destination, setDestination] = useSavedDestinationContext();
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const { toast } = useToast();
 
   const memoizedStats = useRef({
     destination_count: structuredClone(destination.destinations.length),
@@ -28,9 +30,13 @@ const DestinationCompletion = () => {
   });
 
   const loadMore = async () => {
-    setLoading(true)
-    await checkSubscribed() ? loadMoreCards(destinationSet, setDestinationSet) : router.push("/pricing")
-    setLoading(false)
+    setLoading(true);
+    try {
+      if (await checkSubscribed()) await loadMoreCards(destinationSet, setDestinationSet);
+      else router.push("/pricing");
+    } catch {
+      toast({ title: "Could not load destinations", description: "Please try again.", variant: "destructive" });
+    } finally { setLoading(false); }
   };
 
   return (

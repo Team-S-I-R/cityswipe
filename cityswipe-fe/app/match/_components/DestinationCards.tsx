@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { DestinationCard } from ".";
@@ -17,7 +17,7 @@ import handleResponse from "../_utils/handleResponse";
 import { Button } from "@/components/ui/button";
 import { useCitySwipe } from "@/app/citySwipeContext";
 import { addMatch } from "@/app/actions";
-import { generateDestinations } from "@/app/quiz/generateDestinations";
+import { useToast } from "@/hooks/use-toast";
 
 export const easeInExpo = [0.7, 0, 0.84, 0];
 export const easeOutExpo = [0.16, 1, 0.3, 1];
@@ -31,6 +31,8 @@ const initialDrivenProps = {
 };
 
 const DestinationCards = () => {
+  const { toast } = useToast();
+  const savingMatch = useRef(false);
   const { userdata, setUserData } = useCitySwipe();
   const [destinationSet, setDestinationSet] = useDestinationSetContext();
   const [savedDestination, setSavedDestination] = useSavedDestinationContext();
@@ -46,59 +48,26 @@ const DestinationCards = () => {
     setDirection(btn);
   };
 
-  const loadMore = useCallback(async () => {
-    // get responses from saved
-    let responses = destinationSet.responses
-    // store original locations 
-    // pass those into generate destinations => cities and 
-    // tell the function not to include those places
-    const newDestinations = await generateDestinations(responses, destinationSet.allCards.map(card => card.city))
-    // fix ordering
-    const destinations = destinationSet.cards.concat(newDestinations.reverse())
-    await setDestinationSet({
-      id: 1,
-      cards: destinations,
-      allCards: destinationSet.allCards.concat(destinations.reverse()),
-      responses: responses
-    })
-    // console.log(destinationSet.allCards.map(card => card.city))
-
-    // add it as auto request when paid account
-  }, []);
-
-  // This controls the cards that people are swiping on. If left or right it removes that card from available cards left to swipe on in the first place
   useEffect(() => {
-    if (["left", "right"].includes(direction)) {
-      setDestinationSet({
-        ...destinationSet,
-        cards: destinationSet.cards.slice(0, -1), // Slice the cards array to remove the last element
-      });
-    }
-
-    if (direction === "right") {
-      // This updates the destinations array with the new destinations after a right swipe
-      const updatedDestinations = handleResponse({
-        direction,
-        cards,
-        destinations,
-      });
-      setSavedDestination({
-        destinations: updatedDestinations,
-      });
-
-      // server action that adds a match to the database
-      addMatch({ destinations: updatedDestinations });
-    }
-
-    // add paywall
-
-    // load more matches automatically ##BUG: fix screen reload animation
-    // if (destinationSet.cards.length == 5) {
-    //   loadMore()
-    // }
-
-    setDirection("");
-  }, [direction, loadMore]);
+    if (!direction || savingMatch.current || !cards.length) return;
+    savingMatch.current = true;
+    const saveSwipe = async () => {
+      try {
+        if (direction === "right") {
+          const updatedDestinations = handleResponse({ direction, cards, destinations });
+          await addMatch({ destinations: updatedDestinations });
+          setSavedDestination({ destinations: updatedDestinations });
+        }
+        setDestinationSet(previous => ({ ...previous, cards: previous.cards.slice(0, -1) }));
+      } catch {
+        toast({ title: "Match could not be saved", description: "Please try swiping again.", variant: "destructive" });
+      } finally {
+        savingMatch.current = false;
+        setDirection("");
+      }
+    };
+    void saveSwipe();
+  }, [direction]);
 
   const cardVariants = {
     current: {

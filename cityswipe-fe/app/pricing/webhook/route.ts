@@ -1,168 +1,50 @@
-import { stripe } from "@/lib/stripe";
-import { headers } from "next/headers";
+import { stripe, isStripeConfigured } from "@/lib/stripe";
 import Stripe from "stripe";
 import prisma from "@/lib/db";
 
-export async function POST(req: Request) {
-  const body = await req.text();
+async function syncSubscription(subscription: Stripe.Subscription) {
+  const customerId = typeof subscription.customer === "string" ? subscription.customer : subscription.customer.id;
+  const user = await prisma.user.findUnique({ where: { stripeCustomerId: customerId } });
+  if (!user) throw new Error("Subscription customer not found");
+  const price = subscription.items.data[0]?.price;
+  if (!price) throw new Error("Subscription price not found");
+  const data = {
+    stripeSubscriptionId: subscription.id,
+    userId: user.id,
+    username: user.username,
+    stripeCustomerId: customerId,
+    currentPeriodStart: subscription.current_period_start,
+    currentPeriodEnd: subscription.current_period_end,
+    status: subscription.status,
+    planId: price.id,
+    interval: price.recurring?.interval || "month",
+  };
+  await prisma.subscription.upsert({ where: { userId: user.id }, create: data, update: data });
+}
 
-  const signature = headers().get("Stripe-Signature") as string;
-
+export async function POST(request: Request) {
+  const secret = process.env.STRIPE_WEBHOOK_SECRET;
+  if (!isStripeConfigured || !secret?.startsWith("whsec_")) {
+    return new Response("Billing is unavailable", { status: 503 });
+  }
+  const signature = request.headers.get("stripe-signature");
+  if (!signature) return new Response("Missing signature", { status: 400 });
   let event: Stripe.Event;
+  try { event = stripe.webhooks.constructEvent(await request.text(), signature, secret); }
+  catch { return new Response("Invalid signature", { status: 400 }); }
 
   try {
-    event = stripe.webhooks.constructEvent(
-      body,
-      signature,
-      process.env.STRIPE_WEBHOOK_SECRET as string
-    );
-  } catch (error: unknown) {
-    console.error("Error constructing Stripe event:", error);
-    return new Response("webhook error", { status: 400 });
-  }
-
-  const session = event.data.object as Stripe.Checkout.Session;
-
-  if (event.type === "checkout.session.completed") {
-    try {
-      const subscription = await stripe.subscriptions.retrieve(
-        session.subscription as string
-      );
-      const customerId = session.customer as string;
-
-      const user = await prisma.user.findUnique({
-        where: {
-          stripeCustomerId: customerId,
-        },
-      });
-      
-      // 
-      const userId = await prisma.user.findUnique({
-        where: {
-          stripeCustomerId: customerId,
-        },
-        select: {
-          id: true,
-        }
-      });
-      console.log("userId from webhook: ", userId)
-
-      const isSubscribtionInSupabase = await prisma.subscription.findUnique({
-        where: {
-          userId: userId?.id,
-        },
-      })
-
-      if (!user) throw new Error("User not found...");
-
-      // if the user has subscribed to us before
-      if (isSubscribtionInSupabase) {
-
-        await prisma.subscription.update({
-          where: {
-            userId: userId?.id,
-          },
-          data: {
-            stripeSubscriptionId: subscription.id,
-            userId: user.id,
-            username: user.username,
-            currentPeriodStart: subscription.current_period_start,
-            currentPeriodEnd: subscription.current_period_end,
-            status: subscription.status,
-            planId: subscription.items.data[0].plan.id,
-            interval: String(subscription.items.data[0].plan.interval),
-            stripeCustomerId: user.stripeCustomerId,
-          },
-        });
-
+    if (event.type === "customer.subscription.updated" || event.type === "customer.subscription.deleted") {
+      await syncSubscription(event.data.object);
+    } else if (event.type === "checkout.session.completed" || event.type === "invoice.payment_succeeded" || event.type === "invoice.payment_failed") {
+      const subscription = event.data.object.subscription;
+      if (subscription) {
+        await syncSubscription(await stripe.subscriptions.retrieve(typeof subscription === "string" ? subscription : subscription.id));
       }
-
-      if (!isSubscribtionInSupabase){
-
-        await prisma.subscription.create({
-          data: {
-            stripeSubscriptionId: subscription.id,
-            userId: user.id,
-            username: user.username,
-            currentPeriodStart: subscription.current_period_start,
-            currentPeriodEnd: subscription.current_period_end,
-            status: subscription.status,
-            planId: subscription.items.data[0].plan.id,
-            interval: String(subscription.items.data[0].plan.interval),
-            stripeCustomerId: user.stripeCustomerId,
-          },
-        });
-
-      }
-
-
-    } catch (error: unknown) {
-      console.error("Error handling checkout.session.completed:", error);
     }
+  } catch {
+    // A non-success response lets Stripe retry delivery after temporary database failures.
+    return new Response("Unable to update subscription", { status: 500 });
   }
-
-  if (event.type === "invoice.payment_succeeded") {
-    try {
-      const subscription = await stripe.subscriptions.retrieve(
-        session.subscription as string
-      );
-      const customerId = session.customer as string;
-
-      const user = await prisma.user.findUnique({
-        where: {
-          stripeCustomerId: customerId as string,
-        },
-      });
-
-      if (!user) throw new Error("User not found...");
-
-      await prisma.subscription.update({
-        where: {
-          stripeSubscriptionId: subscription.id,
-          userId: user.id,
-        },
-        data: {
-          planId: subscription.items.data[0].price.id,
-          currentPeriodStart: subscription.current_period_start,
-          currentPeriodEnd: subscription.current_period_end,
-          status: subscription.status,
-        },
-      });
-    } catch (error: unknown) {
-      console.error("Error handling invoice.payment_succeeded:", error);
-    }
-  }
-
-  if (event.type === "customer.subscription.updated") {
-    const subscription = await stripe.subscriptions.retrieve(
-      session.subscription as string
-    );
-    console.log("subscription: ", subscription)
-    const customerId = session.customer as string;
-
-    const user = await prisma.user.findUnique({
-      where: {
-        stripeCustomerId: customerId,
-      },
-    });
-
-    if (!user) throw new Error("User not found...");
-
-    await prisma.subscription.update({
-      where: {
-        stripeSubscriptionId: subscription.id,
-        userId: user.id,
-      },
-      data: {
-        planId: subscription.items.data[0].price.id,
-        currentPeriodStart: subscription.current_period_start,
-        currentPeriodEnd: subscription.current_period_end,
-        status: subscription.status,
-        stripeSubscriptionId: subscription.id,
-        interval: String(subscription.items.data[0].plan.interval),
-      },
-    });
-  }
-
   return new Response(null, { status: 200 });
 }

@@ -5,10 +5,10 @@ import { Input } from "@/components/ui/input";
 import { ArrowDown, Map, Plus, X } from "lucide-react";
 import { useCitySwipe } from "../citySwipeContext";
 import Image from "next/image";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 import {
   streamConversation,
-  getConversationHistory,
   Message,
   streamFlirtatiousConversation,
   makeItinerary,
@@ -26,6 +26,9 @@ import SparklesText from "@/components/magicui/sparkles-text";
 
 export default function Chat({matches}: any) {
 
+    const { toast } = useToast();
+    const [sending, setSending] = useState(false);
+    const activeRequest = useRef(0);
     const [conversation, setConversation] = useState<Message[]>([]);
     const [input, setInput] = useState<string>("");
     const { selectedMatch, setSelectedMatch } = useCitySwipe();
@@ -69,87 +72,35 @@ export default function Chat({matches}: any) {
   useEffect(() => {
     setConversation([]);
     setClearConversation?.(0);
+    activeRequest.current += 1;
+    setSending(false);
   }, [selectedMatch, setClearConversation]);
 
   const startChat = async () => {
-    const split = selectedMatch?.split(" ");
-
-    // this will handle normal conversation
-    if (wantsItinerary != true) {
-      const { messages, newMessage, type } =
-        await streamFlirtatiousConversation(
-          split == undefined ? "" : split[0],
-          split == undefined ? "" : split[1],
-          [...conversation, { role: "user", content: input, type: "message" }]
-        );
-
+    if (sending || !input.trim()) return;
+    const destination = usermatches?.find((match: any) => match.city === selectedMatch) ?? usermatches?.[0];
+    if (!destination) return;
+    const requestId = ++activeRequest.current;
+    const history: Message[] = [...conversation, { role: "user", content: input.trim(), type: "message" }];
+    setSending(true);
+    setConversation(history);
+    try {
+      const { messages, newMessage } = await streamFlirtatiousConversation(destination.city, destination.country, history);
       let textContent = "";
-      setCurrentMessegeType(type);
-
       for await (const delta of readStreamableValue(newMessage)) {
-        textContent = `${textContent}${delta}`;
-
-        setConversation([
-          ...messages,
-          { role: "assistant", content: textContent, type: "message" },
-        ]);
+        if (requestId !== activeRequest.current) return;
+        textContent += delta ?? "";
+        setConversation([...messages, { role: "assistant", content: textContent, type: "message" }]);
       }
-
-      console.log(textContent);
-
-      setInput(""); // Clear the input field after submitting
-    }
-
-    // this will handle itinerary specifically
-    // if (wantsItinerary != false) {
-
-    //     const itineraryprompopt = 'Hi, can you make me an itinerary for my trip to' + " " + selectedMatch
-    //     await setInput(itineraryprompopt);
-
-    //     const { newMessage, type } = await makeItinerary(split == undefined ? "" : split[0], split == undefined ? "" : split[1], [
-    //         { role: "user", content: input, type: "itinerary" },
-    //     ]);
-
-    //     const textContent = newMessage;
-    //     setCurrentMessegeType(type);
-
-    //     console.log("nmessage: ", textContent);
-
-    //     try {
-    //         const itineraryfull = JSON.parse(textContent);
-
-    //         let generatedItinerary = {
-    //             id: Math.floor(Math.random() * 1000000),
-    //             title: itineraryfull.title,
-    //             itinerary: itineraryfull.itinerary,
-    //             packing_list: itineraryfull.packing_list,
-    //             cultural_info: itineraryfull.cultural_info,
-    //             additional_comments: itineraryfull.additional_comments
-
-    //         };
-
-    //         console.log("itinerary: ", generatedItinerary);
-    //         console.log("itinerary id: ", generatedItinerary.id);
-    //         console.log("itinerary itinerary: ", generatedItinerary.itinerary);
-    //         console.log("itinerary packing_list: ", generatedItinerary.packing_list);
-    //         console.log("itinerary cultural_info: ", generatedItinerary.cultural_info);
-
-    //         setGenItinerary({
-    //             id: generatedItinerary.id,
-    //             title: generatedItinerary.title,
-    //             itinerary: generatedItinerary.itinerary,
-    //             packing_list: generatedItinerary.packing_list,
-    //             cultural_info: generatedItinerary.cultural_info,
-    //             additional_comments: generatedItinerary.additional_comments ,
-    //         });
-
-    //         setWantsItinerary(false);
-
-    //     } catch (error) {
-    //         console.error(`Error in fetching itinerary for ${selectedMatch}:`, error);
-    //     }
-    // }
+      if (requestId === activeRequest.current) setInput("");
+    } catch {
+      if (requestId === activeRequest.current) {
+        setConversation(history.slice(0, -1));
+        toast({ title: "Could not send your message", description: "Please try again.", variant: "destructive" });
+      }
+    } finally { if (requestId === activeRequest.current) setSending(false); }
   };
+
 
     const handleUserPrePrompt = (text: any) => {
         setInput(text);
@@ -583,7 +534,8 @@ export default function Chat({matches}: any) {
             />
             <button
               className="scale-[80%] hover:scale-[95%] bg-gradient-to-t from-cyan-500 to-green-400 p-2 rounded-full"
-              onClick={() => startChat()}
+              disabled={sending || !input.trim()}
+              onClick={() => void startChat()}
             >
               <ArrowUp className="text-white" size={20} />
             </button>
@@ -773,7 +725,8 @@ export default function Chat({matches}: any) {
             />
             <button
               className="scale-[80%] hover:scale-[95%] bg-gradient-to-t from-cyan-500 to-green-400 p-2 rounded-full"
-              onClick={() => startChat()}
+              disabled={sending || !input.trim()}
+              onClick={() => void startChat()}
             >
               <ArrowUp className="text-white" size={20} />
             </button>

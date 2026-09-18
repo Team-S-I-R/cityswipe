@@ -53,22 +53,6 @@ const Match = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // const testPexelsAPI = async () => {
-  //   const client = createClient('8U6Se7vVT3H9tx1KPZAQTkDUSW0IKi3ldgBTVyh3W9NFF7roIpZxktzY');
-  //   const searchQuery = 'Tokyo, Japan landscape';
-  //   try {
-  //     const response = await client.photos.search({ query: `${searchQuery}`, per_page: 1 });
-  //     console.log("pexels query", searchQuery);
-  //     if ('photos' in response && response.photos.length > 0) {
-  //       const illustration = response.photos[0].src.landscape;
-  //       console.log(searchQuery, "illustration URL:", illustration);
-  //     } else {
-  //       console.log("No photos found for the query.");
-  //     }
-  //   } catch (error) {
-  //     console.error(`Error in fetching photo for ${searchQuery}:`, error);
-  //   }
-  // };
 
 
   return (

@@ -10,23 +10,29 @@ import { revalidatePath } from "next/cache";
 import { currentUser } from "@clerk/nextjs/server";
 import quizQuestions from "./quiz-questions/questions";
 import { createClient } from "pexels";
-import { stripe } from "../lib/stripe"
+import { stripe, isStripeConfigured, isBillingConfigured, appUrl } from "../lib/stripe"
 import { getStripeSession } from "@/lib/stripe";
 import { redirect } from "next/navigation";
 import logger from "@/lib/logger";
+import { requireUser } from "@/lib/user";
 
 // ANCHOR Gemini Logic --------------------------------------------------------------------
+
+// Google retires dated Gemini releases, so point at the rolling "latest" alias
+// instead of a pinned version that will 404 once it is sunset.
+const GEMINI_MODEL = process.env.GEMINI_MODEL || "models/gemini-flash-latest";
+
 export interface Message {
   role: "user" | "assistant";
   content: string;
   type: string;
 }
 
-const conversationHistory: Record<string, Message[]> = {};
 
 export async function generateCityBio(city: string) {
+  await requireUser();
   const stream = createStreamableValue();
-  const model = google("models/gemini-1.5-flash-latest");
+  const model = google(GEMINI_MODEL);
 
   const prompt = `Generate a bio for the city ${city}. Include the following details:
   - Age: The actual or estimated age of the city.
@@ -71,7 +77,7 @@ export async function generateCityBio(city: string) {
     }
 
     stream.done();
-  })().then(() => { });
+  })().catch(() => stream.error(new Error("Unable to contact the travel assistant. Please try again.")));
 
   return {
     description: stream.value,
@@ -79,9 +85,10 @@ export async function generateCityBio(city: string) {
 }
 
 export async function streamConversation(history: Message[]) {
+  await requireUser();
   const stream = createStreamableValue();
   // const model = google("models/gemini-1.5-pro-latest");
-  const model = google("models/gemini-1.5-flash");
+  const model = google(GEMINI_MODEL);
 
   (async () => {
     const { textStream } = await streamText({
@@ -94,7 +101,7 @@ export async function streamConversation(history: Message[]) {
     }
 
     stream.done();
-  })().then(() => { });
+  })().catch(() => stream.error(new Error("Unable to contact the travel assistant. Please try again.")));
 
   return {
     messages: history,
@@ -107,8 +114,9 @@ export async function streamFlirtatiousConversation(
   country: string,
   history: Message[]
 ) {
+  await requireUser();
   const stream = createStreamableValue();
-  const model = google("models/gemini-1.5-flash");
+  const model = google(GEMINI_MODEL);
 
   const sanitizeText = (text: string) => text.replace(/[*_~`]/g, "");
 
@@ -148,13 +156,7 @@ export async function streamFlirtatiousConversation(
     }
 
     stream.done();
-  })().then(() => { });
-
-  if (!conversationHistory[city]) {
-    conversationHistory[city] = [];
-  }
-
-  conversationHistory[city].push(...history);
+  })().catch(() => stream.error(new Error("Unable to contact the travel assistant. Please try again.")));
 
   console.log("cc", stream.value);
 
@@ -165,17 +167,14 @@ export async function streamFlirtatiousConversation(
   };
 }
 
-export async function getConversationHistory(city: string) {
-  return conversationHistory[city] || [];
-}
-
 export async function makeItinerary(
   city: string,
   country: string,
   history: Message[]
 ) {
+  await requireUser();
   // Use the appropriate Gemini model
-  const model = google("models/gemini-1.5-flash");
+  const model = google(GEMINI_MODEL);
 
   // Helper function to sanitize text input
   const sanitizeText = (text: string) => text.replace(/[*_~`]/g, "");
@@ -262,12 +261,6 @@ export async function makeItinerary(
 
   console.log("cc", text);
 
-  // Update conversation history for the city
-  if (!conversationHistory[city]) {
-    conversationHistory[city] = [];
-  }
-  conversationHistory[city].push(...history);
-
   // Return the new message and updated conversation history
   return {
     messages: history,
@@ -277,7 +270,8 @@ export async function makeItinerary(
 }
 
 export async function summerizeItineraryText(itinerarytext: string) {
-  const model = google("models/gemini-1.5-flash");
+  await requireUser();
+  const model = google(GEMINI_MODEL);
 
   // Construct the prompt for the API, including the history
   const prompt = `
@@ -366,13 +360,13 @@ export async function currentUserId() {
   return user?.id;
 }
 
-export async function currentUserName(userId: any) {
-  
-  const uid = userId?.userId;
+export async function currentUserName(userId: string) {
+
+  if (!userId) return null;
 
   const user = await prisma?.user.findUnique({
     where: {
-      id: uid,
+      id: userId,
     },
   });
 
@@ -380,13 +374,13 @@ export async function currentUserName(userId: any) {
 
 }
 
-export async function currentUserMatches(userId: any) {
-  
-  const uid = userId?.userId;
+export async function currentUserMatches(userId: string) {
+
+  if (!userId) return [];
 
   const matches = await prisma?.match.findMany({
     where: {
-      userId: uid,
+      userId: userId,
     },
   });
 
@@ -395,39 +389,19 @@ export async function currentUserMatches(userId: any) {
 
 
 
-export async function addQuestions(questions: any) {
-  let count = 0;
-
-  const user = await currentUser();
-
-  const quizResponseCount = await prisma?.quizAnswer.findMany({
-    where: {
-      userId: user?.id,
-    },
+export async function addQuestions(questions: unknown) {
+  const user = await requireUser();
+  const answers = z.array(z.string().min(1).max(2000)).length(5).parse(questions);
+  const data = { a1: answers[0], a2: answers[1], a3: answers[2], a4: answers[3], a5: answers[4] };
+  await prisma.$transaction(async (tx) => {
+    await tx.quizAnswer.deleteMany({ where: { userId: user.id } });
+    await tx.quizAnswer.create({ data: { ...data, userId: user.id } });
   });
-
-  // ensure this is only run once
-  if (count < 1 && quizResponseCount.length < 1) {
-    {
-      await prisma?.quizAnswer.create({
-        data: {
-          a1: questions?.[0],
-          a2: questions?.[1],
-          a3: questions?.[2],
-          a4: questions?.[3],
-          a5: questions?.[4],
-          userId: user?.id,
-        },
-      })
-
-      count += 1
-    }
-  }
 }
 
 export async function updateQuestions(questions: any) {
 
-  const user = await currentUser();
+  const user = await requireUser();
 
   console.log("questions", questions)
 
@@ -450,45 +424,26 @@ export async function updateQuestions(questions: any) {
   }
 }
 
-export async function addMatch(savedDestination: any) {
-  const user = await currentUser();
-
-  interface Destination {
-    city: string;
-    username: string;
-    country: string;
-    description: string;
-    illustration: string;
-    pros: string[];
-    cons: string[];
-    compatibility: number;
-  }
-
-  // this is the last destination we then just add this to the database
-  const destination: Destination =
-    savedDestination?.destinations[savedDestination?.destinations?.length - 1];
-
-  console.log("destination: ", destination);
-
-  await prisma?.match.create({
-    data: {
-      city: destination?.city,
-      username: user?.username || "",
-      country: destination?.country,
-      description: destination?.description,
-      illustration: destination?.illustration,
-      pros: Array.isArray(destination?.pros) ? destination?.pros.map(String) : [],
-      cons: Array.isArray(destination?.cons) ? destination?.cons.map(String) : [],
-      compatibility: destination?.compatibility,
-      userId: user?.id,
-    },
-  });
+export async function addMatch(savedDestination: unknown) {
+  const user = await requireUser();
+  const { destinations } = z.object({ destinations: z.array(z.object({
+    city: z.string().trim().min(1), country: z.string().trim().min(1),
+    description: z.string(), illustration: z.string(),
+    pros: z.array(z.string()), cons: z.array(z.string()),
+    compatibility: z.number().min(0).max(100),
+    budget: z.number().int().nonnegative().optional(),
+  })).min(1) }).parse(savedDestination);
+  const destination = destinations[destinations.length - 1];
+  await prisma.match.create({ data: { ...destination, username: user.username, userId: user.id } });
+  revalidatePath("/explore");
 }
 
 export async function deleteMatch(id: string) {
+  const user = await requireUser();
   await prisma?.match.delete({
     where: {
       id: id,
+      userId: user.id,
     },
   });
 
@@ -497,91 +452,57 @@ export async function deleteMatch(id: string) {
 
 }
 
-export async function createItinerary(blocks: any) {
-  const user = await currentUser();
-
-  console.log("blocks: ", blocks);
-
-  // ANCHOR THIS ADDS EVERY BLOCK IN THE ITINERARY TO THE DATABASE
-  // THE TEXT IS IN AN ARRAY ALLOWING ME TO MAP IT IN THE FRONT END
-  //  SAME WITH THE TYPES
-  if (blocks && blocks.length > 0) {
-    let blockNum = 1; // Initialize blockNum outside the loop
-    for (const block of blocks) {
-
-      const blockText = block?.content?.[0]?.text || null;
-
-      await prisma?.itinerary.create({
-        data: {
-          username: user?.username,
-          blockNum: blockNum,
-          text: blockText,
-          type: block.type,
-          props: block.props,
-          userId: user?.id,
-        },
-
-      });
-      blockNum += 1; // Increment blockNum after each addition
-
-    }
-    revalidatePath('/explore');
-    revalidatePath('/');
-  }
+export async function createItinerary(blocks: unknown) {
+  return updateItinerary(blocks);
 }
 
-export async function updateItinerary(blocks: any) {
+export async function updateItinerary(blocks: unknown) {
+  const user = await requireUser();
+  const document = z.array(z.object({
+    id: z.string().optional(),
+    type: z.string(),
+    props: z.record(z.unknown()),
+    content: z.unknown().optional(),
+    children: z.array(z.unknown()).optional(),
+  })).max(1000).parse(blocks);
 
-  const user = await currentUser();
+  const plainText = (content: unknown): string => {
+    if (typeof content === "string") return content;
+    if (Array.isArray(content)) return content.map(plainText).join("");
+    if (content && typeof content === "object") {
+      const value = content as { text?: string; content?: unknown };
+      return value.text ?? plainText(value.content);
+    }
+    return "";
+  };
 
-  console.log("blocks: ", blocks);
-
-
-  // I did it this way to stop erros. There will not be any records of previous
-  // saved itineraries for now but it will save whatever the user has done.
-
-
-  // ANCHOR THIS DELETES ALL EXISTING BLOCKS AND CREATES NEW ONES IN THE DATABASE
-  if (blocks && blocks.length > 0) {
-    // Delete all existing blocks for the user
-    await prisma?.itinerary.deleteMany({
-      where: {
-        userId: user?.id,
-      },
+  // Commit the complete document atomically, retaining rich text and nested blocks in JSON.
+  await prisma.$transaction(async (tx) => {
+    await tx.itinerary.deleteMany({ where: { userId: user.id } });
+    if (document.length) await tx.itinerary.createMany({
+      data: document.map((block, index) => ({
+        username: user.username,
+        blockNum: index + 1,
+        text: plainText(block.content),
+        type: block.type,
+        props: JSON.parse(JSON.stringify({ ...block.props, _cityswipeBlock: block })),
+        userId: user.id,
+      })),
     });
-
-    let blockNum = 1; // Initialize blockNum outside the loop
-    for (const block of blocks) {
-
-      const blockText = block?.content?.[0]?.text || null;
-
-      await prisma?.itinerary.create({
-        data: {
-          username: user?.username,
-          blockNum: blockNum,
-          text: blockText,
-          type: block.type,
-          props: block.props,
-          userId: user?.id,
-        },
-
-      });
-      blockNum += 1; // Increment blockNum after each addition
-
-    }
-    revalidatePath('/explore');
-    revalidatePath('/');
-  }
+  });
+  revalidatePath("/explore");
+  revalidatePath(`/share/${user.id}`);
 }
 
-export async function getItinerary(userId: any) {
+export async function getItinerary(userId: string) {
 
-  const uid = userId?.userId;
+  if (!userId) return [];
 
   const itineraryBlocks = await prisma.itinerary.findMany({
     where: {
-      userId: uid
-    }
+      userId: userId
+    },
+    orderBy: { blockNum: "asc" },
   })
 
   return itineraryBlocks
@@ -610,78 +531,32 @@ export async function getData(userId: string) {
 }
 
 export async function createSubscription(plan: string) {
-  const user = await currentUser()
-  const data = await getData(user?.id as string)
-
-  const dbUser = await prisma.user.findUnique({
-    where: {
-      id: user?.id
-    },
-    select: {
-      stripeCustomerId: true
-    }
-  })
-
-  if (!dbUser?.stripeCustomerId) {
-    throw new Error('Cant get customer id')
+  if (!isBillingConfigured) throw new Error("Subscriptions are currently unavailable.");
+  const user = await requireUser();
+  const priceId = plan === "Pro Monthly" ? process.env.STRIPE_M_PLAN
+    : plan === "Pro Yearly" ? process.env.STRIPE_Y_PLAN : null;
+  if (!priceId) throw new Error("Please choose a valid plan.");
+  let customerId = user.stripeCustomerId;
+  if (!customerId) {
+    const customer = await stripe.customers.create(
+      { email: user.email, metadata: { userId: user.id } },
+      { idempotencyKey: `cityswipe-customer-${user.id}` },
+    );
+    customerId = customer.id;
+    await prisma.user.update({ where: { id: user.id }, data: { stripeCustomerId: customerId } });
   }
-
-  let priceData = {}
-
-  if (plan === 'Pro Monthly') {
-
-    priceData = {
-      currency: 'usd',
-      product_data: {
-        name: 'Pro Monthly Subscription',
-      },
-      unit_amount: 500, // $5.00
-      recurring: {
-        interval: 'month',
-      },
-    }
-
-    const subscriptionUrl = await getStripeSession({
-      priceId: process.env.STRIPE_M_PLAN as string,
-      customerId: dbUser.stripeCustomerId,
-      domainUrl: process.env.NODE_ENV === 'production' ? process.env.PRODUCTION_URL as string : 'http://localhost:3000',
-    })
-
-    return redirect(subscriptionUrl)
-  }
-
-  if (plan === 'Pro Yearly') {
-
-    priceData = {
-      currency: 'usd',
-      product_data: {
-        name: 'Pro Yearly Subscription',
-      },
-      unit_amount: 5000, // $50.00
-      recurring: {
-        interval: 'year',
-      },
-    }
-
-    const subscriptionUrl = await getStripeSession({
-      priceId: process.env.STRIPE_Y_PLAN as string,
-      customerId: dbUser.stripeCustomerId,
-      domainUrl: process.env.NODE_ENV === 'production' ? process.env.PRODUCTION_URL as string : 'http://localhost:3000',
-    })
-
-    return redirect(subscriptionUrl)
-  }
-
+  redirect(await getStripeSession({ priceId, customerId, domainUrl: appUrl }));
 }
 
 export async function createCustomerPortal() {
-  const user = await currentUser()
-  const data = await getData(user?.id as string)
+  if (!isStripeConfigured) throw new Error("Subscription management is currently unavailable.");
+  const user = await requireUser();
+  if (!user.stripeCustomerId) throw new Error("No billing account was found.");
   const session = await stripe.billingPortal.sessions.create({
-    customer: data?.user?.stripeCustomerId as string,
-    return_url: process.env.NODE_ENV === 'production' ? process.env.PRODUCTION_URL as string + '/pricing' : 'http://localhost:3000/pricing'
-  })
-  return redirect(session.url)
+    customer: user.stripeCustomerId,
+    return_url: `${appUrl}/pricing`,
+  });
+  redirect(session.url);
 }
 
 // export async function handleSubscriber(subscriberData?: any) {

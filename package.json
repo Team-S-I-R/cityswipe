@@ -1,5 +1,16 @@
 {
-  "dependencies": {
-    "swiper": "^11.1.14"
+  "name": "cityswipe",
+  "private": true,
+  "packageManager": "pnpm@11.7.0",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "pnpm --dir cityswipe-fe run dev",
+    "build": "pnpm --dir cityswipe-fe run build",
+    "start": "pnpm --dir cityswipe-fe run start",
+    "lint": "pnpm --dir cityswipe-fe run lint",
+    "postinstall": "pnpm --dir cityswipe-fe install --frozen-lockfile",
+    "test": "pnpm --dir cityswipe-fe run test"
   }
 }

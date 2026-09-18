@@ -1,46 +1,40 @@
-// Booking.com API route for fetching hotels in a city
-import { NextResponse } from 'next/server';
+import { NextResponse } from "next/server";
+import { z } from "zod";
 
-const RAPID_API_KEY = process.env.RAPID_API_KEY;
-const BOOKING_API_HOST = 'booking-com.p.rapidapi.com';
+const searchSchema = z.object({
+  cityName: z.string().trim().min(1).max(100),
+  checkinDate: z.string().date(),
+  checkoutDate: z.string().date(),
+  adultsNumber: z.coerce.number().int().min(1).max(30).default(2),
+  roomNumber: z.coerce.number().int().min(1).max(30).default(1),
+}).refine(value => value.checkinDate >= new Date().toISOString().slice(0, 10) && value.checkoutDate > value.checkinDate);
 
-// GET route for fetching hotels from Booking.com
 export async function GET(request: Request) {
-  if (!RAPID_API_KEY) {
-    return NextResponse.json({ error: 'RAPID_API_KEY is not set' }, { status: 500 });
-  }
-
-  const { searchParams } = new URL(request.url);
-  const cityName = searchParams.get('cityName') || 'Paris';
-  const checkinDate = searchParams.get('checkinDate') || '2024-11-27';
-  const checkoutDate = searchParams.get('checkoutDate') || '2024-11-28';
-  const adultsNumber = searchParams.get('adultsNumber') || '2';
-  const roomNumber = searchParams.get('roomNumber') || '1';
-
+  const parsed = searchSchema.safeParse(Object.fromEntries(new URL(request.url).searchParams));
+  if (!parsed.success) return NextResponse.json({ error: "Provide a city, valid future check-in/check-out dates, and guest counts" }, { status: 400 });
+  const apiKey = process.env.RAPID_API_KEY;
+  if (!apiKey || apiKey === "...") return NextResponse.json({ error: "Hotel search is currently unavailable" }, { status: 503 });
   const options = {
-    method: 'GET',
-    headers: {
-      'X-RapidAPI-Key': RAPID_API_KEY,
-      'X-RapidAPI-Host': 'booking-com.p.rapidapi.com'
-    }
+    headers: { "X-RapidAPI-Key": apiKey, "X-RapidAPI-Host": "booking-com.p.rapidapi.com" },
+    signal: AbortSignal.timeout(15000),
   };
-
+  const { cityName, checkinDate, checkoutDate, adultsNumber, roomNumber } = parsed.data;
   try {
-    const locationResponse = await fetch(`https://booking-com.p.rapidapi.com/v1/hotels/locations?name=${cityName}&locale=en-gb`, options);
-    const locationData = await locationResponse.json();
-    const destId = locationData[0]?.dest_id;
-
-    if (!destId) {
-      return NextResponse.json({ error: 'City not found' }, { status: 404 });
-    }
-
-    const response = await fetch(`https://booking-com.p.rapidapi.com/v1/hotels/search?dest_id=${destId}&units=metric&checkin_date=${checkinDate}&dest_type=city&locale=en-gb&adults_number=${adultsNumber}&order_by=popularity&filter_by_currency=EUR&room_number=${roomNumber}&page_number=0&checkout_date=${checkoutDate}&include_adjacency=true`, options);
+    const locationResponse = await fetch(`https://booking-com.p.rapidapi.com/v1/hotels/locations?${new URLSearchParams({ name: cityName, locale: "en-gb" })}`, options);
+    if (!locationResponse.ok) throw new Error("Location service failed");
+    const locations = await locationResponse.json();
+    const location = locations.find((item: { dest_type: string }) => item.dest_type === "city");
+    if (!location?.dest_id) return NextResponse.json({ error: "City not found" }, { status: 404 });
+    const params = new URLSearchParams({
+      dest_id: String(location.dest_id), dest_type: "city", locale: "en-gb", units: "metric",
+      checkin_date: checkinDate, checkout_date: checkoutDate, adults_number: String(adultsNumber),
+      room_number: String(roomNumber), order_by: "popularity", filter_by_currency: "EUR", page_number: "0",
+    });
+    const response = await fetch(`https://booking-com.p.rapidapi.com/v1/hotels/search?${params}`, options);
+    if (!response.ok) throw new Error("Hotel service failed");
     const result = await response.json();
-
-    return NextResponse.json({ hotels: result.result });
-  } 
-  catch (error) {
-    console.error('booking.com API error:', error);
-    return NextResponse.json({ error: 'error fetching hotels from Booking.com' }, { status: 500 });
+    return NextResponse.json({ hotels: result.result || [] });
+  } catch {
+    return NextResponse.json({ error: "Unable to fetch hotels" }, { status: 502 });
   }
 }
