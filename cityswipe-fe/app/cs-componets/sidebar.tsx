@@ -146,7 +146,7 @@ export default function Sidebar( {clerkdata, matches} : any,) {
                         <div className="bg-green-400 place-items-center p-2 mt-3 w-max flex flex-col gap-8 relative h-max select-none  rounded-full overflow-hidden" >
 
                             <div className="w-[30px] h-[30px] rounded-full flex place-items-end place-content-end">
-                                <Image className="rounded-full h-full  w-full object-cover" src={chatImg ? chatImg : placeholderimg} sizes="100%" width={30} height={30} alt="" />
+                                <Image className="rounded-full h-full  w-full object-cover" src={chatImg ? chatImg : placeholderimg} width={30} height={30} alt="" />
                             </div>
 
 
@@ -183,7 +183,7 @@ export default function Sidebar( {clerkdata, matches} : any,) {
                                                     <div className="w-max flex place-items-center place-content-center">
                                                         <div className="w-[30px] h-[30px] rounded-full flex">
                                                             {/* <div className="absolute z-[-1] bg-gradient-to-r from-white via-white to-transparent w-full h-full"></div> */}
-                                                            <Image className="rounded-full h-full  w-full object-cover" src={dest.illustration} sizes="100%" width={30} height={30} alt="" />
+                                                            <Image className="rounded-full h-full  w-full object-cover" src={dest.illustration} width={30} height={30} alt="" />
                                                         </div>
                                                         {/* <h3 className="text-[14px] p-2 rounded-full w-max">{dest.city}</h3> */}
                                                     </div>
@@ -373,7 +373,7 @@ export default function Sidebar( {clerkdata, matches} : any,) {
                         <div className="bg-gray-200 place-items-center px-4 mt-3 w-full flex gap-8 relative h-max select-none py-4 rounded-xl overflow-hidden place-items-start" >
                             
                             <div className="w-[30px] h-[30px] rounded-full flex place-items-end place-content-end">
-                                <Image className="rounded-full h-full  w-full object-cover" src={chatImg || placeholderimg} sizes="100%"  width={30} height={30} alt="" />
+                                <Image className="rounded-full h-full  w-full object-cover" src={chatImg || placeholderimg} width={30} height={30} alt="" />
                             </div> 
 
                             {selectedMatch == '' ? (
@@ -401,7 +401,7 @@ export default function Sidebar( {clerkdata, matches} : any,) {
                                             
                                             <div className="w-max flex gap-2 place-items-center place-content-center">
                                                 <div className="w-[30px] h-[30px] rounded-full flex place-items-end place-content-end">
-                                                    <Image className="rounded-full h-full  w-full object-cover" src={dest.illustration} sizes="100%" width={30} height={30} alt="" />
+                                                    <Image className="rounded-full h-full  w-full object-cover" src={dest.illustration} width={30} height={30} alt="" />
                                                 </div>
                                                 <h3 className="text-[14px] p-2 rounded-full w-max">{dest.city}</h3>
                                             </div>

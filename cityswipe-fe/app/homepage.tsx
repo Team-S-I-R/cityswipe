@@ -5,6 +5,7 @@ import { useCitySwipe } from "./citySwipeContext";
 import React, { useEffect, useState } from "react";
 import quizQuestions from "./quiz-questions/questions";
 import gsap from "gsap";
+import Image from "next/image";
 import destination1 from "./assets/imgs/destination-img-1.jpg";
 import destination2 from "./assets/imgs/destination-img-2.jpg";
 import destination3 from "./assets/imgs/destination-img-3.jpg";
@@ -89,41 +90,54 @@ export default function Hero() {
         <>
           <div className="z-[-1] top-0 left-0 w-screen h-screen absolute">
             <div className="absolute top-0 left-0 w-screen h-screen">
-              <img
+              <Image
                 id="match-img"
                 className="opacity-1 w-full h-full object-cover"
-                src={destination1.src}
+                src={destination1}
                 alt=""
+                fill
+                sizes="100vw"
+                priority
+                placeholder="blur"
               />
               <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-white via-white to-transparent pointer-events-none"></div>
             </div>
 
             <div className="absolute top-0 left-0 w-screen h-screen">
-              <img
+              <Image
                 id="with-img"
                 className="opacity-0  w-full h-full object-cover"
-                src={destination2.src}
+                src={destination2}
                 alt=""
+                fill
+                sizes="100vw"
+                placeholder="blur"
               />
               <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-white via-white to-transparent pointer-events-none"></div>
             </div>
 
             <div className="absolute top-0 left-0 w-screen h-screen">
-              <img
+              <Image
                 id="your-img"
                 className="opacity-0  w-full h-full object-cover"
-                src={destination3.src}
+                src={destination3}
                 alt=""
+                fill
+                sizes="100vw"
+                placeholder="blur"
               />
               <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-white via-white to-transparent pointer-events-none"></div>
             </div>
 
             <div className="absolute top-0 left-0 w-screen h-screen">
-              <img
+              <Image
                 id="destination-img"
                 className="opacity-0  w-full h-full object-cover"
-                src={destination4.src}
+                src={destination4}
                 alt=""
+                fill
+                sizes="100vw"
+                placeholder="blur"
               />
               <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-white via-white to-transparent pointer-events-none"></div>
             </div>

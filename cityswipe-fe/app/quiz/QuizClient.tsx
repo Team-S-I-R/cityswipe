@@ -14,12 +14,16 @@ import { AnimatePresence, motion } from "framer-motion";
 import Header from "../cs-componets/header";
 import { useToast } from "../../hooks/use-toast";
 import Image from "next/image";
-import gif1 from "../assets/gifs/gif1.gif";
-import gif2 from "../assets/gifs/gif2.gif";
-import gif3 from "../assets/gifs/gif3.gif";
-import gif4 from "../assets/gifs/gif4.gif";
-import gif5 from "../assets/gifs/gif5.gif";
 import LoadingModal from "@/components/ui/loadingModal";
+
+// Looping clips beside each question (MP4s are a fraction of the size of the original GIFs).
+const questionVideos = [
+  "/quiz/gif1.mp4",
+  "/quiz/gif2.mp4",
+  "/quiz/gif3.mp4",
+  "/quiz/gif4.mp4",
+  "/quiz/gif5.mp4",
+];
 
 export default function QuizClient({ clerkdata }: any) {
   const { isStarted, setIsStarted } = useCitySwipe();
@@ -41,14 +45,8 @@ export default function QuizClient({ clerkdata }: any) {
   const [loadingMatches, setLoadingMatches] = useState(false);
   const { toast } = useToast();
 
-  const [gifUrls, setGifUrls] = useState<string[]>([
-    gif1.src,
-    gif2.src,
-    gif3.src,
-    gif4.src,
-    gif5.src,
-  ]);
-  const [gifToShow, setGifToShow] = useState<string>(gif1.src);
+  // Derived during render so a new question never shows the previous question's clip first.
+  const videoToShow = questionVideos[currentQuestionIndex];
   const [gifAnimationKey, setGifAnimationKey] = useState<number>(0);
 
   console.log("responses", responses);
@@ -208,14 +206,6 @@ export default function QuizClient({ clerkdata }: any) {
 
   // ------------------------------------------------------------------------------------------------
 
-  const handleGifs = (index: number) => {
-    setGifToShow(gifUrls[index]);
-  };
-
-  useEffect(() => {
-    handleGifs(currentQuestionIndex);
-  }, [currentQuestionIndex]);
-
   return (
     <>
       <Header />
@@ -341,19 +331,20 @@ export default function QuizClient({ clerkdata }: any) {
                             </motion.span>
                           )}
 
-                          <span className="absolute z-[-2] top-0 left-0 w-full h-full">
-                            <Image
-                              src={
-                                currentQuestion.answerOptionImages
-                                  ? currentQuestion.answerOptionImages[i]
-                                  : ""
-                              }
-                              alt={answer}
-                              width={1000}
-                              height={1000}
-                              className="object-cover p-[2px] rounded-lg object-center w-full h-full"
-                            />
-                          </span>
+                          {currentQuestion.answerOptionImages && (
+                            <span className="absolute z-[-2] top-0 left-0 w-full h-full">
+                              {/* Keyed per question so the previous question's photo isn't shown while this one loads */}
+                              <Image
+                                key={`${currentQuestion.id}-${i}`}
+                                src={currentQuestion.answerOptionImages[i]}
+                                alt={answer}
+                                fill
+                                sizes="(min-width: 768px) 20vw, 100vw"
+                                placeholder="blur"
+                                className="object-cover p-[2px] rounded-lg object-center"
+                              />
+                            </span>
+                          )}
 
                           {responses[currentQuestionIndex] === answer && (
                             <motion.span
@@ -433,11 +424,12 @@ export default function QuizClient({ clerkdata }: any) {
             exit={{ opacity: 0.5 }}
             className="w-[0%] md:w-[40%] left-0 absolute h-[100%]"
           >
-            <Image
-              src={gifToShow as string}
-              alt="gif"
-              width={1000}
-              height={1000}
+            <video
+              src={videoToShow}
+              autoPlay
+              loop
+              muted
+              playsInline
               className="w-full object-cover h-full"
             />
           </motion.div>
