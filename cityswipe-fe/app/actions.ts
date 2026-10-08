@@ -15,12 +15,9 @@ import { getStripeSession } from "@/lib/stripe";
 import { redirect } from "next/navigation";
 import logger from "@/lib/logger";
 import { requireUser } from "@/lib/user";
+import { GEMINI_MODEL, withGeminiFallback } from "@/lib/gemini";
 
 // ANCHOR Gemini Logic --------------------------------------------------------------------
-
-// Google retires dated Gemini releases, so point at the rolling "latest" alias
-// instead of a pinned version that will 404 once it is sunset.
-const GEMINI_MODEL = process.env.GEMINI_MODEL || "models/gemini-flash-latest";
 
 export interface Message {
   role: "user" | "assistant";
@@ -122,8 +119,9 @@ and always answer in complete sentences.`;
 
   try {
     // Return a complete reply, preserving main's fix for chat messages that cut off mid-stream.
-    const { text } = await generateText({
-      model: google(GEMINI_MODEL),
+    // Gemini quotas are per model, so a spent daily allowance falls through to the next configured model.
+    const { text } = await withGeminiFallback((modelId) => generateText({
+      model: google(modelId),
       system: systemPrompt,
       messages: history.slice(-12).map(({ role, content }) => ({ role, content })),
       temperature: 0.7,
@@ -131,7 +129,7 @@ and always answer in complete sentences.`;
       maxTokens: 2048,
       maxRetries: 1,
       abortSignal: AbortSignal.timeout(60000),
-    });
+    }));
     if (!text.trim()) throw new Error("Empty assistant response");
     return { messages: history, newMessage: text, type: "message" };
   } catch {

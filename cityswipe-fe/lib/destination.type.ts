@@ -13,3 +13,8 @@ export interface DestinationItem {
 export interface Destination {
   destinations: DestinationItem[];
 }
+
+/** Result of the destination-generating server action: suggestions, or a message safe to show the traveler. */
+export type DestinationGenerationResult =
+  | { destinations: DestinationItem[] }
+  | { error: string };

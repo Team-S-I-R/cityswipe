@@ -8,7 +8,7 @@ import { motion } from "framer-motion";
 
 import { useSavedDestinationContext } from "../../../context/savedDestinationContext";
 import { useDestinationSetContext } from "../../../context/destinationSetContext";
-import { loadMoreCards } from "../_utils/loadCards";
+import { DestinationLoadError, loadMoreCards } from "../_utils/loadCards";
 import { checkSubscribed } from "../_utils/checkSubscribed";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
@@ -34,8 +34,12 @@ const DestinationCompletion = () => {
     try {
       if (await checkSubscribed()) await loadMoreCards(destinationSet, setDestinationSet);
       else router.push("/pricing");
-    } catch {
-      toast({ title: "Could not load destinations", description: "Please try again.", variant: "destructive" });
+    } catch (error) {
+      toast({
+        title: "Could not load destinations",
+        description: error instanceof DestinationLoadError ? error.message : "Please try again.",
+        variant: "destructive",
+      });
     } finally { setLoading(false); }
   };
 

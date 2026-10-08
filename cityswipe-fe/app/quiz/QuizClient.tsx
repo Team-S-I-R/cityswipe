@@ -171,7 +171,16 @@ export default function QuizClient({ clerkdata }: any) {
     setResponses(answers);
 
     try {
-      const destinations = await generateDestinations(answers);
+      const result = await generateDestinations(answers);
+      if ("error" in result) {
+        toast({
+          title: "Couldn't find your matches",
+          description: result.error,
+          itemID: "error",
+        });
+        return;
+      }
+      const destinations = result.destinations;
       await setDestinationSet({
         id: 1,
         cards: [...destinations].reverse(),
@@ -186,16 +195,15 @@ export default function QuizClient({ clerkdata }: any) {
       console.log(`handleGemini took ${endTime - startTime} milliseconds`);
 
       router.push("/match");
-      setLoadingMatches(false);
     } catch (error) {
-      setLoadingMatches(false);
       toast({
         title: "Error. Please try submitting again!",
         description: "We encountered an error. Please try submitting again.",
         itemID: "error",
       });
+    } finally {
+      setLoadingMatches(false);
     }
-    
   };
 
   // ------------------------------------------------------------------------------------------------
