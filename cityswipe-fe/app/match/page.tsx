@@ -5,6 +5,7 @@ import { DestinationCompletion, DestinationCards } from "./_components";
 import { savedDestination as initialDestination } from "../../api/savedDestination.api";
 import { useDestinationSetContext } from "../../context/destinationSetContext";
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { useSavedDestinationContext } from "../../context/savedDestinationContext";
 import Sidebar from "../cs-componets/sidebar";
 import destination1 from "../assets/imgs/destination-img-1.jpg";
@@ -69,10 +70,14 @@ const Match = () => {
 
         <div className="absolute inset-0 z-[-1] overflow-hidden w-screen h-screen">
           {images.map((img, index) => (
-            <img
+            <Image
               key={index}
-              src={img.src}
+              src={img}
               alt={`Background ${index + 1}`}
+              fill
+              sizes="100vw"
+              priority={index === 0}
+              placeholder="blur"
               className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
                 index === currentImageIndex ? "opacity-100" : "opacity-0"
               }`}

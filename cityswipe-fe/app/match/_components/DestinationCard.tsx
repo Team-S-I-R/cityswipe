@@ -203,13 +203,13 @@ const DestinationCard = ({
               >
                 {illustration.length > 10 && (
                   <SwiperSlide className="h-full w-full flex items-center justify-center">
+                    {/* Lazy (not priority) so the hidden mobile/desktop twin of each card isn't downloaded */}
                     <Image
-                      priority
                       className="rounded w-full absolute h-full object-cover"
                       // src={data.illustration || placeholderImg}
                       src={illustration}
                       fill
-                      sizes="100%"
+                      sizes="(min-width: 768px) 700px, 100vw"
                       alt="car"
                     />
                   </SwiperSlide>
@@ -421,12 +421,11 @@ const DestinationCard = ({
                    
                     {illustration.length > 10 && (
                         <Image
-                          priority
                           className="rounded w-full absolute h-full object-cover"
                           // src={data.illustration || placeholderImg}
                           src={illustration}
                           fill
-                          sizes="100%"
+                          sizes="100vw"
                           alt="car"
                         />
                       )}

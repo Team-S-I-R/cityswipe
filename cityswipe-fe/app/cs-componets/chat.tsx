@@ -172,9 +172,8 @@ export default function Chat({matches}: any) {
                       <Image
                         className="rounded-full h-full  w-full object-cover"
                         src={usermatches?.[0]?.illustration || placeholderimg}
-                        sizes="100%"
-                        width={30}
-                        height={30}
+                        width={60}
+                        height={60}
                         alt=""
                       />
                     </motion.div>
@@ -323,9 +322,8 @@ export default function Chat({matches}: any) {
                       <Image
                         className="rounded-full h-full w-full object-cover"
                         src={chatImg || placeholderimg}
-                        sizes="100%"
-                        width={30}
-                        height={30}
+                        width={60}
+                        height={60}
                         alt=""
                       />
                     </motion.div>
@@ -447,7 +445,6 @@ export default function Chat({matches}: any) {
                   {message.role === "assistant" && (
                     <Image
                       src={chatImg || placeholderimg}
-                      sizes="100%"
                       width={30}
                       height={30}
                       className="object-cover w-[30px] h-[30px] rounded-full my-3"
@@ -493,7 +490,7 @@ export default function Chat({matches}: any) {
 
 
                                 {message.role === 'user' && (
-                                    <Image src={userdata?.profileImg || placeholderimg} sizes="100%" width={30} height={30} className="object-cover ml-4 my-3 w-[30px] h-[30px] rounded-full" alt="" />
+                                    <Image src={userdata?.profileImg || placeholderimg} width={30} height={30} className="object-cover ml-4 my-3 w-[30px] h-[30px] rounded-full" alt="" />
                                 )}
                                 
 
@@ -559,9 +556,8 @@ export default function Chat({matches}: any) {
                 <Image
                   className="object-cover w-full h-full rounded-full"
                   src={chatImg || placeholderimg}
-                  sizes="100%"
-                  width={30}
-                  height={30}
+                  width={80}
+                  height={80}
                   alt=""
                 />
               </div>
@@ -665,7 +661,6 @@ export default function Chat({matches}: any) {
                   {message.role === "assistant" && (
                     <Image
                       src={chatImg || placeholderimg}
-                      sizes="100%"
                       width={30}
                       height={30}
                       className="object-cover w-[30px] h-[30px] rounded-full"
@@ -690,7 +685,6 @@ export default function Chat({matches}: any) {
                   {message.role === "user" && (
                     <Image
                       src={userdata?.profileImg || placeholderimg}
-                      sizes="100%"
                       width={30}
                       height={30}
                       className="object-cover w-[30px] h-[30px] rounded-full"
